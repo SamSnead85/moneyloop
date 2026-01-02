@@ -8,13 +8,11 @@ import {
   Shield,
   TrendingUp,
   CreditCard,
-  Building2,
   CheckCircle2,
   ChevronRight,
   Menu,
   X,
   Wallet,
-  PiggyBank,
   Home,
   Coins,
   BarChart3,
@@ -40,46 +38,86 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   return <span>{displayValue}{suffix}</span>;
 }
 
-// Premium subtle background
+// Premium Dynamic Background - Similar to ScaledNative
 function PremiumBackground() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Deep sophisticated base */}
-      <div className="absolute inset-0 bg-[#08080c]" />
+      {/* Deep base */}
+      <div className="absolute inset-0 bg-[#050508]" />
 
-      {/* Very subtle gradient orbs */}
+      {/* Large animated gradient orbs */}
       <motion.div
-        className="absolute top-0 left-1/4 w-[800px] h-[800px] rounded-full"
+        className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw] max-w-[1200px] max-h-[1200px]"
         style={{
-          background: 'radial-gradient(circle, rgba(100, 100, 120, 0.04) 0%, transparent 60%)',
-          filter: 'blur(80px)',
+          background: 'radial-gradient(circle, rgba(30, 30, 50, 0.4) 0%, transparent 70%)',
+          filter: 'blur(100px)',
         }}
         animate={{
-          x: [0, 50, -30, 0],
-          y: [0, -40, 60, 0],
+          x: [0, 100, -50, 0],
+          y: [0, -80, 120, 0],
+          scale: [1, 1.1, 0.95, 1],
+        }}
+        transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <motion.div
+        className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] max-w-[1000px] max-h-[1000px]"
+        style={{
+          background: 'radial-gradient(circle, rgba(40, 35, 55, 0.35) 0%, transparent 70%)',
+          filter: 'blur(120px)',
+        }}
+        animate={{
+          x: [0, -80, 60, 0],
+          y: [0, 100, -60, 0],
+          scale: [1, 0.9, 1.05, 1],
         }}
         transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
       />
+
       <motion.div
-        className="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full"
+        className="absolute -bottom-1/4 left-1/3 w-[60vw] h-[60vw] max-w-[900px] max-h-[900px]"
         style={{
-          background: 'radial-gradient(circle, rgba(80, 80, 100, 0.03) 0%, transparent 60%)',
-          filter: 'blur(80px)',
+          background: 'radial-gradient(circle, rgba(25, 30, 45, 0.3) 0%, transparent 70%)',
+          filter: 'blur(100px)',
         }}
         animate={{
-          x: [0, -40, 30, 0],
-          y: [0, 40, -50, 0],
+          x: [0, 60, -40, 0],
+          y: [0, -40, 80, 0],
+          scale: [1, 1.05, 0.92, 1],
         }}
-        transition={{ duration: 35, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Subtle noise texture overlay */}
+      {/* Subtle grain overlay */}
       <div
-        className="absolute inset-0 opacity-[0.015]"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
+
+      {/* Floating particles */}
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-px h-px rounded-full bg-white/20"
+          style={{
+            left: `${10 + Math.random() * 80}%`,
+            top: `${10 + Math.random() * 80}%`,
+          }}
+          animate={{
+            y: [0, -20, 0],
+            opacity: [0.1, 0.4, 0.1],
+            scale: [1, 1.5, 1],
+          }}
+          transition={{
+            duration: 4 + Math.random() * 4,
+            repeat: Infinity,
+            delay: Math.random() * 3,
+            ease: 'easeInOut',
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -89,30 +127,30 @@ function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#08080c]/80 backdrop-blur-2xl border-b border-white/[0.04]">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-white/[0.08] border border-white/[0.08] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.06] flex items-center justify-center">
               <span className="text-white font-semibold text-sm">M</span>
             </div>
             <span className="text-lg font-medium tracking-tight">MoneyLoop</span>
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
-            <a href="#features" className="text-sm text-slate-500 hover:text-white transition-colors">Features</a>
-            <a href="#how-it-works" className="text-sm text-slate-500 hover:text-white transition-colors">How It Works</a>
-            <a href="#pricing" className="text-sm text-slate-500 hover:text-white transition-colors">Pricing</a>
+            <a href="#features" className="text-sm text-white/40 hover:text-white transition-colors">Features</a>
+            <a href="#how-it-works" className="text-sm text-white/40 hover:text-white transition-colors">How It Works</a>
+            <a href="#pricing" className="text-sm text-white/40 hover:text-white transition-colors">Pricing</a>
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
             <Link href="/dashboard">
-              <Button variant="ghost" className="text-sm text-slate-400">
+              <Button variant="ghost" className="text-sm text-white/50 hover:text-white">
                 Sign In
               </Button>
             </Link>
             <Link href="/dashboard">
-              <Button size="sm" className="text-sm bg-white text-black hover:bg-slate-200">
+              <Button size="sm" className="text-sm bg-white text-black hover:bg-white/90 font-medium">
                 Get Started
               </Button>
             </Link>
@@ -131,11 +169,11 @@ function Navigation() {
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="lg:hidden border-t border-white/5 bg-[#08080c] p-6 space-y-4"
+          className="lg:hidden border-t border-white/5 bg-[#050508] p-6 space-y-4"
         >
-          <a href="#features" className="block py-2 text-slate-400">Features</a>
-          <a href="#how-it-works" className="block py-2 text-slate-400">How It Works</a>
-          <a href="#pricing" className="block py-2 text-slate-400">Pricing</a>
+          <a href="#features" className="block py-2 text-white/60">Features</a>
+          <a href="#how-it-works" className="block py-2 text-white/60">How It Works</a>
+          <a href="#pricing" className="block py-2 text-white/60">Pricing</a>
           <div className="pt-4 border-t border-white/10 space-y-3">
             <Button variant="secondary" className="w-full">Sign In</Button>
             <Button className="w-full bg-white text-black">Get Started</Button>
@@ -146,28 +184,28 @@ function Navigation() {
   );
 }
 
-// Hero Section - Clean and Minimal
+// Hero Section
 function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 px-6">
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         {/* Main headline */}
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-5xl sm:text-6xl lg:text-7xl font-medium tracking-tight mb-8 leading-[1.1]"
+          transition={{ duration: 1 }}
+          className="text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-[-0.02em] mb-8 leading-[1.05]"
         >
           Your complete
           <br />
-          wealth picture.
+          <span className="text-white/40">wealth picture.</span>
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-lg text-slate-500 max-w-xl mx-auto mb-12 leading-relaxed"
+          transition={{ duration: 1, delay: 0.15 }}
+          className="text-lg text-white/40 max-w-xl mx-auto mb-14 leading-relaxed"
         >
           Track every asset. See all income streams.
           Discover hidden savings. Build wealth with clarity.
@@ -175,26 +213,25 @@ function HeroSection() {
 
         {/* CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 1, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
         >
           <Link href="/dashboard">
-            <Button size="lg" className="text-base px-8 py-4 bg-white text-black hover:bg-slate-100 font-medium">
+            <Button size="lg" className="text-base px-10 py-5 bg-white text-black hover:bg-white/90 font-medium shadow-2xl shadow-white/10">
               Start Free
               <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
-          <span className="text-sm text-slate-600">No credit card required</span>
         </motion.div>
 
-        {/* Asset types - subtle */}
+        {/* Asset types */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-slate-600 text-sm"
+          transition={{ duration: 1.5, delay: 0.5 }}
+          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-white/30 text-sm"
         >
           {[
             { icon: Wallet, text: 'Bank Accounts' },
@@ -204,7 +241,7 @@ function HeroSection() {
             { icon: Receipt, text: 'Income' },
           ].map((item) => (
             <div key={item.text} className="flex items-center gap-2">
-              <item.icon className="w-4 h-4 opacity-50" />
+              <item.icon className="w-4 h-4 opacity-60" />
               {item.text}
             </div>
           ))}
@@ -214,10 +251,10 @@ function HeroSection() {
   );
 }
 
-// Stats - Understated
+// Stats
 function StatsSection() {
   return (
-    <section className="py-20 px-6 border-y border-white/[0.04]">
+    <section className="py-24 px-6 border-y border-white/[0.03]">
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
           {[
@@ -231,12 +268,12 @@ function StatsSection() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <p className="text-3xl font-medium text-white mb-1 font-mono">
+              <p className="text-3xl lg:text-4xl font-medium text-white mb-2 font-mono">
                 {stat.prefix}<AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-sm text-slate-600">{stat.label}</p>
+              <p className="text-sm text-white/30">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -245,7 +282,7 @@ function StatsSection() {
   );
 }
 
-// Features - Clean grid
+// Features
 const features = [
   {
     icon: Wallet,
@@ -287,17 +324,17 @@ function FeaturesSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl lg:text-4xl font-medium mb-4">
+          <h2 className="text-3xl lg:text-5xl font-medium mb-5 tracking-tight">
             Everything you need
           </h2>
-          <p className="text-lg text-slate-500 max-w-xl mx-auto">
+          <p className="text-lg text-white/40 max-w-xl mx-auto">
             A complete view of your financial life
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -305,12 +342,11 @@ function FeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
-              className="group"
             >
-              <div className="p-6 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all">
-                <feature.icon className="w-6 h-6 text-slate-500 mb-4" />
+              <div className="group p-7 rounded-2xl border border-white/[0.03] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/[0.06] transition-all duration-300">
+                <feature.icon className="w-6 h-6 text-white/40 mb-5" />
                 <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{feature.description}</p>
+                <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
               </div>
             </motion.div>
           ))}
@@ -320,25 +356,25 @@ function FeaturesSection() {
   );
 }
 
-// How it works - Simple
+// How it works
 function HowItWorksSection() {
   const steps = [
-    { step: '1', title: 'Connect', description: 'Link your financial accounts securely.' },
+    { step: '1', title: 'Connect', description: 'Link your accounts securely.' },
     { step: '2', title: 'See', description: 'View your complete wealth picture.' },
-    { step: '3', title: 'Discover', description: 'Find savings and optimization opportunities.' },
-    { step: '4', title: 'Grow', description: 'Make smarter financial decisions.' },
+    { step: '3', title: 'Discover', description: 'Find savings opportunities.' },
+    { step: '4', title: 'Grow', description: 'Make smarter decisions.' },
   ];
 
   return (
-    <section className="py-32 px-6 border-t border-white/[0.04]" id="how-it-works">
+    <section className="py-32 px-6 border-t border-white/[0.03]" id="how-it-works">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl lg:text-4xl font-medium mb-4">
+          <h2 className="text-3xl lg:text-5xl font-medium tracking-tight">
             How it works
           </h2>
         </motion.div>
@@ -353,9 +389,9 @@ function HowItWorksSection() {
               transition={{ delay: index * 0.1 }}
               className="text-center"
             >
-              <div className="text-4xl font-light text-slate-700 mb-4">{step.step}</div>
+              <div className="text-5xl font-light text-white/10 mb-4">{step.step}</div>
               <h3 className="text-lg font-medium mb-2">{step.title}</h3>
-              <p className="text-sm text-slate-500">{step.description}</p>
+              <p className="text-sm text-white/40">{step.description}</p>
             </motion.div>
           ))}
         </div>
@@ -364,7 +400,7 @@ function HowItWorksSection() {
   );
 }
 
-// Pricing - Clean
+// Pricing
 const plans = [
   {
     name: 'Free',
@@ -413,18 +449,18 @@ function PricingSection() {
   };
 
   return (
-    <section className="py-32 px-6 border-t border-white/[0.04]" id="pricing">
+    <section className="py-32 px-6 border-t border-white/[0.03]" id="pricing">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-3xl lg:text-4xl font-medium mb-4">
+          <h2 className="text-3xl lg:text-5xl font-medium mb-5 tracking-tight">
             Simple pricing
           </h2>
-          <p className="text-slate-500">
+          <p className="text-white/40">
             Start free. Upgrade when you&apos;re ready.
           </p>
         </motion.div>
@@ -439,33 +475,33 @@ function PricingSection() {
               transition={{ delay: index * 0.1 }}
             >
               <div className={`h-full flex flex-col p-8 rounded-2xl border ${plan.popular
-                  ? 'border-white/20 bg-white/[0.04]'
-                  : 'border-white/[0.04] bg-white/[0.02]'
+                  ? 'border-white/20 bg-white/[0.03]'
+                  : 'border-white/[0.03] bg-white/[0.01]'
                 }`}>
                 {plan.popular && (
-                  <span className="text-xs text-slate-400 uppercase tracking-wider mb-4">Most Popular</span>
+                  <span className="text-xs text-white/40 uppercase tracking-wider mb-4">Most Popular</span>
                 )}
 
-                <div className="mb-6">
+                <div className="mb-8">
                   <h3 className="text-xl font-medium mb-2">{plan.name}</h3>
                   <div className="flex items-baseline">
                     <span className="text-4xl font-medium">{plan.price}</span>
-                    <span className="text-slate-500 ml-1">{plan.period}</span>
+                    <span className="text-white/40 ml-1">{plan.period}</span>
                   </div>
                 </div>
 
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
-                      <span className="text-slate-400">{feature}</span>
+                      <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                      <span className="text-white/60">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Button
                   variant={plan.popular ? 'primary' : 'secondary'}
-                  className={`w-full ${plan.popular ? 'bg-white text-black hover:bg-slate-100' : ''}`}
+                  className={`w-full ${plan.popular ? 'bg-white text-black hover:bg-white/90' : ''}`}
                   onClick={() => handleCheckout(plan.planId)}
                 >
                   {plan.cta}
@@ -482,21 +518,21 @@ function PricingSection() {
 // Final CTA
 function CTASection() {
   return (
-    <section className="py-32 px-6 border-t border-white/[0.04]">
+    <section className="py-32 px-6 border-t border-white/[0.03]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="max-w-2xl mx-auto text-center"
       >
-        <h2 className="text-3xl lg:text-4xl font-medium mb-6">
+        <h2 className="text-3xl lg:text-5xl font-medium mb-6 tracking-tight">
           See your wealth clearly.
         </h2>
-        <p className="text-lg text-slate-500 mb-10">
+        <p className="text-lg text-white/40 mb-12">
           Join thousands building wealth with clarity.
         </p>
         <Link href="/dashboard">
-          <Button size="lg" className="text-base px-10 py-4 bg-white text-black hover:bg-slate-100 font-medium">
+          <Button size="lg" className="text-base px-12 py-5 bg-white text-black hover:bg-white/90 font-medium shadow-2xl shadow-white/10">
             Get Started Free
             <ArrowRight className="w-4 h-4" />
           </Button>
@@ -506,24 +542,24 @@ function CTASection() {
   );
 }
 
-// Footer - Minimal
+// Footer
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.04] py-12 px-6">
+    <footer className="border-t border-white/[0.03] py-12 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-white/[0.08] flex items-center justify-center">
+            <div className="w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center">
               <span className="text-white font-medium text-xs">M</span>
             </div>
-            <span className="text-sm text-slate-500">MoneyLoop</span>
+            <span className="text-sm text-white/40">MoneyLoop</span>
           </div>
-          <div className="flex items-center gap-8 text-sm text-slate-600">
+          <div className="flex items-center gap-8 text-sm text-white/30">
             <a href="#" className="hover:text-white transition-colors">Privacy</a>
             <a href="#" className="hover:text-white transition-colors">Terms</a>
             <Link href="/about" className="hover:text-white transition-colors">About</Link>
           </div>
-          <p className="text-sm text-slate-600">© 2026 MoneyLoop</p>
+          <p className="text-sm text-white/30">© 2026 MoneyLoop</p>
         </div>
       </div>
     </footer>
