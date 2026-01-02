@@ -23,6 +23,7 @@ import {
 import { Card, Button } from '@/components/ui';
 import { MoneyFlowChart } from '@/components/dashboard/MoneyFlowChart';
 import { SpendingBreakdown } from '@/components/dashboard/SpendingBreakdown';
+import { NetWorthChart } from '@/components/dashboard/NetWorthChart';
 
 // Net Worth Summary
 const netWorthData = {
@@ -118,29 +119,10 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-8">
-            {/* Header - Net Worth Overview */}
-            <div className="flex items-start justify-between">
-                <div>
-                    <p className="text-sm text-slate-500 mb-1">Net Worth</p>
-                    <h1 className="text-4xl font-bold font-mono mb-2">
-                        ${netWorthData.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                    </h1>
-                    <div className="flex items-center gap-1 text-emerald-400 text-sm">
-                        <ArrowUpRight className="w-4 h-4" />
-                        <span>+${netWorthData.monthChange.toLocaleString()} this month</span>
-                    </div>
-                </div>
-                <div className="text-right text-sm">
-                    <div className="mb-2">
-                        <span className="text-slate-500">Assets: </span>
-                        <span className="font-mono text-emerald-400">${netWorthData.assets.toLocaleString()}</span>
-                    </div>
-                    <div>
-                        <span className="text-slate-500">Liabilities: </span>
-                        <span className="font-mono text-rose-400">-${netWorthData.liabilities.toLocaleString()}</span>
-                    </div>
-                </div>
-            </div>
+            {/* Net Worth Chart */}
+            <Card padding="lg" hover={false}>
+                <NetWorthChart />
+            </Card>
 
             {/* Asset Overview Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
