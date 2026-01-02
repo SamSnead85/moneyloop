@@ -8,18 +8,21 @@ import {
   ArrowRight,
   Shield,
   TrendingUp,
-  CreditCard,
   CheckCircle2,
-  ChevronRight,
   Menu,
   X,
   Wallet,
   Home,
   Coins,
-  BarChart3,
   Receipt,
+  Sparkles,
+  Zap,
+  LineChart,
+  PiggyBank,
 } from 'lucide-react';
 import { Button, Card } from '@/components/ui';
+import DashboardPreview from '@/components/landing/DashboardPreview';
+import { SecurityBadges, PartnerLogos, DataPromise } from '@/components/landing/TrustBadges';
 
 // Animated counter
 function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
@@ -39,18 +42,18 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   return <span>{displayValue}{suffix}</span>;
 }
 
-// Premium Dynamic Background - Similar to ScaledNative
+// Premium Dynamic Background
 function PremiumBackground() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
       {/* Deep base */}
       <div className="absolute inset-0 bg-[#050508]" />
 
-      {/* Large animated gradient orbs */}
+      {/* Emerald orb - top left */}
       <motion.div
         className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw] max-w-[1200px] max-h-[1200px]"
         style={{
-          background: 'radial-gradient(circle, rgba(30, 30, 50, 0.4) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%)',
           filter: 'blur(100px)',
         }}
         animate={{
@@ -61,10 +64,11 @@ function PremiumBackground() {
         transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
       />
 
+      {/* Gold orb - right side */}
       <motion.div
         className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] max-w-[1000px] max-h-[1000px]"
         style={{
-          background: 'radial-gradient(circle, rgba(40, 35, 55, 0.35) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, transparent 70%)',
           filter: 'blur(120px)',
         }}
         animate={{
@@ -75,10 +79,11 @@ function PremiumBackground() {
         transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
       />
 
+      {/* Deep blue orb - bottom */}
       <motion.div
         className="absolute -bottom-1/4 left-1/3 w-[60vw] h-[60vw] max-w-[900px] max-h-[900px]"
         style={{
-          background: 'radial-gradient(circle, rgba(25, 30, 45, 0.3) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(20, 30, 50, 0.4) 0%, transparent 70%)',
           filter: 'blur(100px)',
         }}
         animate={{
@@ -101,7 +106,7 @@ function PremiumBackground() {
       {[...Array(20)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-px h-px rounded-full bg-white/20"
+          className="absolute w-px h-px rounded-full bg-emerald-400/30"
           style={{
             left: `${10 + Math.random() * 80}%`,
             top: `${10 + Math.random() * 80}%`,
@@ -149,13 +154,13 @@ function Navigation() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <Link href="/dashboard">
+            <Link href="/auth">
               <Button variant="ghost" className="text-sm text-white/50 hover:text-white">
                 Sign In
               </Button>
             </Link>
-            <Link href="/dashboard">
-              <Button size="sm" className="text-sm bg-white text-black hover:bg-white/90 font-medium">
+            <Link href="/auth">
+              <Button size="sm" className="text-sm bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium border border-emerald-400/20">
                 Get Started
               </Button>
             </Link>
@@ -180,8 +185,12 @@ function Navigation() {
           <a href="#how-it-works" className="block py-2 text-white/60">How It Works</a>
           <a href="#pricing" className="block py-2 text-white/60">Pricing</a>
           <div className="pt-4 border-t border-white/10 space-y-3">
-            <Button variant="secondary" className="w-full">Sign In</Button>
-            <Button className="w-full bg-white text-black">Get Started</Button>
+            <Link href="/auth">
+              <Button variant="secondary" className="w-full">Sign In</Button>
+            </Link>
+            <Link href="/auth">
+              <Button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">Get Started</Button>
+            </Link>
           </div>
         </motion.div>
       )}
@@ -189,10 +198,10 @@ function Navigation() {
   );
 }
 
-// Hero Section with rotating background
+// Hero Section with Dashboard Preview
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 px-6 overflow-hidden">
       {/* Rotating background image */}
       <motion.div
         className="absolute inset-0 z-0"
@@ -204,95 +213,111 @@ function HeroSection() {
             src="/hero-bg.png"
             alt=""
             fill
-            className="object-cover opacity-40"
+            className="object-cover opacity-30"
             priority
           />
         </div>
       </motion.div>
 
-      {/* Additional glow effects */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#050508]/60 via-transparent to-[#050508]/80" />
-      <div className="absolute inset-0 z-[1] bg-radial-gradient" style={{ background: 'radial-gradient(circle at center, transparent 0%, #050508 70%)' }} />
+      {/* Gradient overlays */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#050508]/60 via-transparent to-[#050508]/90" />
+      <div className="absolute inset-0 z-[1]" style={{ background: 'radial-gradient(circle at center, transparent 0%, #050508 75%)' }} />
 
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        {/* Logo badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex justify-center mb-8"
-        >
-          <Image
-            src="/logo.png"
-            alt="MoneyLoop"
-            width={80}
-            height={80}
-            className="rounded-2xl shadow-2xl shadow-emerald-500/20"
-          />
-        </motion.div>
+      <div className="relative z-10 max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left column - Text */}
+          <div className="text-center lg:text-left">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-8"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-xs text-emerald-400 font-medium uppercase tracking-wider">Free forever plan available</span>
+            </motion.div>
 
-        {/* Main headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-[-0.02em] mb-8 leading-[1.05]"
-        >
-          Your complete
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-amber-400">wealth picture.</span>
-        </motion.h1>
+            {/* Main headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-[-0.02em] mb-6 leading-[1.1]"
+            >
+              Your complete
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-300 to-amber-400">wealth picture.</span>
+            </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.35 }}
-          className="text-lg text-white/50 max-w-xl mx-auto mb-14 leading-relaxed"
-        >
-          Track every asset. See all income streams.
-          Discover hidden savings. Build wealth with clarity.
-        </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.35 }}
+              className="text-lg text-white/50 max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed"
+            >
+              Track every asset. See all income streams.
+              Discover hidden savings. Build wealth with clarity.
+            </motion.p>
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
-        >
-          <Link href="/dashboard">
-            <Button size="lg" className="text-base px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium shadow-2xl shadow-emerald-500/25 border border-emerald-400/20">
-              Start Free
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-          <Link href="#features">
-            <Button variant="ghost" size="lg" className="text-base px-8 py-5 text-white/60 hover:text-white border border-white/10 hover:border-white/20">
-              See Features
-            </Button>
-          </Link>
-        </motion.div>
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10"
+            >
+              <Link href="/auth">
+                <Button size="lg" className="text-base px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium shadow-2xl shadow-emerald-500/25 border border-emerald-400/20">
+                  Start Free
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+              <Link href="#features">
+                <Button variant="ghost" size="lg" className="text-base px-8 py-5 text-white/60 hover:text-white border border-white/10 hover:border-white/20">
+                  See Features
+                </Button>
+              </Link>
+            </motion.div>
 
-        {/* Asset types */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, delay: 0.7 }}
-          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-white/40 text-sm"
-        >
-          {[
-            { icon: Wallet, text: 'Bank Accounts' },
-            { icon: TrendingUp, text: 'Investments' },
-            { icon: Coins, text: 'Gold & Silver' },
-            { icon: Home, text: 'Real Estate' },
-            { icon: Receipt, text: 'Income' },
-          ].map((item) => (
-            <div key={item.text} className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-              <item.icon className="w-4 h-4 opacity-60" />
-              {item.text}
-            </div>
-          ))}
-        </motion.div>
+            {/* Asset types */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, delay: 0.7 }}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-white/40 text-sm"
+            >
+              {[
+                { icon: Wallet, text: 'Bank Accounts' },
+                { icon: TrendingUp, text: 'Investments' },
+                { icon: Coins, text: 'Gold & Silver' },
+                { icon: Home, text: 'Real Estate' },
+              ].map((item) => (
+                <div key={item.text} className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                  <item.icon className="w-3.5 h-3.5 opacity-60" />
+                  <span className="text-xs">{item.text}</span>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right column - Dashboard Preview */}
+          <div className="hidden lg:block">
+            <DashboardPreview />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Trust Section
+function TrustSection() {
+  return (
+    <section className="py-16 px-6 border-y border-white/[0.03] bg-white/[0.01]">
+      <div className="max-w-5xl mx-auto space-y-10">
+        <SecurityBadges />
+        <PartnerLogos />
       </div>
     </section>
   );
@@ -301,7 +326,7 @@ function HeroSection() {
 // Stats
 function StatsSection() {
   return (
-    <section className="py-24 px-6 border-y border-white/[0.03]">
+    <section className="py-24 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
           {[
@@ -334,7 +359,7 @@ const features = [
   {
     icon: Wallet,
     title: 'All Your Accounts',
-    description: 'Connect checking, savings, credit cards, and investment accounts in one place.',
+    description: 'Connect checking, savings, credit cards, and investment accounts in one unified view.',
   },
   {
     icon: TrendingUp,
@@ -344,12 +369,12 @@ const features = [
   {
     icon: Coins,
     title: 'Alternative Assets',
-    description: 'Track gold, silver, and other precious metals with live pricing.',
+    description: 'Track gold, silver, and other precious metals with live market pricing.',
   },
   {
     icon: Home,
     title: 'Real Estate',
-    description: 'Property values, rental income, mortgage tracking, and equity growth.',
+    description: 'Property values, rental income, mortgage tracking, and equity growth visualization.',
   },
   {
     icon: Receipt,
@@ -365,7 +390,7 @@ const features = [
 
 function FeaturesSection() {
   return (
-    <section className="py-32 px-6" id="features">
+    <section className="py-32 px-6 border-t border-white/[0.03]" id="features">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -390,8 +415,10 @@ function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
             >
-              <div className="group p-7 rounded-2xl border border-white/[0.03] bg-white/[0.015] hover:bg-white/[0.03] hover:border-white/[0.06] transition-all duration-300">
-                <feature.icon className="w-6 h-6 text-white/40 mb-5" />
+              <div className="group p-7 rounded-2xl border border-white/[0.03] bg-white/[0.015] hover:bg-white/[0.03] hover:border-emerald-500/20 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:bg-emerald-500/15 transition-colors">
+                  <feature.icon className="w-5 h-5 text-emerald-400" />
+                </div>
                 <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
                 <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
               </div>
@@ -406,10 +433,10 @@ function FeaturesSection() {
 // How it works
 function HowItWorksSection() {
   const steps = [
-    { step: '1', title: 'Connect', description: 'Link your accounts securely.' },
-    { step: '2', title: 'See', description: 'View your complete wealth picture.' },
-    { step: '3', title: 'Discover', description: 'Find savings opportunities.' },
-    { step: '4', title: 'Grow', description: 'Make smarter decisions.' },
+    { step: '1', title: 'Connect', description: 'Link accounts securely in seconds', icon: Zap },
+    { step: '2', title: 'See', description: 'View your complete wealth picture', icon: LineChart },
+    { step: '3', title: 'Discover', description: 'Find hidden savings opportunities', icon: Sparkles },
+    { step: '4', title: 'Grow', description: 'Make smarter decisions', icon: PiggyBank },
   ];
 
   return (
@@ -434,9 +461,11 @@ function HowItWorksSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="text-center"
+              className="text-center group"
             >
-              <div className="text-5xl font-light text-white/10 mb-4">{step.step}</div>
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-5 group-hover:border-emerald-500/30 group-hover:bg-emerald-500/5 transition-all">
+                <step.icon className="w-6 h-6 text-white/40 group-hover:text-emerald-400 transition-colors" />
+              </div>
               <h3 className="text-lg font-medium mb-2">{step.title}</h3>
               <p className="text-sm text-white/40">{step.description}</p>
             </motion.div>
@@ -479,7 +508,7 @@ const plans = [
 function PricingSection() {
   const handleCheckout = async (planId: string) => {
     if (planId === 'free') {
-      window.location.href = '/dashboard';
+      window.location.href = '/auth';
       return;
     }
     try {
@@ -521,12 +550,15 @@ function PricingSection() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className={`h-full flex flex-col p-8 rounded-2xl border ${plan.popular
-                ? 'border-white/20 bg-white/[0.03]'
-                : 'border-white/[0.03] bg-white/[0.01]'
+              <div className={`h-full flex flex-col p-8 rounded-2xl border transition-all duration-300 ${plan.popular
+                ? 'border-emerald-500/30 bg-emerald-500/[0.03] hover:border-emerald-500/50'
+                : 'border-white/[0.03] bg-white/[0.01] hover:border-white/[0.08]'
                 }`}>
                 {plan.popular && (
-                  <span className="text-xs text-white/40 uppercase tracking-wider mb-4">Most Popular</span>
+                  <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 uppercase tracking-wider mb-4">
+                    <Sparkles className="w-3 h-3" />
+                    Most Popular
+                  </span>
                 )}
 
                 <div className="mb-8">
@@ -540,7 +572,7 @@ function PricingSection() {
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm">
-                      <CheckCircle2 className="w-4 h-4 text-white/30 shrink-0 mt-0.5" />
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-emerald-400/60' : 'text-white/30'}`} />
                       <span className="text-white/60">{feature}</span>
                     </li>
                   ))}
@@ -548,7 +580,7 @@ function PricingSection() {
 
                 <Button
                   variant={plan.popular ? 'primary' : 'secondary'}
-                  className={`w-full ${plan.popular ? 'bg-white text-black hover:bg-white/90' : ''}`}
+                  className={`w-full ${plan.popular ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 border border-emerald-400/20' : ''}`}
                   onClick={() => handleCheckout(plan.planId)}
                 >
                   {plan.cta}
@@ -557,6 +589,17 @@ function PricingSection() {
             </motion.div>
           ))}
         </div>
+
+        {/* Data promise */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-12"
+        >
+          <DataPromise />
+        </motion.div>
       </div>
     </section>
   );
@@ -578,8 +621,8 @@ function CTASection() {
         <p className="text-lg text-white/40 mb-12">
           Join thousands building wealth with clarity.
         </p>
-        <Link href="/dashboard">
-          <Button size="lg" className="text-base px-12 py-5 bg-white text-black hover:bg-white/90 font-medium shadow-2xl shadow-white/10">
+        <Link href="/auth">
+          <Button size="lg" className="text-base px-12 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium shadow-2xl shadow-emerald-500/20 border border-emerald-400/20">
             Get Started Free
             <ArrowRight className="w-4 h-4" />
           </Button>
@@ -600,8 +643,8 @@ function Footer() {
             <span className="text-sm text-white/40">MoneyLoop</span>
           </div>
           <div className="flex items-center gap-8 text-sm text-white/30">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/about" className="hover:text-white transition-colors">About</Link>
           </div>
           <p className="text-sm text-white/30">© 2026 MoneyLoop</p>
@@ -619,6 +662,7 @@ export default function HomePage() {
       <Navigation />
       <main className="relative z-10">
         <HeroSection />
+        <TrustSection />
         <StatsSection />
         <FeaturesSection />
         <HowItWorksSection />
