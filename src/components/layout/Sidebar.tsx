@@ -6,17 +6,14 @@ import { motion } from 'framer-motion';
 import {
     LayoutDashboard,
     TrendingUp,
-    Heart,
     Receipt,
     Settings,
     LogOut,
-    ChevronRight,
 } from 'lucide-react';
 
 const navItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
     { icon: TrendingUp, label: 'Investments', href: '/dashboard/investments' },
-    { icon: Heart, label: 'Healthcare', href: '/dashboard/healthcare' },
     { icon: Receipt, label: 'Tax Center', href: '/dashboard/tax-optimizer' },
 ];
 
