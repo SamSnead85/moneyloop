@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowRight,
   Shield,
@@ -130,10 +131,14 @@ function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.06] flex items-center justify-center">
-              <span className="text-white font-semibold text-sm">M</span>
-            </div>
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="MoneyLoop"
+              width={32}
+              height={32}
+              className="rounded-lg"
+            />
             <span className="text-lg font-medium tracking-tight">MoneyLoop</span>
           </Link>
 
@@ -184,28 +189,65 @@ function Navigation() {
   );
 }
 
-// Hero Section
+// Hero Section with rotating background
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 px-6">
+    <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 px-6 overflow-hidden">
+      {/* Rotating background image */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
+      >
+        <div className="absolute inset-[-50%] w-[200%] h-[200%]">
+          <Image
+            src="/hero-bg.png"
+            alt=""
+            fill
+            className="object-cover opacity-40"
+            priority
+          />
+        </div>
+      </motion.div>
+
+      {/* Additional glow effects */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#050508]/60 via-transparent to-[#050508]/80" />
+      <div className="absolute inset-0 z-[1] bg-radial-gradient" style={{ background: 'radial-gradient(circle at center, transparent 0%, #050508 70%)' }} />
+
       <div className="relative z-10 max-w-4xl mx-auto text-center">
+        {/* Logo badge */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex justify-center mb-8"
+        >
+          <Image
+            src="/logo.png"
+            alt="MoneyLoop"
+            width={80}
+            height={80}
+            className="rounded-2xl shadow-2xl shadow-emerald-500/20"
+          />
+        </motion.div>
+
         {/* Main headline */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          transition={{ duration: 1, delay: 0.2 }}
           className="text-5xl sm:text-6xl lg:text-[5.5rem] font-medium tracking-[-0.02em] mb-8 leading-[1.05]"
         >
           Your complete
           <br />
-          <span className="text-white/40">wealth picture.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-amber-400">wealth picture.</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.15 }}
-          className="text-lg text-white/40 max-w-xl mx-auto mb-14 leading-relaxed"
+          transition={{ duration: 1, delay: 0.35 }}
+          className="text-lg text-white/50 max-w-xl mx-auto mb-14 leading-relaxed"
         >
           Track every asset. See all income streams.
           Discover hidden savings. Build wealth with clarity.
@@ -215,13 +257,18 @@ function HeroSection() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
+          transition={{ duration: 1, delay: 0.5 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
         >
           <Link href="/dashboard">
-            <Button size="lg" className="text-base px-10 py-5 bg-white text-black hover:bg-white/90 font-medium shadow-2xl shadow-white/10">
+            <Button size="lg" className="text-base px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium shadow-2xl shadow-emerald-500/25 border border-emerald-400/20">
               Start Free
               <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+          <Link href="#features">
+            <Button variant="ghost" size="lg" className="text-base px-8 py-5 text-white/60 hover:text-white border border-white/10 hover:border-white/20">
+              See Features
             </Button>
           </Link>
         </motion.div>
@@ -230,8 +277,8 @@ function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, delay: 0.5 }}
-          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-white/30 text-sm"
+          transition={{ duration: 1.5, delay: 0.7 }}
+          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-white/40 text-sm"
         >
           {[
             { icon: Wallet, text: 'Bank Accounts' },
@@ -240,7 +287,7 @@ function HeroSection() {
             { icon: Home, text: 'Real Estate' },
             { icon: Receipt, text: 'Income' },
           ].map((item) => (
-            <div key={item.text} className="flex items-center gap-2">
+            <div key={item.text} className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
               <item.icon className="w-4 h-4 opacity-60" />
               {item.text}
             </div>
@@ -475,8 +522,8 @@ function PricingSection() {
               transition={{ delay: index * 0.1 }}
             >
               <div className={`h-full flex flex-col p-8 rounded-2xl border ${plan.popular
-                  ? 'border-white/20 bg-white/[0.03]'
-                  : 'border-white/[0.03] bg-white/[0.01]'
+                ? 'border-white/20 bg-white/[0.03]'
+                : 'border-white/[0.03] bg-white/[0.01]'
                 }`}>
                 {plan.popular && (
                   <span className="text-xs text-white/40 uppercase tracking-wider mb-4">Most Popular</span>
@@ -549,9 +596,7 @@ function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center">
-              <span className="text-white font-medium text-xs">M</span>
-            </div>
+            <Image src="/logo.png" alt="MoneyLoop" width={28} height={28} className="rounded-md" />
             <span className="text-sm text-white/40">MoneyLoop</span>
           </div>
           <div className="flex items-center gap-8 text-sm text-white/30">
