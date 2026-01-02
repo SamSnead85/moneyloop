@@ -42,88 +42,51 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   return <span>{displayValue}{suffix}</span>;
 }
 
-// Premium Dynamic Background
+// Premium Elegant Background
 function PremiumBackground() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Deep base */}
-      <div className="absolute inset-0 bg-[#050508]" />
-
-      {/* Emerald orb - top left */}
-      <motion.div
-        className="absolute -top-1/4 -left-1/4 w-[80vw] h-[80vw] max-w-[1200px] max-h-[1200px]"
-        style={{
-          background: 'radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%)',
-          filter: 'blur(100px)',
-        }}
-        animate={{
-          x: [0, 100, -50, 0],
-          y: [0, -80, 120, 0],
-          scale: [1, 1.1, 0.95, 1],
-        }}
-        transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Gold orb - right side */}
-      <motion.div
-        className="absolute top-1/2 -right-1/4 w-[70vw] h-[70vw] max-w-[1000px] max-h-[1000px]"
-        style={{
-          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, transparent 70%)',
-          filter: 'blur(120px)',
-        }}
-        animate={{
-          x: [0, -80, 60, 0],
-          y: [0, 100, -60, 0],
-          scale: [1, 0.9, 1.05, 1],
-        }}
-        transition={{ duration: 30, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Deep blue orb - bottom */}
-      <motion.div
-        className="absolute -bottom-1/4 left-1/3 w-[60vw] h-[60vw] max-w-[900px] max-h-[900px]"
-        style={{
-          background: 'radial-gradient(circle, rgba(20, 30, 50, 0.4) 0%, transparent 70%)',
-          filter: 'blur(100px)',
-        }}
-        animate={{
-          x: [0, 60, -40, 0],
-          y: [0, -40, 80, 0],
-          scale: [1, 1.05, 0.92, 1],
-        }}
-        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-      />
-
-      {/* Subtle grain overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        }}
-      />
-
-      {/* Floating particles */}
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-px h-px rounded-full bg-emerald-400/30"
-          style={{
-            left: `${10 + Math.random() * 80}%`,
-            top: `${10 + Math.random() * 80}%`,
-          }}
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.1, 0.4, 0.1],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{
-            duration: 4 + Math.random() * 4,
-            repeat: Infinity,
-            delay: Math.random() * 3,
-            ease: 'easeInOut',
-          }}
+      {/* Premium background image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/premium-bg.png"
+          alt=""
+          fill
+          className="object-cover"
+          priority
+          quality={95}
         />
-      ))}
+      </div>
+
+      {/* Dark overlay for depth */}
+      <div className="absolute inset-0 bg-[#050508]/40" />
+
+      {/* Subtle vignette effect */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, #050508 85%)',
+        }}
+      />
+
+      {/* Top-to-bottom gradient for content readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050508]/30 via-transparent to-[#050508]/80" />
+
+      {/* Subtle emerald accent glow */}
+      <div
+        className="absolute top-0 left-1/4 w-[50vw] h-[40vh]"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(16, 185, 129, 0.03) 0%, transparent 70%)',
+        }}
+      />
+
+      {/* Subtle gold accent glow */}
+      <div
+        className="absolute bottom-1/4 right-0 w-[40vw] h-[40vh]"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(212, 175, 55, 0.02) 0%, transparent 70%)',
+        }}
+      />
     </div>
   );
 }
@@ -202,26 +165,8 @@ function Navigation() {
 function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 px-6 overflow-hidden">
-      {/* Rotating background image */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 120, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="absolute inset-[-50%] w-[200%] h-[200%]">
-          <Image
-            src="/hero-bg.png"
-            alt=""
-            fill
-            className="object-cover opacity-30"
-            priority
-          />
-        </div>
-      </motion.div>
-
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#050508]/60 via-transparent to-[#050508]/90" />
-      <div className="absolute inset-0 z-[1]" style={{ background: 'radial-gradient(circle at center, transparent 0%, #050508 75%)' }} />
+      {/* Refined gradient overlays for premium depth */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-transparent to-[#050508]/50" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
