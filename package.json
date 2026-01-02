@@ -11,6 +11,8 @@
   "dependencies": {
     "@next/font": "^14.2.15",
     "@stripe/stripe-js": "^8.6.0",
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.89.0",
     "chart.js": "^4.5.1",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",
