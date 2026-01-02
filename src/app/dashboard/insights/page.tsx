@@ -94,28 +94,37 @@ export default function InsightsPage() {
     const [messages, setMessages] = useState(chatMessages);
     const [inputValue, setInputValue] = useState('');
 
-    const handleSendMessage = () => {
+    const handleSendMessage = async () => {
         if (!inputValue.trim()) return;
 
-        setMessages([...messages, { role: 'user', content: inputValue }]);
-
-        // Simulate AI response
-        setTimeout(() => {
-            let response = '';
-            if (inputValue.toLowerCase().includes('spike') || inputValue.toLowerCase().includes('expenses')) {
-                response =
-                    "Looking at December, your expenses were $1,240 higher than November. The main contributors were: Holiday shopping (+$680), Travel (+$340), and Dining (+$220). Would you like me to break down any of these categories further?";
-            } else if (inputValue.toLowerCase().includes('save')) {
-                response =
-                    "Based on your spending patterns, I found 3 opportunities to save without major lifestyle changes: 1) Switch Spotify and Netflix to annual billing (-$47/year), 2) Your auto insurance is higher than comparable plans (-$420/year), 3) You have a gym membership you haven't used in 45 days (-$588/year). That's potentially $1,055/year in savings!";
-            } else {
-                response =
-                    "I'd be happy to help with that! I can analyze your spending patterns, identify savings opportunities, or help you plan for future goals. Could you provide more details about what you'd like to know?";
-            }
-            setMessages((prev) => [...prev, { role: 'assistant', content: response }]);
-        }, 1000);
-
+        const userMessage = { role: 'user', content: inputValue };
+        setMessages([...messages, userMessage]);
         setInputValue('');
+
+        // Call AI insights API
+        try {
+            const response = await fetch('/api/ai-insights', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: inputValue }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setMessages((prev) => [...prev, { role: 'assistant', content: data.response }]);
+            } else {
+                setMessages((prev) => [...prev, {
+                    role: 'assistant',
+                    content: "I'd be happy to help with that! I can analyze your spending patterns, identify savings opportunities, or help you plan for future goals. Could you provide more details?"
+                }]);
+            }
+        } catch (error) {
+            setMessages((prev) => [...prev, {
+                role: 'assistant',
+                content: "I'm having trouble connecting right now. Please try again in a moment."
+            }]);
+        }
     };
 
     const handleQuestionClick = (question: string) => {
@@ -150,31 +159,31 @@ export default function InsightsPage() {
                         >
                             <Card
                                 className={`${insight.type === 'savings'
-                                        ? 'border-emerald-500/30'
-                                        : insight.type === 'alert'
-                                            ? 'border-amber-500/30'
-                                            : 'border-white/10'
+                                    ? 'border-emerald-500/30'
+                                    : insight.type === 'alert'
+                                        ? 'border-amber-500/30'
+                                        : 'border-white/10'
                                     }`}
                             >
                                 <div className="flex items-start gap-4">
                                     <div
                                         className={`p-3 rounded-xl ${insight.type === 'savings'
-                                                ? 'bg-emerald-500/20'
-                                                : insight.type === 'alert'
-                                                    ? 'bg-amber-500/20'
-                                                    : insight.type === 'pattern'
-                                                        ? 'bg-indigo-500/20'
-                                                        : 'bg-blue-500/20'
+                                            ? 'bg-emerald-500/20'
+                                            : insight.type === 'alert'
+                                                ? 'bg-amber-500/20'
+                                                : insight.type === 'pattern'
+                                                    ? 'bg-indigo-500/20'
+                                                    : 'bg-blue-500/20'
                                             }`}
                                     >
                                         <insight.icon
                                             className={`w-5 h-5 ${insight.type === 'savings'
-                                                    ? 'text-emerald-400'
-                                                    : insight.type === 'alert'
-                                                        ? 'text-amber-400'
-                                                        : insight.type === 'pattern'
-                                                            ? 'text-indigo-400'
-                                                            : 'text-blue-400'
+                                                ? 'text-emerald-400'
+                                                : insight.type === 'alert'
+                                                    ? 'text-amber-400'
+                                                    : insight.type === 'pattern'
+                                                        ? 'text-indigo-400'
+                                                        : 'text-blue-400'
                                                 }`}
                                         />
                                     </div>
@@ -231,8 +240,8 @@ export default function InsightsPage() {
                                 >
                                     <div
                                         className={`max-w-[80%] p-4 rounded-2xl ${msg.role === 'user'
-                                                ? 'bg-indigo-500 text-white rounded-br-sm'
-                                                : 'bg-white/5 border border-white/10 rounded-bl-sm'
+                                            ? 'bg-indigo-500 text-white rounded-br-sm'
+                                            : 'bg-white/5 border border-white/10 rounded-bl-sm'
                                             }`}
                                     >
                                         <p className="text-sm leading-relaxed">{msg.content}</p>
