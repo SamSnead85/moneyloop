@@ -1,0 +1,25 @@
+# MoneyLoop - Wealth Tracking Platform
+> Track every asset in one place
+
+## About
+MoneyLoop is a comprehensive wealth tracking platform that helps you see your complete financial picture.
+
+## Features
+- Bank account tracking
+- Investment portfolio tracking  
+- Real estate value tracking
+- Gold and silver tracking
+- Income stream tracking
+- Healthcare expense tracking
+- Tax optimization
+- Subscription management
+- Financial goal tracking
+
+## Pricing
+- Free: $0/month - 3 connected accounts
+- Premium: $12/month - Unlimited accounts
+- Family: $29/month - Up to 5 members
+
+## Links
+- Website: https://moneyloop.ai
+- Dashboard: https://moneyloop.ai/dashboard
