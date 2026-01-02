@@ -10,45 +10,65 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 // Pricing plan configurations
+// Production-ready pricing with savings guarantee
 export const PLANS = {
-    personal: {
-        name: 'Personal',
-        price: 900, // $9.00 in cents
-        priceId: process.env.STRIPE_PERSONAL_PRICE_ID, // Set this after creating products in Stripe
+    premium: {
+        name: 'Premium',
+        price: 3900, // $39.00 in cents
+        priceId: process.env.STRIPE_PREMIUM_PRICE_ID,
         interval: 'month' as const,
         features: [
             'Unlimited account connections',
-            'Real-time dashboard',
-            'AI spending insights',
-            'Subscription tracking',
-            'Monthly forecasting',
-        ],
-    },
-    professional: {
-        name: 'Professional',
-        price: 2900, // $29.00 in cents
-        priceId: process.env.STRIPE_PROFESSIONAL_PRICE_ID,
-        interval: 'month' as const,
-        features: [
-            'Everything in Personal',
-            'Business & personal views',
-            'Tax-relevant categorization',
-            'Burn rate & runway tracking',
-            'Vendor expense management',
+            'Real-time wealth dashboard',
+            'AI-powered savings finder',
+            'Subscription optimizer',
+            'Investment analytics',
+            'Tax insights',
             'Priority support',
         ],
     },
-    business: {
-        name: 'Business',
-        price: 7900, // $79.00 in cents
-        priceId: process.env.STRIPE_BUSINESS_PRICE_ID,
+    // Keep 'professional' key for API backwards compatibility
+    professional: {
+        name: 'Premium',
+        price: 3900, // $39.00 in cents
+        priceId: process.env.STRIPE_PREMIUM_PRICE_ID,
         interval: 'month' as const,
         features: [
-            'Everything in Professional',
-            'Multi-user access',
-            'Advanced forecasting',
-            'Custom integrations',
-            'API access',
+            'Unlimited account connections',
+            'Real-time wealth dashboard',
+            'AI-powered savings finder',
+            'Subscription optimizer',
+            'Investment analytics',
+            'Tax insights',
+            'Priority support',
+        ],
+    },
+    family: {
+        name: 'Family',
+        price: 7900, // $79.00 in cents
+        priceId: process.env.STRIPE_FAMILY_PRICE_ID,
+        interval: 'month' as const,
+        features: [
+            'Everything in Premium',
+            'Up to 5 family members',
+            'Shared wealth dashboards',
+            'Family financial goals',
+            'Estate planning tools',
+            'Dedicated success manager',
+        ],
+    },
+    // Keep 'business' key for API backwards compatibility
+    business: {
+        name: 'Family',
+        price: 7900, // $79.00 in cents
+        priceId: process.env.STRIPE_FAMILY_PRICE_ID,
+        interval: 'month' as const,
+        features: [
+            'Everything in Premium',
+            'Up to 5 family members',
+            'Shared wealth dashboards',
+            'Family financial goals',
+            'Estate planning tools',
             'Dedicated success manager',
         ],
     },

@@ -488,19 +488,33 @@ const plans = [
   },
   {
     name: 'Premium',
-    planId: 'professional',
-    price: '$12',
+    planId: 'premium',
+    price: '$39',
     period: '/mo',
-    features: ['Unlimited accounts', 'Real-time sync', 'Subscription optimizer', 'Investment analytics', 'Tax insights', 'Priority support'],
+    features: [
+      'Unlimited accounts',
+      'Real-time sync',
+      'AI savings finder',
+      'Subscription optimizer',
+      'Investment analytics',
+      'Tax insights',
+      'Priority support',
+    ],
     cta: 'Start Trial',
     popular: true,
   },
   {
     name: 'Family',
-    planId: 'business',
-    price: '$29',
+    planId: 'family',
+    price: '$79',
     period: '/mo',
-    features: ['Everything in Premium', 'Up to 5 members', 'Shared dashboards', 'Family goals', 'Estate planning'],
+    features: [
+      'Everything in Premium',
+      'Up to 5 members',
+      'Shared dashboards',
+      'Family goals',
+      'Estate planning',
+    ],
     cta: 'Start Trial',
   },
 ];
@@ -531,14 +545,23 @@ function PricingSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
           <h2 className="text-3xl lg:text-5xl font-medium mb-5 tracking-tight">
-            Simple pricing
+            We&apos;re Your Financial Allies
           </h2>
-          <p className="text-white/40">
-            Start free. Upgrade when you&apos;re ready.
+          <p className="text-lg text-white/50 max-w-2xl mx-auto mb-8">
+            We only get paid when you&apos;re saving. Our subscription starts after we find you real savings—
+            not before. Cancel anytime with no penalty.
           </p>
+
+          {/* Savings Guarantee Badge */}
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+            <Shield className="w-5 h-5 text-emerald-400" />
+            <span className="text-sm text-emerald-300 font-medium">
+              Savings Guarantee: If we don&apos;t save you at least your subscription cost each month, we&apos;ll refund you. Period.
+            </span>
+          </div>
         </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-6">
