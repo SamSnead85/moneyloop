@@ -42,7 +42,7 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   return <span>{displayValue}{suffix}</span>;
 }
 
-// Premium Elegant Background
+// Premium Elegant Background with Animated Mesh
 function PremiumBackground() {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -59,7 +59,25 @@ function PremiumBackground() {
       </div>
 
       {/* Dark overlay for depth */}
-      <div className="absolute inset-0 bg-[#050508]/40" />
+      <div className="absolute inset-0 bg-[#050508]/50" />
+
+      {/* Animated mesh gradient orbs */}
+      <div
+        className="mesh-orb mesh-orb-emerald w-[600px] h-[600px] top-[-10%] left-[20%]"
+        style={{ animationDelay: '0s' }}
+      />
+      <div
+        className="mesh-orb mesh-orb-gold w-[500px] h-[500px] top-[30%] right-[-10%]"
+        style={{ animationDelay: '3s' }}
+      />
+      <div
+        className="mesh-orb mesh-orb-purple w-[400px] h-[400px] bottom-[20%] left-[5%]"
+        style={{ animationDelay: '6s' }}
+      />
+      <div
+        className="mesh-orb mesh-orb-emerald w-[350px] h-[350px] bottom-[-5%] right-[30%]"
+        style={{ animationDelay: '9s' }}
+      />
 
       {/* Subtle vignette effect */}
       <div
@@ -70,21 +88,13 @@ function PremiumBackground() {
       />
 
       {/* Top-to-bottom gradient for content readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050508]/30 via-transparent to-[#050508]/80" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050508]/20 via-transparent to-[#050508]/90" />
 
-      {/* Subtle emerald accent glow */}
+      {/* Subtle grain texture overlay */}
       <div
-        className="absolute top-0 left-1/4 w-[50vw] h-[40vh]"
+        className="absolute inset-0 opacity-[0.015]"
         style={{
-          background: 'radial-gradient(ellipse at center, rgba(16, 185, 129, 0.03) 0%, transparent 70%)',
-        }}
-      />
-
-      {/* Subtle gold accent glow */}
-      <div
-        className="absolute bottom-1/4 right-0 w-[40vw] h-[40vh]"
-        style={{
-          background: 'radial-gradient(ellipse at center, rgba(212, 175, 55, 0.02) 0%, transparent 70%)',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
         }}
       />
     </div>
@@ -188,11 +198,11 @@ function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-medium tracking-[-0.02em] mb-6 leading-[1.1]"
+              className="text-premium-display mb-6"
             >
               Your complete
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-300 to-amber-400">wealth picture.</span>
+              <span className="shimmer-text">wealth picture.</span>
             </motion.h1>
 
             <motion.p
@@ -343,7 +353,7 @@ function FeaturesSection() {
           viewport={{ once: true }}
           className="text-center mb-20"
         >
-          <h2 className="text-3xl lg:text-5xl font-medium mb-5 tracking-tight">
+          <h2 className="text-premium-headline mb-5">
             Everything you need
           </h2>
           <p className="text-lg text-white/40 max-w-xl mx-auto">
@@ -393,7 +403,7 @@ function HowItWorksSection() {
           viewport={{ once: true }}
           className="text-center mb-20"
         >
-          <h2 className="text-3xl lg:text-5xl font-medium tracking-tight">
+          <h2 className="text-premium-headline">
             How it works
           </h2>
         </motion.div>
@@ -492,7 +502,7 @@ function PricingSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl lg:text-5xl font-medium mb-5 tracking-tight">
+          <h2 className="text-premium-headline mb-5">
             We&apos;re Your Financial Allies
           </h2>
           <p className="text-lg text-white/50 max-w-2xl mx-auto mb-8">
@@ -518,9 +528,9 @@ function PricingSection() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className={`h-full flex flex-col p-8 rounded-2xl border transition-all duration-300 ${plan.popular
-                ? 'border-emerald-500/30 bg-emerald-500/[0.03] hover:border-emerald-500/50'
-                : 'border-white/[0.03] bg-white/[0.01] hover:border-white/[0.08]'
+              <div className={`h-full flex flex-col p-8 rounded-3xl border transition-all duration-500 ${plan.popular
+                ? 'luxury-card'
+                : 'premium-card'
                 }`}>
                 {plan.popular && (
                   <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 uppercase tracking-wider mb-4">
@@ -583,14 +593,14 @@ function CTASection() {
         viewport={{ once: true }}
         className="max-w-2xl mx-auto text-center"
       >
-        <h2 className="text-3xl lg:text-5xl font-medium mb-6 tracking-tight">
+        <h2 className="text-premium-headline mb-6">
           See your wealth clearly.
         </h2>
         <p className="text-lg text-white/40 mb-12">
           Join thousands building wealth with clarity.
         </p>
         <Link href="/auth">
-          <Button size="lg" className="text-base px-12 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium shadow-2xl shadow-emerald-500/20 border border-emerald-400/20">
+          <Button size="lg" className="btn-premium text-base px-12 py-5 text-white font-medium rounded-xl">
             Get Started Free
             <ArrowRight className="w-4 h-4" />
           </Button>
