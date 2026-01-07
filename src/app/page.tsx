@@ -109,15 +109,18 @@ function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]">
       <div className="max-w-6xl mx-auto px-6">
         <div className="h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="MoneyLoop"
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
-            <span className="text-lg font-medium tracking-tight">MoneyLoop</span>
+          <Link href="/" className="flex items-center gap-4">
+            <div className="relative">
+              <Image
+                src="/logo.png"
+                alt="MoneyLoop"
+                width={40}
+                height={40}
+                className="rounded-xl mix-blend-screen brightness-110"
+              />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent pointer-events-none" />
+            </div>
+            <span className="text-xl font-semibold tracking-tight bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">MoneyLoop</span>
           </Link>
 
           <div className="hidden lg:flex items-center gap-8">
@@ -133,7 +136,7 @@ function Navigation() {
               </Button>
             </Link>
             <Link href="/auth">
-              <Button size="sm" className="text-sm bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium border border-emerald-400/20">
+              <Button size="sm" className="text-sm bg-white/[0.08] text-white hover:bg-white/[0.12] font-medium border border-white/[0.1] backdrop-blur-sm">
                 Get Started
               </Button>
             </Link>
@@ -162,7 +165,7 @@ function Navigation() {
               <Button variant="secondary" className="w-full">Sign In</Button>
             </Link>
             <Link href="/auth">
-              <Button className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">Get Started</Button>
+              <Button className="w-full bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]">Get Started</Button>
             </Link>
           </div>
         </motion.div>
@@ -182,15 +185,15 @@ function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left column - Text */}
           <div className="text-center lg:text-left">
-            {/* Badge */}
+            {/* Badge - Premium Subtle Styling */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-8"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm mb-8"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs text-emerald-400 font-medium uppercase tracking-wider">Free forever plan available</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#7dd3a8]/80" />
+              <span className="text-xs text-white/60 font-medium tracking-widest uppercase">Free Forever</span>
             </motion.div>
 
             {/* Main headline */}
@@ -223,7 +226,7 @@ function HeroSection() {
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10"
             >
               <Link href="/auth">
-                <Button size="lg" className="text-base px-10 py-5 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 font-medium shadow-2xl shadow-emerald-500/25 border border-emerald-400/20">
+                <Button size="lg" className="text-base px-10 py-5 bg-white/[0.08] text-white hover:bg-white/[0.12] font-medium shadow-2xl shadow-black/40 border border-white/[0.1] backdrop-blur-sm">
                   Start Free
                   <ArrowRight className="w-4 h-4" />
                 </Button>
@@ -370,9 +373,9 @@ function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
             >
-              <div className="group p-7 rounded-2xl border border-white/[0.03] bg-white/[0.015] hover:bg-white/[0.03] hover:border-emerald-500/20 transition-all duration-300">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-5 group-hover:bg-emerald-500/15 transition-colors">
-                  <feature.icon className="w-5 h-5 text-emerald-400" />
+              <div className="group p-7 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#7dd3a8]/20 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-[#7dd3a8]/10 flex items-center justify-center mb-5 group-hover:bg-[#7dd3a8]/15 transition-colors">
+                  <feature.icon className="w-5 h-5 text-[#7dd3a8]" />
                 </div>
                 <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
                 <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
@@ -418,8 +421,8 @@ function HowItWorksSection() {
               transition={{ delay: index * 0.1 }}
               className="text-center group"
             >
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-5 group-hover:border-emerald-500/30 group-hover:bg-emerald-500/5 transition-all">
-                <step.icon className="w-6 h-6 text-white/40 group-hover:text-emerald-400 transition-colors" />
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-5 group-hover:border-[#7dd3a8]/30 group-hover:bg-[#7dd3a8]/5 transition-all">
+                <step.icon className="w-6 h-6 text-white/40 group-hover:text-[#7dd3a8] transition-colors" />
               </div>
               <h3 className="text-lg font-medium mb-2">{step.title}</h3>
               <p className="text-sm text-white/40">{step.description}</p>
@@ -511,9 +514,9 @@ function PricingSection() {
           </p>
 
           {/* Savings Guarantee Badge */}
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
-            <Shield className="w-5 h-5 text-emerald-400" />
-            <span className="text-sm text-emerald-300 font-medium">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#7dd3a8]/8 border border-[#7dd3a8]/15">
+            <Shield className="w-5 h-5 text-[#7dd3a8]" />
+            <span className="text-sm text-[#7dd3a8]/90 font-medium">
               Savings Guarantee: If we don&apos;t save you at least your subscription cost each month, we&apos;ll refund you. Period.
             </span>
           </div>
@@ -533,7 +536,7 @@ function PricingSection() {
                 : 'premium-card'
                 }`}>
                 {plan.popular && (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-emerald-400 uppercase tracking-wider mb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-[#7dd3a8] uppercase tracking-wider mb-4">
                     <Sparkles className="w-3 h-3" />
                     Most Popular
                   </span>
@@ -550,7 +553,7 @@ function PricingSection() {
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm">
-                      <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-emerald-400/60' : 'text-white/30'}`} />
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-[#7dd3a8]/60' : 'text-white/30'}`} />
                       <span className="text-white/60">{feature}</span>
                     </li>
                   ))}
@@ -558,7 +561,7 @@ function PricingSection() {
 
                 <Button
                   variant={plan.popular ? 'primary' : 'secondary'}
-                  className={`w-full ${plan.popular ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-400 hover:to-emerald-500 border border-emerald-400/20' : ''}`}
+                  className={`w-full ${plan.popular ? 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]' : ''}`}
                   onClick={() => handleCheckout(plan.planId)}
                 >
                   {plan.cta}
@@ -616,9 +619,9 @@ function Footer() {
     <footer className="border-t border-white/[0.03] py-12 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="MoneyLoop" width={28} height={28} className="rounded-md" />
-            <span className="text-sm text-white/40">MoneyLoop</span>
+          <div className="flex items-center gap-3">
+            <Image src="/logo.png" alt="MoneyLoop" width={32} height={32} className="rounded-lg mix-blend-screen brightness-110" />
+            <span className="text-sm text-white/50 font-medium">MoneyLoop</span>
           </div>
           <div className="flex items-center gap-8 text-sm text-white/30">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>

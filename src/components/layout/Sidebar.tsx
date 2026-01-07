@@ -9,13 +9,32 @@ import {
     Receipt,
     Settings,
     LogOut,
+    Target,
+    ArrowLeftRight,
+    PieChart,
+    Wallet,
+    Building2,
+    CreditCard,
+    Heart,
+    Sparkles,
+    FileText,
 } from 'lucide-react';
 
 const navItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
+    { icon: Wallet, label: 'Accounts', href: '/dashboard/accounts' },
+    { icon: ArrowLeftRight, label: 'Transactions', href: '/dashboard/transactions' },
+    { icon: PieChart, label: 'Budgets', href: '/dashboard/budgets' },
+    { icon: Target, label: 'Goals', href: '/dashboard/goals' },
     { icon: TrendingUp, label: 'Investments', href: '/dashboard/investments' },
     { icon: Receipt, label: 'Tax Center', href: '/dashboard/tax-optimizer' },
+    { icon: Building2, label: 'Business', href: '/dashboard/business' },
+    { icon: CreditCard, label: 'Subscriptions', href: '/dashboard/subscriptions' },
+    { icon: Heart, label: 'Healthcare', href: '/dashboard/healthcare' },
+    { icon: Sparkles, label: 'AI Insights', href: '/dashboard/insights' },
+    { icon: FileText, label: 'Reports', href: '/dashboard/reports' },
 ];
+
 
 export function Sidebar() {
     const pathname = usePathname();

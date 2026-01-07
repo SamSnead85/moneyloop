@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { Header } from '@/components/layout/Header';
+import { AIChat } from '@/components/ai/AIChat';
 import { Menu, X } from 'lucide-react';
 
 export default function DashboardLayout({
@@ -45,6 +46,10 @@ export default function DashboardLayout({
                 <Header />
                 <main className="p-4 lg:p-6">{children}</main>
             </div>
+
+            {/* Floating AI Chat Widget */}
+            <AIChat />
         </div>
     );
 }
+
