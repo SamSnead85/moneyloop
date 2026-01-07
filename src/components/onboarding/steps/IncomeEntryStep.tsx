@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, DollarSign, Briefcase, Building2, Coins, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui';
 import type { IncomeStream } from '../OnboardingWizard';
+import { LifeBuilder } from '../LifeBuilder';
 
 interface IncomeEntryStepProps {
     incomeStreams: IncomeStream[];
@@ -242,8 +243,24 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                     Skip for now
                 </Button>
             </motion.div>
+
+            {/* Life Builder Preview - Shows income flowing in */}
+            {monthlyTotal > 0 && (
+                <motion.div
+                    className="mt-8"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                >
+                    <LifeBuilder
+                        state={{ income: monthlyTotal }}
+                        compact={true}
+                    />
+                </motion.div>
+            )}
         </div>
     );
 }
 
 export default IncomeEntryStep;
+
