@@ -103,9 +103,29 @@ export default function SubscriptionsPage() {
         return true;
     });
 
-    const handleCancel = (sub: Subscription) => {
+    const [cancelInstructions, setCancelInstructions] = useState<{ steps: string[]; url?: string } | null>(null);
+    const [loadingCancel, setLoadingCancel] = useState(false);
+
+    const handleCancel = async (sub: Subscription) => {
         setSelectedSub(sub);
         setShowCancelModal(true);
+        setLoadingCancel(true);
+
+        try {
+            const res = await fetch('/api/subscriptions/cancel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ serviceName: sub.service_name }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setCancelInstructions({ steps: data.steps, url: data.url });
+            }
+        } catch (error) {
+            console.error('Failed to get cancellation instructions:', error);
+        } finally {
+            setLoadingCancel(false);
+        }
     };
 
     return (
@@ -189,8 +209,8 @@ export default function SubscriptionsPage() {
                             key={f}
                             onClick={() => setFilter(f)}
                             className={`px-4 py-2 text-sm rounded-lg transition-colors ${filter === f
-                                    ? 'bg-purple-500/20 text-purple-400'
-                                    : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
+                                ? 'bg-purple-500/20 text-purple-400'
+                                : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
                                 }`}
                         >
                             {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -239,8 +259,8 @@ export default function SubscriptionsPage() {
                                     <div className="w-16 h-1.5 bg-white/[0.04] rounded-full mt-1 overflow-hidden">
                                         <div
                                             className={`h-full rounded-full ${sub.usage_score >= 0.7 ? 'bg-emerald-500' :
-                                                    sub.usage_score >= 0.4 ? 'bg-amber-500' :
-                                                        'bg-red-500'
+                                                sub.usage_score >= 0.4 ? 'bg-amber-500' :
+                                                    'bg-red-500'
                                                 }`}
                                             style={{ width: `${sub.usage_score * 100}%` }}
                                         />
@@ -296,27 +316,40 @@ export default function SubscriptionsPage() {
 
                                 <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] mb-6">
                                     <h3 className="text-sm font-medium mb-2">How to Cancel</h3>
-                                    <ol className="text-xs text-slate-400 space-y-1">
-                                        <li>1. Log into your {selectedSub.service_name} account</li>
-                                        <li>2. Navigate to Settings {'>'} Subscription</li>
-                                        <li>3. Click "Cancel Subscription"</li>
-                                        <li>4. Follow prompts to confirm</li>
-                                    </ol>
+                                    {loadingCancel ? (
+                                        <div className="flex items-center gap-2 text-xs text-slate-400">
+                                            <div className="w-4 h-4 border-2 border-slate-500 border-t-purple-400 rounded-full animate-spin" />
+                                            Loading instructions...
+                                        </div>
+                                    ) : (
+                                        <ol className="text-xs text-slate-400 space-y-1">
+                                            {(cancelInstructions?.steps || [
+                                                'Log into your account',
+                                                'Navigate to Settings > Subscription',
+                                                'Click "Cancel Subscription"',
+                                                'Follow prompts to confirm',
+                                            ]).map((step, i) => (
+                                                <li key={i}>{i + 1}. {step}</li>
+                                            ))}
+                                        </ol>
+                                    )}
                                 </div>
 
                                 <div className="flex gap-3">
-                                    <Button variant="secondary" onClick={() => setShowCancelModal(false)} className="flex-1">
+                                    <Button variant="secondary" onClick={() => { setShowCancelModal(false); setCancelInstructions(null); }} className="flex-1">
                                         Keep Subscription
                                     </Button>
                                     <Button
                                         onClick={() => {
-                                            window.open(`https://www.google.com/search?q=how+to+cancel+${selectedSub.service_name}`, '_blank');
+                                            const url = cancelInstructions?.url || `https://www.google.com/search?q=how+to+cancel+${selectedSub.service_name}`;
+                                            window.open(url, '_blank');
                                             setShowCancelModal(false);
+                                            setCancelInstructions(null);
                                         }}
                                         className="flex-1 gap-1"
                                     >
                                         <ExternalLink className="w-4 h-4" />
-                                        Cancel Guide
+                                        {cancelInstructions?.url ? 'Go to Cancel Page' : 'Cancel Guide'}
                                     </Button>
                                 </div>
                             </Card>
