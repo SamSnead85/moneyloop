@@ -1,295 +1,305 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-    Sparkles,
+    Lightbulb,
     TrendingUp,
     TrendingDown,
     DollarSign,
-    Send,
-    Lightbulb,
-    Target,
-    AlertCircle,
-    ArrowRight,
+    AlertTriangle,
+    CheckCircle,
+    Brain,
+    Sparkles,
+    ChevronRight,
+    RefreshCw,
+    PiggyBank,
+    CreditCard,
+    ShoppingBag,
     Zap,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
 
-const aiInsights = [
+interface Insight {
+    id: string;
+    type: 'savings' | 'spending' | 'pattern' | 'opportunity' | 'warning' | 'achievement';
+    title: string;
+    description: string;
+    impact?: { amount: number; period: string; type: 'positive' | 'negative' };
+    actionLabel?: string;
+    actionUrl?: string;
+    priority: 'high' | 'medium' | 'low';
+}
+
+const mockInsights: Insight[] = [
     {
-        id: 1,
+        id: '1',
         type: 'savings',
-        icon: DollarSign,
-        title: 'Potential Savings Found',
-        summary: "You could save $127/month without changing your lifestyle.",
-        details: [
-            'Switch 2 subscriptions to annual billing (-$47/mo)',
-            'Refinance auto insurance (-$35/mo)',
-            'Cancel unused gym membership (-$45/mo)',
-        ],
-        action: 'See Savings Plan',
+        title: 'Unused Spotify Subscription',
+        description: 'You haven\'t used Spotify in 45 days. Consider canceling to save $11.99/month.',
+        impact: { amount: 144, period: 'year', type: 'positive' },
+        actionLabel: 'Review Subscription',
+        actionUrl: '/dashboard/subscriptions',
         priority: 'high',
     },
     {
-        id: 2,
+        id: '2',
+        type: 'opportunity',
+        title: 'High-Yield Savings Opportunity',
+        description: 'You have $12,450 in checking. Moving $8,000 to a high-yield savings could earn $360/year at 4.5% APY.',
+        impact: { amount: 360, period: 'year', type: 'positive' },
+        actionLabel: 'Learn More',
+        actionUrl: '/dashboard/accounts',
+        priority: 'high',
+    },
+    {
+        id: '3',
         type: 'pattern',
-        icon: TrendingUp,
-        title: 'Spending Pattern Detected',
-        summary: 'Your dining expenses increase 40% on weekends.',
-        details: [
-            'Weekend dining: $380/month average',
-            'Weekday dining: $220/month average',
-            "That's $160 more on weekends",
-        ],
-        action: 'View Pattern',
+        title: 'Restaurant Spending Up 45%',
+        description: 'Your dining out expenses increased from $320/month to $465/month this quarter.',
+        impact: { amount: 145, period: 'month', type: 'negative' },
         priority: 'medium',
     },
     {
-        id: 3,
-        type: 'forecast',
-        icon: Target,
-        title: 'Goal Progress Update',
-        summary: "You're on track to hit your $10K emergency fund by March.",
-        details: [
-            'Current balance: $7,400',
-            'Monthly contribution: $850',
-            'Projected completion: March 15',
-        ],
-        action: 'Adjust Goal',
+        id: '4',
+        type: 'warning',
+        title: 'Groceries Budget Warning',
+        description: 'You\'ve used 85% of your $600 groceries budget with 9 days remaining.',
+        actionLabel: 'View Budget',
+        actionUrl: '/dashboard/budgets',
+        priority: 'high',
+    },
+    {
+        id: '5',
+        type: 'achievement',
+        title: '75% to Vacation Goal! 🎉',
+        description: 'You\'ve saved $3,750 of your $5,000 vacation goal. Just $1,250 to go!',
+        actionLabel: 'View Goal',
+        actionUrl: '/dashboard/goals',
         priority: 'low',
     },
     {
-        id: 4,
-        type: 'alert',
-        icon: AlertCircle,
-        title: 'Unusual Activity',
-        summary: 'Your utilities bill was 28% higher than usual.',
-        details: [
-            'December: $186 (vs $145 average)',
-            'Possible cause: Holiday season usage',
-            'Comparison to neighbors: 12% above average',
-        ],
-        action: 'Investigate',
+        id: '6',
+        type: 'spending',
+        title: 'Coffee Spending Insight',
+        description: 'You spend $148/month on coffee shops. Brewing at home 3 days a week could save $1,000/year.',
+        impact: { amount: 1000, period: 'year', type: 'positive' },
         priority: 'medium',
     },
-];
-
-const chatMessages = [
     {
-        role: 'assistant',
-        content:
-            "Hi! I'm your financial AI assistant. I can help you understand your spending, find savings opportunities, and plan for the future. What would you like to know?",
+        id: '7',
+        type: 'opportunity',
+        title: 'Better Auto Insurance Rate',
+        description: 'Users with similar profiles found rates $35/month lower. Consider getting quotes.',
+        impact: { amount: 420, period: 'year', type: 'positive' },
+        priority: 'medium',
+    },
+    {
+        id: '8',
+        type: 'pattern',
+        title: 'Subscription Creep Detected',
+        description: 'Your monthly subscriptions increased from $89 to $142 over 6 months (+60%).',
+        impact: { amount: 636, period: 'year', type: 'negative' },
+        actionLabel: 'Review All',
+        actionUrl: '/dashboard/subscriptions',
+        priority: 'high',
     },
 ];
 
-const suggestedQuestions = [
-    'Why did my expenses spike last month?',
-    'Where can I save without changing my lifestyle?',
-    'How am I doing compared to last year?',
-    "What's my projected savings by December?",
-];
+const typeConfig = {
+    savings: { icon: PiggyBank, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+    spending: { icon: CreditCard, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    pattern: { icon: TrendingUp, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    opportunity: { icon: Lightbulb, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+    warning: { icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-500/10' },
+    achievement: { icon: CheckCircle, color: 'text-green-400', bg: 'bg-green-500/10' },
+};
 
 export default function InsightsPage() {
-    const [messages, setMessages] = useState(chatMessages);
-    const [inputValue, setInputValue] = useState('');
+    const [insights, setInsights] = useState<Insight[]>(mockInsights);
+    const [isLoading, setIsLoading] = useState(false);
+    const [filter, setFilter] = useState<'all' | Insight['type']>('all');
 
-    const handleSendMessage = async () => {
-        if (!inputValue.trim()) return;
+    const filteredInsights = insights.filter(i => filter === 'all' || i.type === filter);
 
-        const userMessage = { role: 'user', content: inputValue };
-        setMessages([...messages, userMessage]);
-        setInputValue('');
+    const totalSavings = insights
+        .filter(i => i.impact?.type === 'positive')
+        .reduce((sum, i) => sum + (i.impact?.amount || 0), 0);
 
-        // Call AI insights API
+    const highPriorityCount = insights.filter(i => i.priority === 'high').length;
+
+    const refreshInsights = async () => {
+        setIsLoading(true);
         try {
-            const response = await fetch('/api/ai-insights', {
+            const response = await fetch('/api/ai/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: inputValue }),
+                body: JSON.stringify({ action: 'insights' }),
             });
-
             const data = await response.json();
-
-            if (data.success) {
-                setMessages((prev) => [...prev, { role: 'assistant', content: data.response }]);
-            } else {
-                setMessages((prev) => [...prev, {
-                    role: 'assistant',
-                    content: "I'd be happy to help with that! I can analyze your spending patterns, identify savings opportunities, or help you plan for future goals. Could you provide more details?"
-                }]);
-            }
+            // In production, would update insights from API response
         } catch (error) {
-            setMessages((prev) => [...prev, {
-                role: 'assistant',
-                content: "I'm having trouble connecting right now. Please try again in a moment."
-            }]);
+            console.error('Failed to refresh insights:', error);
+        } finally {
+            setIsLoading(false);
         }
-    };
-
-    const handleQuestionClick = (question: string) => {
-        setInputValue(question);
     };
 
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold mb-1 flex items-center gap-3">
-                        <Sparkles className="w-8 h-8 text-indigo-400" />
+                    <h1 className="text-2xl font-semibold flex items-center gap-2">
+                        <Sparkles className="w-6 h-6 text-emerald-400" />
                         AI Insights
                     </h1>
-                    <p className="text-slate-400">
-                        Personalized financial intelligence powered by AI
+                    <p className="text-slate-500 text-sm mt-1">
+                        Personalized recommendations to optimize your finances
                     </p>
                 </div>
+                <Button onClick={refreshInsights} disabled={isLoading} variant="secondary" className="gap-2">
+                    <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+                    Refresh Insights
+                </Button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Insights Panel */}
-                <div className="space-y-4">
-                    <h2 className="text-xl font-semibold">Active Insights</h2>
-                    {aiInsights.map((insight, index) => (
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-emerald-500/10">
+                            <DollarSign className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Potential Savings</p>
+                            <p className="text-xl font-semibold text-emerald-400">
+                                ${totalSavings.toLocaleString()}/yr
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-red-500/10">
+                            <AlertTriangle className="w-5 h-5 text-red-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">High Priority</p>
+                            <p className="text-xl font-semibold">{highPriorityCount} items</p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-blue-500/10">
+                            <Brain className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Total Insights</p>
+                            <p className="text-xl font-semibold">{insights.length}</p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-purple-500/10">
+                            <TrendingUp className="w-5 h-5 text-purple-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Patterns Found</p>
+                            <p className="text-xl font-semibold">
+                                {insights.filter(i => i.type === 'pattern').length}
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+            </div>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2 flex-wrap">
+                {(['all', 'savings', 'opportunity', 'warning', 'pattern', 'spending', 'achievement'] as const).map((f) => (
+                    <button
+                        key={f}
+                        onClick={() => setFilter(f)}
+                        className={`px-4 py-2 text-sm rounded-lg transition-colors ${filter === f
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
+                            }`}
+                    >
+                        {f.charAt(0).toUpperCase() + f.slice(1)}
+                    </button>
+                ))}
+            </div>
+
+            {/* Insights Grid */}
+            <div className="grid md:grid-cols-2 gap-4">
+                {filteredInsights.map((insight, index) => {
+                    const config = typeConfig[insight.type];
+                    const Icon = config.icon;
+
+                    return (
                         <motion.div
                             key={insight.id}
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: index * 0.1 }}
+                            transition={{ delay: index * 0.05 }}
                         >
-                            <Card
-                                className={`${insight.type === 'savings'
-                                    ? 'border-emerald-500/30'
-                                    : insight.type === 'alert'
-                                        ? 'border-amber-500/30'
-                                        : 'border-white/10'
-                                    }`}
-                            >
-                                <div className="flex items-start gap-4">
-                                    <div
-                                        className={`p-3 rounded-xl ${insight.type === 'savings'
-                                            ? 'bg-emerald-500/20'
-                                            : insight.type === 'alert'
-                                                ? 'bg-amber-500/20'
-                                                : insight.type === 'pattern'
-                                                    ? 'bg-indigo-500/20'
-                                                    : 'bg-blue-500/20'
-                                            }`}
-                                    >
-                                        <insight.icon
-                                            className={`w-5 h-5 ${insight.type === 'savings'
-                                                ? 'text-emerald-400'
-                                                : insight.type === 'alert'
-                                                    ? 'text-amber-400'
-                                                    : insight.type === 'pattern'
-                                                        ? 'text-indigo-400'
-                                                        : 'text-blue-400'
-                                                }`}
-                                        />
+                            <Card className={`p-5 border-l-4 ${insight.priority === 'high' ? 'border-l-red-500' :
+                                    insight.priority === 'medium' ? 'border-l-amber-500' :
+                                        'border-l-emerald-500'
+                                } hover:bg-white/[0.01] transition-colors`}>
+                                {/* Header */}
+                                <div className="flex items-start gap-3 mb-3">
+                                    <div className={`p-2 rounded-lg ${config.bg}`}>
+                                        <Icon className={`w-5 h-5 ${config.color}`} />
                                     </div>
                                     <div className="flex-1">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h3 className="font-semibold">{insight.title}</h3>
-                                            {insight.priority === 'high' && (
-                                                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs flex items-center gap-1">
-                                                    <Zap className="w-3 h-3" /> High Impact
-                                                </span>
-                                            )}
-                                        </div>
-                                        <p className="text-sm text-slate-400 mb-3">{insight.summary}</p>
-                                        <ul className="space-y-1 mb-4">
-                                            {insight.details.map((detail, i) => (
-                                                <li key={i} className="text-xs text-slate-500 flex items-start gap-2">
-                                                    <span className="text-slate-600">•</span>
-                                                    {detail}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                        <button className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors flex items-center gap-1">
-                                            {insight.action}
-                                            <ArrowRight className="w-3 h-3" />
-                                        </button>
+                                        <h3 className="font-medium">{insight.title}</h3>
+                                        <p className="text-sm text-slate-400 mt-1">{insight.description}</p>
                                     </div>
+                                </div>
+
+                                {/* Impact & Action */}
+                                <div className="flex items-center justify-between">
+                                    {insight.impact && (
+                                        <div className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium ${insight.impact.type === 'positive'
+                                                ? 'bg-emerald-500/10 text-emerald-400'
+                                                : 'bg-red-500/10 text-red-400'
+                                            }`}>
+                                            {insight.impact.type === 'positive' ? (
+                                                <TrendingUp className="w-4 h-4" />
+                                            ) : (
+                                                <TrendingDown className="w-4 h-4" />
+                                            )}
+                                            {insight.impact.type === 'positive' ? '+' : '-'}
+                                            ${insight.impact.amount.toLocaleString()}/{insight.impact.period}
+                                        </div>
+                                    )}
+
+                                    {insight.actionLabel && (
+                                        <button
+                                            onClick={() => insight.actionUrl && (window.location.href = insight.actionUrl)}
+                                            className="flex items-center gap-1 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
+                                        >
+                                            {insight.actionLabel}
+                                            <ChevronRight className="w-4 h-4" />
+                                        </button>
+                                    )}
                                 </div>
                             </Card>
                         </motion.div>
-                    ))}
-                </div>
-
-                {/* Chat Interface */}
-                <div className="flex flex-col h-[600px]">
-                    <Card padding="none" hover={false} className="flex-1 flex flex-col overflow-hidden">
-                        <div className="p-4 border-b border-white/5 flex items-center gap-3">
-                            <div className="p-2 rounded-xl bg-indigo-500/20">
-                                <Sparkles className="w-5 h-5 text-indigo-400" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold">Financial Assistant</h3>
-                                <p className="text-xs text-slate-500">Ask me anything about your money</p>
-                            </div>
-                        </div>
-
-                        {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                            {messages.map((msg, index) => (
-                                <motion.div
-                                    key={index}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div
-                                        className={`max-w-[80%] p-4 rounded-2xl ${msg.role === 'user'
-                                            ? 'bg-indigo-500 text-white rounded-br-sm'
-                                            : 'bg-white/5 border border-white/10 rounded-bl-sm'
-                                            }`}
-                                    >
-                                        <p className="text-sm leading-relaxed">{msg.content}</p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-
-                        {/* Suggested Questions */}
-                        {messages.length === 1 && (
-                            <div className="p-4 border-t border-white/5">
-                                <p className="text-xs text-slate-500 mb-3 flex items-center gap-2">
-                                    <Lightbulb className="w-3 h-3" />
-                                    Suggested questions
-                                </p>
-                                <div className="flex flex-wrap gap-2">
-                                    {suggestedQuestions.map((q) => (
-                                        <button
-                                            key={q}
-                                            onClick={() => handleQuestionClick(q)}
-                                            className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300 hover:bg-white/10 hover:border-white/20 transition-all"
-                                        >
-                                            {q}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Input */}
-                        <div className="p-4 border-t border-white/5">
-                            <div className="flex gap-3">
-                                <input
-                                    type="text"
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                    placeholder="Ask about your finances..."
-                                    className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all"
-                                />
-                                <Button onClick={handleSendMessage} icon={<Send className="w-4 h-4" />}>
-                                    Send
-                                </Button>
-                            </div>
-                        </div>
-                    </Card>
-                </div>
+                    );
+                })}
             </div>
+
+            {filteredInsights.length === 0 && (
+                <Card className="p-12 text-center">
+                    <Sparkles className="w-12 h-12 mx-auto text-slate-600 mb-4" />
+                    <h3 className="font-medium mb-2">No insights in this category</h3>
+                    <p className="text-sm text-slate-500">Check back later or try another filter.</p>
+                </Card>
+            )}
         </div>
     );
 }
