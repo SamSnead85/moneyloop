@@ -18,6 +18,8 @@ import {
     Heart,
     Sparkles,
     FileText,
+    ShoppingCart,
+    CalendarCheck,
 } from 'lucide-react';
 
 const navItems = [
@@ -26,10 +28,12 @@ const navItems = [
     { icon: ArrowLeftRight, label: 'Transactions', href: '/dashboard/transactions' },
     { icon: PieChart, label: 'Budgets', href: '/dashboard/budgets' },
     { icon: Target, label: 'Goals', href: '/dashboard/goals' },
+    { icon: CalendarCheck, label: 'Bills', href: '/dashboard/bills' },
+    { icon: CreditCard, label: 'Subscriptions', href: '/dashboard/subscriptions' },
+    { icon: ShoppingCart, label: 'Grocery', href: '/dashboard/grocery' },
     { icon: TrendingUp, label: 'Investments', href: '/dashboard/investments' },
     { icon: Receipt, label: 'Tax Center', href: '/dashboard/tax-optimizer' },
     { icon: Building2, label: 'Business', href: '/dashboard/business' },
-    { icon: CreditCard, label: 'Subscriptions', href: '/dashboard/subscriptions' },
     { icon: Heart, label: 'Healthcare', href: '/dashboard/healthcare' },
     { icon: Sparkles, label: 'AI Insights', href: '/dashboard/insights' },
     { icon: FileText, label: 'Reports', href: '/dashboard/reports' },

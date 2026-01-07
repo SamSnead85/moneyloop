@@ -1,296 +1,329 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-    CreditCard,
-    AlertTriangle,
-    TrendingUp,
-    Calendar,
-    MoreVertical,
-    ExternalLink,
-    Pause,
+    Zap,
     Trash2,
+    ExternalLink,
+    Calendar,
+    DollarSign,
+    TrendingDown,
+    AlertTriangle,
+    CheckCircle,
+    ChevronRight,
+    Search,
+    Filter,
+    Eye,
+    EyeOff,
+    MoreVertical,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
+import { createClient } from '@/lib/supabase/client';
 
-const subscriptions = [
-    {
-        id: 1,
-        name: 'Netflix',
-        category: 'Entertainment',
-        price: 15.99,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 15',
-        logo: 'N',
-        color: '#e50914',
-        status: 'active',
-    },
-    {
-        id: 2,
-        name: 'Spotify',
-        category: 'Entertainment',
-        price: 9.99,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 8',
-        logo: 'S',
-        color: '#1db954',
-        status: 'active',
-    },
-    {
-        id: 3,
-        name: 'Adobe Creative Cloud',
-        category: 'Productivity',
-        price: 54.99,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 20',
-        logo: 'A',
-        color: '#ff0000',
-        status: 'active',
-        alert: 'Price increased $5 last month',
-    },
-    {
-        id: 4,
-        name: 'GitHub Pro',
-        category: 'Development',
-        price: 4.00,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 12',
-        logo: 'G',
-        color: '#6e5494',
-        status: 'active',
-    },
-    {
-        id: 5,
-        name: 'ChatGPT Plus',
-        category: 'Productivity',
-        price: 20.00,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 18',
-        logo: 'C',
-        color: '#10a37f',
-        status: 'active',
-    },
-    {
-        id: 6,
-        name: 'Notion',
-        category: 'Productivity',
-        price: 10.00,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 25',
-        logo: 'N',
-        color: '#000000',
-        status: 'trial',
-        alert: 'Trial ends in 5 days',
-    },
-    {
-        id: 7,
-        name: 'Gym Membership',
-        category: 'Health',
-        price: 49.00,
-        billingCycle: 'monthly',
-        nextBilling: 'Jan 1',
-        logo: 'G',
-        color: '#f97316',
-        status: 'unused',
-        alert: 'No visits in 45 days',
-    },
+interface Subscription {
+    id: string;
+    service_name: string;
+    amount: number;
+    billing_frequency: 'weekly' | 'monthly' | 'quarterly' | 'annual';
+    next_billing_date: string;
+    category?: string;
+    logo_url?: string;
+    status: 'active' | 'cancelled' | 'paused' | 'trial';
+    usage_score?: number;
+    last_used_at?: string;
+}
+
+const mockSubscriptions: Subscription[] = [
+    { id: '1', service_name: 'Netflix', amount: 15.99, billing_frequency: 'monthly', next_billing_date: '2026-01-15', category: 'Entertainment', status: 'active', usage_score: 0.85, last_used_at: '2026-01-06' },
+    { id: '2', service_name: 'Spotify', amount: 11.99, billing_frequency: 'monthly', next_billing_date: '2026-01-18', category: 'Entertainment', status: 'active', usage_score: 0.45, last_used_at: '2025-12-01' },
+    { id: '3', service_name: 'Adobe Creative Cloud', amount: 59.99, billing_frequency: 'monthly', next_billing_date: '2026-01-20', category: 'Productivity', status: 'active', usage_score: 0.92 },
+    { id: '4', service_name: 'Amazon Prime', amount: 139.00, billing_frequency: 'annual', next_billing_date: '2026-06-15', category: 'Shopping', status: 'active', usage_score: 0.78 },
+    { id: '5', service_name: 'Hulu', amount: 17.99, billing_frequency: 'monthly', next_billing_date: '2026-01-22', category: 'Entertainment', status: 'active', usage_score: 0.25, last_used_at: '2025-10-15' },
+    { id: '6', service_name: 'Disney+', amount: 13.99, billing_frequency: 'monthly', next_billing_date: '2026-01-25', category: 'Entertainment', status: 'active', usage_score: 0.35, last_used_at: '2025-11-20' },
+    { id: '7', service_name: 'Gym Membership', amount: 49.99, billing_frequency: 'monthly', next_billing_date: '2026-01-01', category: 'Health', status: 'active', usage_score: 0.15, last_used_at: '2025-09-01' },
+    { id: '8', service_name: 'iCloud Storage', amount: 2.99, billing_frequency: 'monthly', next_billing_date: '2026-01-10', category: 'Cloud', status: 'active', usage_score: 0.95 },
 ];
 
-const insights = [
-    {
-        type: 'savings',
-        title: 'Switch to Annual Billing',
-        description: 'Save $47/year by switching Netflix & Spotify to annual plans.',
-        action: 'View Options',
-    },
-    {
-        type: 'warning',
-        title: 'Unused Subscription',
-        description: "You haven't used your gym membership in 45 days.",
-        action: 'Review',
-    },
-    {
-        type: 'alert',
-        title: 'Price Increase',
-        description: 'Adobe Creative Cloud increased by $5/month.',
-        action: 'Compare Alternatives',
-    },
-];
+function getUsageColor(score: number) {
+    if (score >= 0.7) return 'text-emerald-400';
+    if (score >= 0.4) return 'text-amber-400';
+    return 'text-red-400';
+}
+
+function getUsageLabel(score: number) {
+    if (score >= 0.7) return 'High usage';
+    if (score >= 0.4) return 'Moderate';
+    return 'Low usage';
+}
 
 export default function SubscriptionsPage() {
-    const monthlyTotal = subscriptions.reduce((sum, sub) => sum + sub.price, 0);
-    const yearlyTotal = monthlyTotal * 12;
+    const [subscriptions, setSubscriptions] = useState<Subscription[]>(mockSubscriptions);
+    const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [filter, setFilter] = useState<'all' | 'active' | 'unused'>('all');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        async function fetchSubscriptions() {
+            const supabase = createClient();
+            const { data } = await supabase
+                .from('subscriptions')
+                .select('*')
+                .order('amount', { ascending: false });
+
+            if (data?.length) setSubscriptions(data);
+        }
+        fetchSubscriptions();
+    }, []);
+
+    const monthlyTotal = subscriptions
+        .filter(s => s.status === 'active')
+        .reduce((sum, s) => {
+            if (s.billing_frequency === 'annual') return sum + s.amount / 12;
+            if (s.billing_frequency === 'quarterly') return sum + s.amount / 3;
+            return sum + s.amount;
+        }, 0);
+
+    const annualTotal = monthlyTotal * 12;
+
+    const unusedSubscriptions = subscriptions.filter(s =>
+        s.status === 'active' && (s.usage_score || 0) < 0.4
+    );
+
+    const potentialSavings = unusedSubscriptions.reduce((sum, s) => {
+        if (s.billing_frequency === 'annual') return sum + s.amount;
+        return sum + s.amount * 12;
+    }, 0);
+
+    const filteredSubs = subscriptions.filter(s => {
+        if (filter === 'active' && s.status !== 'active') return false;
+        if (filter === 'unused' && (s.usage_score || 0) >= 0.4) return false;
+        if (searchQuery && !s.service_name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        return true;
+    });
+
+    const handleCancel = (sub: Subscription) => {
+        setSelectedSub(sub);
+        setShowCancelModal(true);
+    };
 
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold mb-1">Subscriptions</h1>
-                    <p className="text-slate-400">Track and manage all your recurring payments</p>
+                    <h1 className="text-2xl font-semibold flex items-center gap-2">
+                        <Zap className="w-6 h-6 text-purple-400" />
+                        Subscriptions
+                    </h1>
+                    <p className="text-slate-500 text-sm mt-1">
+                        Track and optimize your recurring payments
+                    </p>
                 </div>
-                <Button icon={<CreditCard className="w-4 h-4" />}>
-                    Add Subscription
-                </Button>
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-slate-400 mb-1">Monthly Spend</p>
-                            <p className="text-3xl font-bold font-mono">${monthlyTotal.toFixed(2)}</p>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-blue-500/10">
+                            <DollarSign className="w-5 h-5 text-blue-400" />
                         </div>
-                        <div className="p-3 rounded-xl bg-indigo-500/20">
-                            <Calendar className="w-6 h-6 text-indigo-400" />
+                        <div>
+                            <p className="text-xs text-slate-500">Monthly Cost</p>
+                            <p className="text-xl font-semibold">${monthlyTotal.toFixed(0)}</p>
                         </div>
                     </div>
                 </Card>
-
-                <Card>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-slate-400 mb-1">Yearly Cost</p>
-                            <p className="text-3xl font-bold font-mono">${yearlyTotal.toFixed(2)}</p>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-purple-500/10">
+                            <Calendar className="w-5 h-5 text-purple-400" />
                         </div>
-                        <div className="p-3 rounded-xl bg-purple-500/20">
-                            <TrendingUp className="w-6 h-6 text-purple-400" />
+                        <div>
+                            <p className="text-xs text-slate-500">Annual Cost</p>
+                            <p className="text-xl font-semibold">${annualTotal.toFixed(0)}</p>
                         </div>
                     </div>
                 </Card>
-
-                <Card>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm text-slate-400 mb-1">Active Subscriptions</p>
-                            <p className="text-3xl font-bold font-mono">{subscriptions.length}</p>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-amber-500/10">
+                            <AlertTriangle className="w-5 h-5 text-amber-400" />
                         </div>
-                        <div className="p-3 rounded-xl bg-emerald-500/20">
-                            <CreditCard className="w-6 h-6 text-emerald-400" />
+                        <div>
+                            <p className="text-xs text-slate-500">Unused</p>
+                            <p className="text-xl font-semibold">{unusedSubscriptions.length} services</p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-emerald-500/10">
+                            <TrendingDown className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Potential Savings</p>
+                            <p className="text-xl font-semibold text-emerald-400">${potentialSavings.toFixed(0)}/yr</p>
                         </div>
                     </div>
                 </Card>
             </div>
 
-            {/* Insights */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {insights.map((insight, index) => (
-                    <motion.div
-                        key={insight.title}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
-                    >
-                        <Card
-                            className={`${insight.type === 'savings'
-                                    ? 'border-emerald-500/30 bg-emerald-500/5'
-                                    : insight.type === 'warning'
-                                        ? 'border-amber-500/30 bg-amber-500/5'
-                                        : 'border-red-500/30 bg-red-500/5'
+            {/* Filters */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                    <input
+                        type="text"
+                        placeholder="Search subscriptions..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-purple-500/50"
+                    />
+                </div>
+                <div className="flex items-center gap-2">
+                    {(['all', 'active', 'unused'] as const).map((f) => (
+                        <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            className={`px-4 py-2 text-sm rounded-lg transition-colors ${filter === f
+                                    ? 'bg-purple-500/20 text-purple-400'
+                                    : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
                                 }`}
                         >
-                            <div className="flex items-start gap-3">
-                                <div
-                                    className={`p-2 rounded-lg ${insight.type === 'savings'
-                                            ? 'bg-emerald-500/20'
-                                            : insight.type === 'warning'
-                                                ? 'bg-amber-500/20'
-                                                : 'bg-red-500/20'
-                                        }`}
-                                >
-                                    <AlertTriangle
-                                        className={`w-4 h-4 ${insight.type === 'savings'
-                                                ? 'text-emerald-400'
-                                                : insight.type === 'warning'
-                                                    ? 'text-amber-400'
-                                                    : 'text-red-400'
-                                            }`}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <p className="font-medium text-sm mb-1">{insight.title}</p>
-                                    <p className="text-xs text-slate-400 mb-3">{insight.description}</p>
-                                    <button className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
-                                        {insight.action} →
-                                    </button>
-                                </div>
-                            </div>
-                        </Card>
-                    </motion.div>
-                ))}
+                            {f.charAt(0).toUpperCase() + f.slice(1)}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Subscriptions List */}
-            <Card padding="none" hover={false}>
-                <div className="p-6 border-b border-white/5">
-                    <h2 className="text-xl font-semibold">All Subscriptions</h2>
-                </div>
-                <div className="divide-y divide-white/5">
-                    {subscriptions.map((sub, index) => (
+            <Card className="overflow-hidden">
+                <div className="divide-y divide-white/[0.04]">
+                    {filteredSubs.map((sub, index) => (
                         <motion.div
                             key={sub.id}
-                            initial={{ opacity: 0, x: -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.3, delay: index * 0.05 }}
-                            className="p-4 flex items-center justify-between hover:bg-white/[0.02] transition-colors"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: index * 0.02 }}
+                            className="flex items-center gap-4 p-4 hover:bg-white/[0.01] transition-colors group"
                         >
-                            <div className="flex items-center gap-4">
-                                <div
-                                    className="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold"
-                                    style={{ backgroundColor: `${sub.color}20`, color: sub.color }}
-                                >
-                                    {sub.logo}
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <p className="font-medium">{sub.name}</p>
-                                        {sub.status === 'trial' && (
-                                            <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-xs">
-                                                Trial
-                                            </span>
-                                        )}
-                                        {sub.status === 'unused' && (
-                                            <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs">
-                                                Unused
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p className="text-sm text-slate-500">{sub.category}</p>
-                                    {sub.alert && (
-                                        <p className="text-xs text-amber-400 mt-1 flex items-center gap-1">
-                                            <AlertTriangle className="w-3 h-3" />
-                                            {sub.alert}
-                                        </p>
+                            {/* Logo/Icon */}
+                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+                                <Zap className="w-6 h-6 text-purple-400" />
+                            </div>
+
+                            {/* Details */}
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                    <span className="font-medium">{sub.service_name}</span>
+                                    {sub.status === 'trial' && (
+                                        <span className="text-[10px] text-cyan-400 bg-cyan-500/10 px-1.5 py-0.5 rounded">Trial</span>
                                     )}
+                                </div>
+                                <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
+                                    <span>{sub.category}</span>
+                                    <span>•</span>
+                                    <span>Bills {sub.billing_frequency}</span>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-6">
-                                <div className="text-right">
-                                    <p className="font-mono font-medium">${sub.price.toFixed(2)}</p>
-                                    <p className="text-xs text-slate-500">/{sub.billingCycle}</p>
+                            {/* Usage Score */}
+                            {sub.usage_score !== undefined && (
+                                <div className="text-right hidden sm:block">
+                                    <p className={`text-sm font-medium ${getUsageColor(sub.usage_score)}`}>
+                                        {getUsageLabel(sub.usage_score)}
+                                    </p>
+                                    <div className="w-16 h-1.5 bg-white/[0.04] rounded-full mt-1 overflow-hidden">
+                                        <div
+                                            className={`h-full rounded-full ${sub.usage_score >= 0.7 ? 'bg-emerald-500' :
+                                                    sub.usage_score >= 0.4 ? 'bg-amber-500' :
+                                                        'bg-red-500'
+                                                }`}
+                                            style={{ width: `${sub.usage_score * 100}%` }}
+                                        />
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-sm text-slate-400">Next billing</p>
-                                    <p className="text-sm font-medium">{sub.nextBilling}</p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <button className="p-2 rounded-lg hover:bg-white/10 transition-colors text-slate-400 hover:text-white">
-                                        <ExternalLink className="w-4 h-4" />
-                                    </button>
-                                    <button className="p-2 rounded-lg hover:bg-white/10 transition-colors text-slate-400 hover:text-amber-400">
-                                        <Pause className="w-4 h-4" />
-                                    </button>
-                                    <button className="p-2 rounded-lg hover:bg-white/10 transition-colors text-slate-400 hover:text-red-400">
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
+                            )}
+
+                            {/* Amount */}
+                            <div className="text-right min-w-[80px]">
+                                <p className="font-semibold font-mono">${sub.amount.toFixed(2)}</p>
+                                <p className="text-[10px] text-slate-600">/{sub.billing_frequency.slice(0, 2)}</p>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => handleCancel(sub)}
+                                    className="p-2 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors"
+                                    title="Cancel subscription"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
                             </div>
                         </motion.div>
                     ))}
                 </div>
             </Card>
+
+            {/* Cancel Modal */}
+            <AnimatePresence>
+                {showCancelModal && selectedSub && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+                            onClick={() => setShowCancelModal(false)}
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                        >
+                            <Card className="relative z-10 w-full max-w-md p-6">
+                                <h2 className="text-lg font-semibold mb-2">Cancel {selectedSub.service_name}?</h2>
+                                <p className="text-slate-400 text-sm mb-6">
+                                    Cancelling will save you ${selectedSub.amount.toFixed(2)}/{selectedSub.billing_frequency}.
+                                    {selectedSub.billing_frequency === 'annual' && (
+                                        <span className="text-amber-400"> Note: Annual subscriptions may not offer prorated refunds.</span>
+                                    )}
+                                </p>
+
+                                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] mb-6">
+                                    <h3 className="text-sm font-medium mb-2">How to Cancel</h3>
+                                    <ol className="text-xs text-slate-400 space-y-1">
+                                        <li>1. Log into your {selectedSub.service_name} account</li>
+                                        <li>2. Navigate to Settings {'>'} Subscription</li>
+                                        <li>3. Click "Cancel Subscription"</li>
+                                        <li>4. Follow prompts to confirm</li>
+                                    </ol>
+                                </div>
+
+                                <div className="flex gap-3">
+                                    <Button variant="secondary" onClick={() => setShowCancelModal(false)} className="flex-1">
+                                        Keep Subscription
+                                    </Button>
+                                    <Button
+                                        onClick={() => {
+                                            window.open(`https://www.google.com/search?q=how+to+cancel+${selectedSub.service_name}`, '_blank');
+                                            setShowCancelModal(false);
+                                        }}
+                                        className="flex-1 gap-1"
+                                    >
+                                        <ExternalLink className="w-4 h-4" />
+                                        Cancel Guide
+                                    </Button>
+                                </div>
+                            </Card>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
