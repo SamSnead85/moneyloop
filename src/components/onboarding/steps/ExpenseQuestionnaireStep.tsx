@@ -13,7 +13,8 @@ import {
     Check,
     MessageCircle,
     ShoppingBag,
-    Fuel
+    Fuel,
+    ChevronLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui';
 import type { ManualExpense } from '../OnboardingWizard';
@@ -31,6 +32,7 @@ interface Question {
     lifeKey: keyof LifeBuilderState;
     icon: typeof Smartphone;
     question: string;
+    subtext: string;
     placeholder: string;
     options?: string[];
 }
@@ -42,6 +44,7 @@ const questions: Question[] = [
         lifeKey: 'housing',
         icon: Home,
         question: "What's your monthly rent or mortgage?",
+        subtext: "This is typically your biggest expense",
         placeholder: "Monthly payment",
     },
     {
@@ -49,7 +52,8 @@ const questions: Question[] = [
         category: 'Transportation',
         lifeKey: 'car',
         icon: Car,
-        question: "Do you have a car payment? How much?",
+        question: "Do you have a car payment?",
+        subtext: "Enter $0 if you own your car or don't have one",
         placeholder: "Monthly payment or $0",
     },
     {
@@ -58,6 +62,7 @@ const questions: Question[] = [
         lifeKey: 'utilities',
         icon: Zap,
         question: "How much is your monthly electric bill?",
+        subtext: "This will light up your home in the visual!",
         placeholder: "Average amount",
     },
     {
@@ -66,6 +71,7 @@ const questions: Question[] = [
         lifeKey: 'insurance',
         icon: CreditCard,
         question: "How much do you pay for car insurance?",
+        subtext: "This protects your vehicle from the boot!",
         placeholder: "Monthly amount",
     },
     {
@@ -74,6 +80,7 @@ const questions: Question[] = [
         lifeKey: 'phone',
         icon: Smartphone,
         question: "Who is your cell phone provider?",
+        subtext: "Stay connected with the world",
         placeholder: "e.g., Verizon, AT&T, T-Mobile",
         options: ['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'Other'],
     },
@@ -83,6 +90,7 @@ const questions: Question[] = [
         lifeKey: 'groceries',
         icon: ShoppingBag,
         question: "How much do you spend on groceries?",
+        subtext: "Everyone needs to eat!",
         placeholder: "Monthly amount",
     },
     {
@@ -90,7 +98,8 @@ const questions: Question[] = [
         category: 'Gas/Transportation',
         lifeKey: 'gas',
         icon: Fuel,
-        question: "How much do you spend on gas or transportation?",
+        question: "How much do you spend on gas or transit?",
+        subtext: "Getting to work and school",
         placeholder: "Monthly amount",
     },
     {
@@ -99,6 +108,7 @@ const questions: Question[] = [
         lifeKey: 'utilities',
         icon: Wifi,
         question: "How much do you pay for internet?",
+        subtext: "Keeping your home connected",
         placeholder: "Monthly amount",
     },
 ];
@@ -158,6 +168,16 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
         }
     };
 
+    const handleBack = () => {
+        if (currentQuestion > 0) {
+            setCurrentQuestion(currentQuestion - 1);
+            const prevQuestion = questions[currentQuestion - 1];
+            const prevAnswer = answers[prevQuestion.id];
+            setInputValue(prevAnswer?.amount.toString() || '');
+            setNameValue(prevAnswer?.name || '');
+        }
+    };
+
     const handleOptionSelect = (option: string) => {
         setNameValue(option);
     };
@@ -185,24 +205,35 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
         return state;
     }, [answers, inputValue, question]);
 
+    const Icon = question.icon;
+
     return (
-        <div className="max-w-4xl mx-auto">
-            <div className="grid lg:grid-cols-5 gap-6 lg:gap-8">
-                {/* Main questionnaire - takes 3 columns on large screens */}
-                <div className="lg:col-span-3 order-1">
-                    {/* Progress */}
+        <div className="max-w-6xl mx-auto px-4">
+            {/* Two-column layout: Questions left, Life Builder right */}
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
+
+                {/* Main Questionnaire Panel */}
+                <div className="flex-1 lg:max-w-xl order-2 lg:order-1">
+                    {/* Progress Bar */}
                     <motion.div
-                        className="mb-8"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        className="mb-6"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
                     >
-                        <div className="flex justify-between text-sm text-slate-400 mb-2">
-                            <span>Question {currentQuestion + 1} of {questions.length}</span>
-                            <span>{Math.round(progress)}%</span>
+                        <div className="flex justify-between items-center text-sm text-slate-400 mb-2">
+                            <button
+                                onClick={handleBack}
+                                disabled={currentQuestion === 0}
+                                className="flex items-center gap-1 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                                Back
+                            </button>
+                            <span className="font-mono">{currentQuestion + 1} / {questions.length}</span>
                         </div>
                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                             <motion.div
-                                className="h-full bg-gradient-to-r from-[#c9b896] to-[#b8a785] rounded-full"
+                                className="h-full bg-gradient-to-r from-[#c9b896] to-[#7dd3a8] rounded-full"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.3 }}
@@ -218,62 +249,93 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white/[0.02] rounded-2xl border border-white/10 p-6 mb-6"
+                            className="bg-gradient-to-br from-white/[0.04] to-white/[0.01] rounded-2xl border border-white/10 p-6 md:p-8 mb-6 backdrop-blur-sm"
                         >
-                            {/* AI Avatar */}
+                            {/* Question Header with Icon */}
                             <div className="flex items-start gap-4 mb-6">
-                                <div className="w-12 h-12 rounded-xl bg-[#c9b896]/10 flex items-center justify-center flex-shrink-0">
-                                    <MessageCircle className="w-6 h-6 text-[#c9b896]" />
-                                </div>
-                                <div>
-                                    <p className="text-lg font-medium mb-1">{question.question}</p>
-                                    <p className="text-sm text-slate-500">
-                                        Enter $0 if you don&apos;t have this expense
-                                    </p>
+                                <motion.div
+                                    className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#c9b896]/20 to-[#c9b896]/5 flex items-center justify-center flex-shrink-0 border border-[#c9b896]/20"
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    transition={{ type: "spring", stiffness: 200 }}
+                                >
+                                    <Icon className="w-7 h-7 text-[#c9b896]" />
+                                </motion.div>
+                                <div className="flex-1 min-w-0">
+                                    <motion.h2
+                                        className="text-xl md:text-2xl font-semibold mb-1 leading-tight"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.1 }}
+                                    >
+                                        {question.question}
+                                    </motion.h2>
+                                    <motion.p
+                                        className="text-sm text-slate-500"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.2 }}
+                                    >
+                                        {question.subtext}
+                                    </motion.p>
                                 </div>
                             </div>
 
                             {/* Quick Options (if available) */}
                             {question.options && (
-                                <div className="flex flex-wrap gap-2 mb-4">
+                                <motion.div
+                                    className="flex flex-wrap gap-2 mb-5"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.15 }}
+                                >
                                     {question.options.map((option) => (
                                         <button
                                             key={option}
                                             onClick={() => handleOptionSelect(option)}
                                             className={`
-                                        px-4 py-2 rounded-lg text-sm transition-all
-                                        ${nameValue === option
-                                                    ? 'bg-[#c9b896] text-[#0a0a0f]'
-                                                    : 'bg-white/5 hover:bg-white/10'}
-                                    `}
+                                                px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                                ${nameValue === option
+                                                    ? 'bg-[#c9b896] text-[#0a0a0f] shadow-lg shadow-[#c9b896]/20'
+                                                    : 'bg-white/5 hover:bg-white/10 border border-white/10'}
+                                            `}
                                         >
                                             {option}
                                         </button>
                                     ))}
-                                </div>
+                                </motion.div>
                             )}
 
-                            {/* Provider Name (if options were shown) */}
+                            {/* Provider Name Input (if "Other" selected) */}
                             {question.options && nameValue === 'Other' && (
-                                <div className="mb-4">
+                                <motion.div
+                                    className="mb-5"
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                >
                                     <input
                                         type="text"
                                         placeholder="Enter provider name"
-                                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:border-[#c9b896]/50 focus:outline-none transition-colors"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all"
                                         onChange={(e) => setNameValue(e.target.value)}
                                     />
-                                </div>
+                                </motion.div>
                             )}
 
                             {/* Amount Input */}
-                            <div className="relative">
-                                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">$</div>
+                            <motion.div
+                                className="relative"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                            >
+                                <div className="absolute left-5 top-1/2 -translate-y-1/2 text-2xl text-slate-400 font-light">$</div>
                                 <input
                                     type="number"
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder={question.placeholder}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-4 text-2xl font-mono focus:border-[#c9b896]/50 focus:outline-none transition-colors"
+                                    placeholder="0"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-24 py-5 text-3xl font-mono font-medium focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all placeholder:text-slate-600"
                                     autoFocus
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -281,26 +343,29 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                                         }
                                     }}
                                 />
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">/month</div>
-                            </div>
+                                <div className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">/month</div>
+                            </motion.div>
                         </motion.div>
                     </AnimatePresence>
 
                     {/* Running Total */}
-                    {totalSoFar > 0 && (
-                        <motion.div
-                            className="text-center mb-6"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                        >
-                            <p className="text-sm text-slate-400 mb-1">Expenses so far</p>
-                            <p className="text-2xl font-bold font-mono text-[#c9b896]">
-                                ${totalSoFar.toFixed(2)}/mo
-                            </p>
-                        </motion.div>
-                    )}
+                    <AnimatePresence>
+                        {totalSoFar > 0 && (
+                            <motion.div
+                                className="text-center mb-6"
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                            >
+                                <p className="text-sm text-slate-400 mb-1">Monthly expenses so far</p>
+                                <p className="text-3xl font-bold font-mono bg-gradient-to-r from-[#c9b896] to-[#7dd3a8] bg-clip-text text-transparent">
+                                    ${totalSoFar.toLocaleString()}/mo
+                                </p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                    {/* Answered Questions Summary */}
+                    {/* Answered Questions Tags */}
                     {Object.keys(answers).length > 0 && (
                         <motion.div
                             className="flex flex-wrap gap-2 justify-center mb-6"
@@ -308,29 +373,33 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                             animate={{ opacity: 1 }}
                         >
                             {Object.entries(answers).map(([id, data]) => (
-                                <div
+                                <motion.div
                                     key={id}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#c9b896]/10 text-[#c9b896] text-sm"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#c9b896]/10 border border-[#c9b896]/20 text-[#c9b896] text-sm"
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: "spring", stiffness: 300 }}
                                 >
                                     <Check className="w-3 h-3" />
-                                    {data.name}: ${data.amount}
-                                </div>
+                                    <span className="font-medium">{data.name}</span>
+                                    <span className="text-[#c9b896]/60">${data.amount}</span>
+                                </motion.div>
                             ))}
                         </motion.div>
                     )}
 
-                    {/* Actions */}
+                    {/* Action Buttons */}
                     <div className="flex gap-3">
                         <Button
                             variant="ghost"
                             onClick={onSkip}
-                            className="flex-1 text-slate-500"
+                            className="flex-1 text-slate-500 hover:text-white border border-white/10"
                         >
                             Skip All
                         </Button>
                         <Button
                             onClick={handleNext}
-                            className="flex-1 bg-[#c9b896] hover:bg-[#b8a785] text-[#0a0a0f]"
+                            className="flex-1 bg-gradient-to-r from-[#c9b896] to-[#b8a785] hover:from-[#b8a785] hover:to-[#a89775] text-[#0a0a0f] font-semibold shadow-lg shadow-[#c9b896]/20"
                             icon={<ArrowRight className="w-5 h-5" />}
                         >
                             {currentQuestion < questions.length - 1 ? 'Next' : 'Finish'}
@@ -338,28 +407,36 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                     </div>
                 </div>
 
-                {/* Life Builder Visual - takes 2 columns on large screens */}
-                <div className="lg:col-span-2 order-2 lg:sticky lg:top-8 self-start">
+                {/* Life Builder Visual Panel - Sticky on Desktop */}
+                <div className="lg:w-[420px] xl:w-[480px] order-1 lg:order-2 lg:sticky lg:top-24 self-start">
+                    {/* Desktop: Full Life Builder */}
                     <div className="hidden lg:block">
-                        <h3 className="text-sm font-medium text-slate-400 mb-4 text-center">Your Life is Building</h3>
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                        >
+                            <h3 className="text-base font-medium text-slate-300 mb-4 text-center">
+                                Watch Your Life Build
+                            </h3>
+                            <LifeBuilder
+                                state={lifeBuilderState}
+                                compact={false}
+                            />
+                        </motion.div>
                     </div>
-                    <LifeBuilder
-                        state={lifeBuilderState}
-                        compact={false}
-                    />
-                </div>
-            </div>
 
-            {/* Mobile: Show compact LifeBuilder at bottom */}
-            <div className="lg:hidden mt-8">
-                <LifeBuilder
-                    state={lifeBuilderState}
-                    compact={true}
-                />
+                    {/* Mobile: Compact Life Builder at top */}
+                    <div className="lg:hidden mb-6">
+                        <LifeBuilder
+                            state={lifeBuilderState}
+                            compact={true}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
 }
 
 export default ExpenseQuestionnaireStep;
-

@@ -14,8 +14,8 @@ PLAID_SECRET=your-plaid-secret
 PLAID_ENV=production  # Use 'sandbox' for testing
 NEXT_PUBLIC_PLAID_ENV=production
 
-## Anthropic Claude API (AI Agent)
-ANTHROPIC_API_KEY=your-anthropic-api-key
+## Google Gemini AI API Key (AI Agent)
+GEMINI_API_KEY=your-gemini-api-key
 
 ## Stripe (Payments)
 STRIPE_SECRET_KEY=sk_live_...
