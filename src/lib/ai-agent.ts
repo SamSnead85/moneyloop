@@ -1,9 +1,7 @@
-import Anthropic from '@anthropic-ai/sdk';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// Initialize Anthropic client
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// Initialize Gemini client
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 export interface AgentMessage {
     role: 'user' | 'assistant';
@@ -139,21 +137,32 @@ Name: ${userName}
 ${contextString}`;
 
     try {
-        const response = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1024,
-            system: systemWithContext,
-            messages: messages.map(m => ({
-                role: m.role,
-                content: m.content,
-            })),
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+        // Build conversation history for Gemini
+        const history = messages.slice(0, -1).map(m => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.content }],
+        }));
+
+        const chat = model.startChat({
+            history,
+            generationConfig: {
+                maxOutputTokens: 1024,
+            },
         });
 
-        // Extract text content from response
-        const textContent = response.content.find(c => c.type === 'text');
-        return textContent?.text || 'I apologize, but I was unable to generate a response. Please try again.';
+        // Get the last user message
+        const lastMessage = messages[messages.length - 1];
+        const prompt = messages.length === 1
+            ? `${systemWithContext}\n\nUser: ${lastMessage.content}`
+            : lastMessage.content;
+
+        const result = await chat.sendMessage(prompt);
+        const response = await result.response;
+        return response.text() || 'I apologize, but I was unable to generate a response. Please try again.';
     } catch (error) {
-        console.error('Anthropic API error:', error);
+        console.error('Gemini API error:', error);
         throw new Error('Failed to get response from AI agent');
     }
 }
@@ -173,15 +182,16 @@ Generate insights in this format:
 ...`;
 
     try {
-        const response = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 512,
-            system: 'You are a financial analyst providing brief, actionable insights. Be specific and include dollar amounts.',
-            messages: [{ role: 'user', content: prompt }],
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const result = await model.generateContent({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            generationConfig: {
+                maxOutputTokens: 512,
+            },
         });
 
-        const textContent = response.content.find(c => c.type === 'text');
-        const text = textContent?.text || '';
+        const response = await result.response;
+        const text = response.text() || '';
 
         // Parse numbered insights
         const insights = text
