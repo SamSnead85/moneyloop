@@ -44,7 +44,8 @@ const mockGoals: Goal[] = [
 ];
 
 export default function GoalsPage() {
-    const [goals, setGoals] = useState<Goal[]>(mockGoals);
+    const [goals, setGoals] = useState<Goal[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
@@ -66,7 +67,8 @@ export default function GoalsPage() {
                 .eq('status', 'active')
                 .order('created_at', { ascending: false });
 
-            if (data?.length) setGoals(data);
+            if (data) setGoals(data);
+            setLoading(false);
         }
         fetchGoals();
     }, []);

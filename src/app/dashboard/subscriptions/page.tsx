@@ -58,7 +58,8 @@ function getUsageLabel(score: number) {
 }
 
 export default function SubscriptionsPage() {
-    const [subscriptions, setSubscriptions] = useState<Subscription[]>(mockSubscriptions);
+    const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+    const [loading, setLoading] = useState(true);
     const [selectedSub, setSelectedSub] = useState<Subscription | null>(null);
     const [showCancelModal, setShowCancelModal] = useState(false);
     const [filter, setFilter] = useState<'all' | 'active' | 'unused'>('all');
@@ -72,7 +73,8 @@ export default function SubscriptionsPage() {
                 .select('*')
                 .order('amount', { ascending: false });
 
-            if (data?.length) setSubscriptions(data);
+            if (data) setSubscriptions(data);
+            setLoading(false);
         }
         fetchSubscriptions();
     }, []);

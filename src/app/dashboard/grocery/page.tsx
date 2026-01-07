@@ -47,15 +47,15 @@ const mockItems: GroceryItem[] = [
     { id: '10', name: 'Cereal', category: 'Pantry', estimatedPrice: 4.99, quantity: 1, inCart: false },
 ];
 
-const mockStores: StorePricing[] = [
-    { store: 'Walmart', totalPrice: 42.56, savings: 5.34, deliveryFee: 0, estimatedDelivery: 'Today, 2-4 PM' },
-    { store: 'Instacart (Kroger)', totalPrice: 45.23, savings: 2.67, deliveryFee: 3.99, estimatedDelivery: 'Today, 1-3 PM' },
-    { store: 'Amazon Fresh', totalPrice: 46.89, savings: 1.01, deliveryFee: 0, estimatedDelivery: 'Tomorrow, 8 AM' },
+const storeOptions: StorePricing[] = [
+    { store: 'Walmart', totalPrice: 0, savings: 0, deliveryFee: 0, estimatedDelivery: 'Today, 2-4 PM' },
+    { store: 'Instacart (Kroger)', totalPrice: 0, savings: 0, deliveryFee: 3.99, estimatedDelivery: 'Today, 1-3 PM' },
+    { store: 'Amazon Fresh', totalPrice: 0, savings: 0, deliveryFee: 0, estimatedDelivery: 'Tomorrow, 8 AM' },
 ];
 
 export default function GroceryPage() {
-    const [items, setItems] = useState<GroceryItem[]>(mockItems);
-    const [stores, setStores] = useState<StorePricing[]>(mockStores);
+    const [items, setItems] = useState<GroceryItem[]>([]);
+    const [stores, setStores] = useState<StorePricing[]>(storeOptions);
     const [isGenerating, setIsGenerating] = useState(false);
     const [selectedStore, setSelectedStore] = useState<string | null>(null);
     const [showOrderModal, setShowOrderModal] = useState(false);
@@ -65,9 +65,24 @@ export default function GroceryPage() {
 
     const generateList = async () => {
         setIsGenerating(true);
-        // Simulate AI generation
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setIsGenerating(false);
+        try {
+            const response = await fetch('/api/grocery', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'generate' }),
+            });
+            const data = await response.json();
+            if (data.items) {
+                setItems(data.items.map((item: any) => ({ ...item, inCart: true })));
+            }
+            if (data.stores) {
+                setStores(data.stores);
+            }
+        } catch (error) {
+            console.error('Failed to generate grocery list:', error);
+        } finally {
+            setIsGenerating(false);
+        }
     };
 
     const toggleItem = (id: string) => {
@@ -131,8 +146,8 @@ export default function GroceryPage() {
                                             <button
                                                 onClick={() => toggleItem(item.id)}
                                                 className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${item.inCart
-                                                        ? 'bg-emerald-500 border-emerald-500'
-                                                        : 'border-white/20'
+                                                    ? 'bg-emerald-500 border-emerald-500'
+                                                    : 'border-white/20'
                                                     }`}
                                             >
                                                 {item.inCart && <CheckCircle className="w-3.5 h-3.5 text-white" />}
@@ -207,8 +222,8 @@ export default function GroceryPage() {
                                     key={store.store}
                                     onClick={() => setSelectedStore(store.store)}
                                     className={`w-full p-3 rounded-xl border transition-all text-left ${selectedStore === store.store
-                                            ? 'border-emerald-500/50 bg-emerald-500/5'
-                                            : 'border-white/[0.06] hover:border-white/10'
+                                        ? 'border-emerald-500/50 bg-emerald-500/5'
+                                        : 'border-white/[0.06] hover:border-white/10'
                                         }`}
                                 >
                                     <div className="flex items-center justify-between mb-1">

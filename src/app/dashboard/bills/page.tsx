@@ -28,16 +28,7 @@ interface Bill {
     status: 'pending' | 'paid' | 'overdue' | 'scheduled';
 }
 
-const mockBills: Bill[] = [
-    { id: '1', name: 'Electric Bill', amount: 125, due_date: '2026-01-10', frequency: 'monthly', category: 'Utilities', autopay: false, status: 'pending' },
-    { id: '2', name: 'Internet', amount: 80, due_date: '2026-01-12', frequency: 'monthly', category: 'Utilities', autopay: true, status: 'scheduled' },
-    { id: '3', name: 'Phone', amount: 85, due_date: '2026-01-15', frequency: 'monthly', category: 'Utilities', autopay: false, status: 'pending' },
-    { id: '4', name: 'Car Lease', amount: 450, due_date: '2026-01-20', frequency: 'monthly', category: 'Transportation', autopay: true, status: 'scheduled' },
-    { id: '5', name: 'Car Insurance', amount: 150, due_date: '2026-01-25', frequency: 'monthly', category: 'Insurance', autopay: true, status: 'scheduled' },
-    { id: '6', name: 'Mortgage', amount: 2400, due_date: '2026-01-01', frequency: 'monthly', category: 'Housing', autopay: true, status: 'paid' },
-    { id: '7', name: 'HOA Fees', amount: 350, due_date: '2026-01-01', frequency: 'monthly', category: 'Housing', autopay: false, status: 'paid' },
-    { id: '8', name: 'Credit Card Minimum', amount: 125, due_date: '2026-01-05', frequency: 'monthly', category: 'Debt', autopay: false, status: 'overdue' },
-];
+const mockBills: Bill[] = [];
 
 function getDaysUntil(dateStr: string): number {
     const today = new Date();
@@ -56,7 +47,8 @@ function formatDueDate(dateStr: string): string {
 }
 
 export default function BillsPage() {
-    const [bills, setBills] = useState<Bill[]>(mockBills);
+    const [bills, setBills] = useState<Bill[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [filter, setFilter] = useState<'all' | 'pending' | 'paid' | 'overdue'>('all');
 
@@ -68,7 +60,8 @@ export default function BillsPage() {
                 .select('*')
                 .order('due_date', { ascending: true });
 
-            if (data?.length) setBills(data);
+            if (data) setBills(data);
+            setLoading(false);
         }
         fetchBills();
     }, []);
@@ -156,8 +149,8 @@ export default function BillsPage() {
                         key={f}
                         onClick={() => setFilter(f)}
                         className={`px-4 py-2 text-sm rounded-lg transition-colors ${filter === f
-                                ? 'bg-emerald-500/20 text-emerald-400'
-                                : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
+                            ? 'bg-emerald-500/20 text-emerald-400'
+                            : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
                             }`}
                     >
                         {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -183,9 +176,9 @@ export default function BillsPage() {
                             >
                                 {/* Status Icon */}
                                 <div className={`p-2.5 rounded-xl ${bill.status === 'paid' ? 'bg-emerald-500/10' :
-                                        isOverdue ? 'bg-red-500/10' :
-                                            isDueSoon ? 'bg-amber-500/10' :
-                                                'bg-white/[0.04]'
+                                    isOverdue ? 'bg-red-500/10' :
+                                        isDueSoon ? 'bg-amber-500/10' :
+                                            'bg-white/[0.04]'
                                     }`}>
                                     {bill.status === 'paid' ? (
                                         <CheckCircle className="w-5 h-5 text-emerald-400" />
@@ -221,9 +214,9 @@ export default function BillsPage() {
                                 {/* Due Date */}
                                 <div className="text-right">
                                     <p className={`text-sm ${isOverdue ? 'text-red-400' :
-                                            isDueSoon ? 'text-amber-400' :
-                                                bill.status === 'paid' ? 'text-slate-500' :
-                                                    'text-slate-400'
+                                        isDueSoon ? 'text-amber-400' :
+                                            bill.status === 'paid' ? 'text-slate-500' :
+                                                'text-slate-400'
                                         }`}>
                                         {formatDueDate(bill.due_date)}
                                     </p>

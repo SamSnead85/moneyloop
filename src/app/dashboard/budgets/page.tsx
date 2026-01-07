@@ -56,7 +56,8 @@ const mockBudgets: Budget[] = [
 ];
 
 export default function BudgetsPage() {
-    const [budgets, setBudgets] = useState<Budget[]>(mockBudgets);
+    const [budgets, setBudgets] = useState<Budget[]>([]);
+    const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [period, setPeriod] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
 
@@ -75,7 +76,8 @@ export default function BudgetsPage() {
                 .eq('period', period)
                 .order('category', { ascending: true });
 
-            if (data?.length) setBudgets(data);
+            if (data) setBudgets(data);
+            setLoading(false);
         }
         fetchBudgets();
     }, [period]);
@@ -101,8 +103,8 @@ export default function BudgetsPage() {
                                 key={p}
                                 onClick={() => setPeriod(p)}
                                 className={`px-3 py-1.5 text-xs rounded-md transition-colors ${period === p
-                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                        : 'text-slate-500 hover:text-white'
+                                    ? 'bg-emerald-500/20 text-emerald-400'
+                                    : 'text-slate-500 hover:text-white'
                                     }`}
                             >
                                 {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -193,8 +195,8 @@ export default function BudgetsPage() {
                             transition={{ delay: index * 0.05 }}
                         >
                             <Card className={`p-5 border-l-4 ${isOverBudget ? 'border-l-red-500' :
-                                    isWarning ? 'border-l-amber-500' :
-                                        'border-l-emerald-500'
+                                isWarning ? 'border-l-amber-500' :
+                                    'border-l-emerald-500'
                                 }`}>
                                 {/* Header */}
                                 <div className="flex items-center justify-between mb-4">
@@ -217,8 +219,8 @@ export default function BudgetsPage() {
                                             animate={{ width: `${Math.min(progress, 100)}%` }}
                                             transition={{ duration: 0.8, delay: index * 0.1 }}
                                             className={`h-full rounded-full ${isOverBudget ? 'bg-red-500' :
-                                                    isWarning ? 'bg-amber-500' :
-                                                        'bg-emerald-500'
+                                                isWarning ? 'bg-amber-500' :
+                                                    'bg-emerald-500'
                                                 }`}
                                         />
                                     </div>
@@ -228,8 +230,8 @@ export default function BudgetsPage() {
                                 <div className="flex justify-between items-end">
                                     <div>
                                         <p className={`text-lg font-semibold font-mono ${isOverBudget ? 'text-red-400' :
-                                                isWarning ? 'text-amber-400' :
-                                                    'text-white'
+                                            isWarning ? 'text-amber-400' :
+                                                'text-white'
                                             }`}>
                                             ${budget.spent.toLocaleString()}
                                         </p>
@@ -237,8 +239,8 @@ export default function BudgetsPage() {
                                     </div>
                                     <div className="text-right">
                                         <p className={`text-sm font-medium ${isOverBudget ? 'text-red-400' :
-                                                isWarning ? 'text-amber-400' :
-                                                    'text-emerald-400'
+                                            isWarning ? 'text-amber-400' :
+                                                'text-emerald-400'
                                             }`}>
                                             {isOverBudget ? '+' : ''}{(budget.amount - budget.spent).toLocaleString()}
                                         </p>

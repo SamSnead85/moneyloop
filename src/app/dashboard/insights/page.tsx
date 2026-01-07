@@ -116,8 +116,8 @@ const typeConfig = {
 };
 
 export default function InsightsPage() {
-    const [insights, setInsights] = useState<Insight[]>(mockInsights);
-    const [isLoading, setIsLoading] = useState(false);
+    const [insights, setInsights] = useState<Insight[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [filter, setFilter] = useState<'all' | Insight['type']>('all');
 
     const filteredInsights = insights.filter(i => filter === 'all' || i.type === filter);
@@ -131,19 +131,22 @@ export default function InsightsPage() {
     const refreshInsights = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch('/api/ai/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'insights' }),
-            });
+            const response = await fetch('/api/ai-insights');
             const data = await response.json();
-            // In production, would update insights from API response
+            if (data.insights) {
+                setInsights(data.insights);
+            }
         } catch (error) {
             console.error('Failed to refresh insights:', error);
         } finally {
             setIsLoading(false);
         }
     };
+
+    // Fetch insights on page load
+    useEffect(() => {
+        refreshInsights();
+    }, []);
 
     return (
         <div className="space-y-6">
@@ -223,8 +226,8 @@ export default function InsightsPage() {
                         key={f}
                         onClick={() => setFilter(f)}
                         className={`px-4 py-2 text-sm rounded-lg transition-colors ${filter === f
-                                ? 'bg-emerald-500/20 text-emerald-400'
-                                : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
+                            ? 'bg-emerald-500/20 text-emerald-400'
+                            : 'text-slate-500 hover:text-white hover:bg-white/[0.02]'
                             }`}
                     >
                         {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -246,8 +249,8 @@ export default function InsightsPage() {
                             transition={{ delay: index * 0.05 }}
                         >
                             <Card className={`p-5 border-l-4 ${insight.priority === 'high' ? 'border-l-red-500' :
-                                    insight.priority === 'medium' ? 'border-l-amber-500' :
-                                        'border-l-emerald-500'
+                                insight.priority === 'medium' ? 'border-l-amber-500' :
+                                    'border-l-emerald-500'
                                 } hover:bg-white/[0.01] transition-colors`}>
                                 {/* Header */}
                                 <div className="flex items-start gap-3 mb-3">
@@ -264,8 +267,8 @@ export default function InsightsPage() {
                                 <div className="flex items-center justify-between">
                                     {insight.impact && (
                                         <div className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium ${insight.impact.type === 'positive'
-                                                ? 'bg-emerald-500/10 text-emerald-400'
-                                                : 'bg-red-500/10 text-red-400'
+                                            ? 'bg-emerald-500/10 text-emerald-400'
+                                            : 'bg-red-500/10 text-red-400'
                                             }`}>
                                             {insight.impact.type === 'positive' ? (
                                                 <TrendingUp className="w-4 h-4" />
