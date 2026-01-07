@@ -1,78 +1,90 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-    PieChart,
+    PlusCircle,
+    Wallet,
     TrendingUp,
-    Sparkles,
+    TrendingDown,
+    Edit3,
+    MoreVertical,
+    AlertTriangle,
+    CheckCircle,
+    Coffee,
+    ShoppingBag,
     Home,
     Car,
     Utensils,
-    ShoppingBag,
     Zap,
-    Wifi,
-    Heart,
     Film,
-    Plane,
-    GraduationCap,
-    DollarSign,
-    ChevronRight,
-    Settings,
-    Plus,
-    Check,
+    Heart,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
+import { createClient } from '@/lib/supabase/client';
 
-// Budget methodologies
-const methodologies = [
-    { id: '50-30-20', name: '50/30/20 Rule', description: 'Needs 50%, Wants 30%, Savings 20%' },
-    { id: 'zero-based', name: 'Zero-Based', description: 'Every dollar has a job' },
-    { id: 'envelope', name: 'Envelope System', description: 'Digital envelopes for each category' },
-];
+interface Budget {
+    id: string;
+    category: string;
+    amount: number;
+    spent: number;
+    period: string;
+    icon: string;
+    color: string;
+}
 
-// Budget categories
-const budgetCategories = [
-    { id: 'housing', name: 'Housing', icon: Home, budget: 2800, spent: 2400, color: 'blue' },
-    { id: 'transportation', name: 'Transportation', icon: Car, budget: 600, spent: 512, color: 'purple' },
-    { id: 'food', name: 'Food & Dining', icon: Utensils, budget: 800, spent: 687, color: 'amber' },
-    { id: 'shopping', name: 'Shopping', icon: ShoppingBag, budget: 400, spent: 523, color: 'red' },
-    { id: 'utilities', name: 'Utilities', icon: Zap, budget: 300, spent: 248, color: 'emerald' },
-    { id: 'internet', name: 'Internet & Phone', icon: Wifi, budget: 200, spent: 189, color: 'indigo' },
-    { id: 'health', name: 'Health & Fitness', icon: Heart, budget: 250, spent: 175, color: 'pink' },
-    { id: 'entertainment', name: 'Entertainment', icon: Film, budget: 200, spent: 156, color: 'violet' },
-    { id: 'travel', name: 'Travel', icon: Plane, budget: 300, spent: 0, color: 'cyan' },
-    { id: 'education', name: 'Education', icon: GraduationCap, budget: 150, spent: 99, color: 'orange' },
-];
+const categoryConfig: Record<string, { icon: typeof Wallet; color: string; bg: string }> = {
+    'Groceries': { icon: ShoppingBag, color: 'text-green-400', bg: 'bg-green-500/10' },
+    'Restaurants': { icon: Utensils, color: 'text-orange-400', bg: 'bg-orange-500/10' },
+    'Transportation': { icon: Car, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+    'Housing': { icon: Home, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    'Utilities': { icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
+    'Entertainment': { icon: Film, color: 'text-pink-400', bg: 'bg-pink-500/10' },
+    'Shopping': { icon: ShoppingBag, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
+    'Healthcare': { icon: Heart, color: 'text-red-400', bg: 'bg-red-500/10' },
+    'Personal': { icon: Coffee, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+    'Other': { icon: Wallet, color: 'text-slate-400', bg: 'bg-slate-500/10' },
+};
 
-const aiInsights = [
-    {
-        type: 'warning',
-        title: 'Shopping Over Budget',
-        message: 'You\'ve exceeded your shopping budget by $123. Consider reducing dining out to compensate.',
-        action: 'Adjust Budget'
-    },
-    {
-        type: 'success',
-        title: 'Great Savings on Utilities',
-        message: 'You\'re 17% under budget on utilities. Nice work being energy efficient!',
-        action: null
-    },
-    {
-        type: 'tip',
-        title: 'AI Recommendation',
-        message: 'Based on your spending, suggest increasing Food budget to $850 and reducing Entertainment to $150.',
-        action: 'Apply Changes'
-    },
+const mockBudgets: Budget[] = [
+    { id: '1', category: 'Groceries', amount: 600, spent: 520, period: 'monthly', icon: 'shopping-bag', color: 'green' },
+    { id: '2', category: 'Restaurants', amount: 400, spent: 450, period: 'monthly', icon: 'utensils', color: 'orange' },
+    { id: '3', category: 'Transportation', amount: 350, spent: 280, period: 'monthly', icon: 'car', color: 'blue' },
+    { id: '4', category: 'Entertainment', amount: 200, spent: 145, period: 'monthly', icon: 'film', color: 'pink' },
+    { id: '5', category: 'Shopping', amount: 300, spent: 180, period: 'monthly', icon: 'shopping-bag', color: 'cyan' },
+    { id: '6', category: 'Utilities', amount: 250, spent: 225, period: 'monthly', icon: 'zap', color: 'yellow' },
 ];
 
 export default function BudgetsPage() {
-    const [selectedMethod, setSelectedMethod] = useState('50-30-20');
+    const [budgets, setBudgets] = useState<Budget[]>(mockBudgets);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [period, setPeriod] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
 
-    const totalBudget = budgetCategories.reduce((sum, c) => sum + c.budget, 0);
-    const totalSpent = budgetCategories.reduce((sum, c) => sum + c.spent, 0);
+    // Form state
+    const [formData, setFormData] = useState({
+        category: '',
+        amount: '',
+    });
+
+    useEffect(() => {
+        async function fetchBudgets() {
+            const supabase = createClient();
+            const { data } = await supabase
+                .from('budgets')
+                .select('*')
+                .eq('period', period)
+                .order('category', { ascending: true });
+
+            if (data?.length) setBudgets(data);
+        }
+        fetchBudgets();
+    }, [period]);
+
+    const totalBudget = budgets.reduce((sum, b) => sum + b.amount, 0);
+    const totalSpent = budgets.reduce((sum, b) => sum + b.spent, 0);
     const remaining = totalBudget - totalSpent;
-    const percentSpent = (totalSpent / totalBudget) * 100;
+    const overBudgetCount = budgets.filter(b => b.spent > b.amount).length;
+    const onTrackCount = budgets.filter(b => b.spent <= b.amount * 0.85).length;
 
     return (
         <div className="space-y-6">
@@ -80,213 +92,239 @@ export default function BudgetsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-semibold">Budgets</h1>
-                    <p className="text-slate-500 text-sm mt-1">Manage your spending with smart budgets</p>
+                    <p className="text-slate-500 text-sm mt-1">Track spending against your budget limits</p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="secondary" className="gap-2">
-                        <Settings className="w-4 h-4" />
-                        Configure
-                    </Button>
-                    <Button className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Add Category
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center bg-white/[0.02] border border-white/[0.06] rounded-lg p-1">
+                        {(['weekly', 'monthly', 'yearly'] as const).map((p) => (
+                            <button
+                                key={p}
+                                onClick={() => setPeriod(p)}
+                                className={`px-3 py-1.5 text-xs rounded-md transition-colors ${period === p
+                                        ? 'bg-emerald-500/20 text-emerald-400'
+                                        : 'text-slate-500 hover:text-white'
+                                    }`}
+                            >
+                                {p.charAt(0).toUpperCase() + p.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+                    <Button onClick={() => setShowAddModal(true)} className="gap-2">
+                        <PlusCircle className="w-4 h-4" />
+                        Add Budget
                     </Button>
                 </div>
             </div>
 
-            {/* Budget Method Selector */}
-            <Card className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                    <PieChart className="w-4 h-4 text-emerald-400" />
-                    <span className="text-sm font-medium">Budget Method</span>
-                </div>
-                <div className="grid md:grid-cols-3 gap-3">
-                    {methodologies.map((method) => (
-                        <button
-                            key={method.id}
-                            onClick={() => setSelectedMethod(method.id)}
-                            className={`p-4 rounded-xl border text-left transition-all ${selectedMethod === method.id
-                                    ? 'border-emerald-500/50 bg-emerald-500/[0.05]'
-                                    : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1]'
-                                }`}
-                        >
-                            <div className="flex items-center justify-between mb-1">
-                                <span className={`font-medium ${selectedMethod === method.id ? 'text-emerald-400' : ''}`}>
-                                    {method.name}
-                                </span>
-                                {selectedMethod === method.id && (
-                                    <Check className="w-4 h-4 text-emerald-400" />
-                                )}
-                            </div>
-                            <p className="text-xs text-slate-500">{method.description}</p>
-                        </button>
-                    ))}
-                </div>
-            </Card>
-
-            {/* Overview */}
-            <div className="grid md:grid-cols-3 gap-4">
-                <Card className="p-5">
-                    <p className="text-slate-500 text-sm">Total Budget</p>
-                    <p className="text-2xl font-semibold mt-1">${totalBudget.toLocaleString()}</p>
-                    <p className="text-xs text-slate-500 mt-1">Monthly allocation</p>
-                </Card>
-                <Card className="p-5">
-                    <p className="text-slate-500 text-sm">Spent So Far</p>
-                    <p className="text-2xl font-semibold mt-1">${totalSpent.toLocaleString()}</p>
-                    <div className="flex items-center gap-2 mt-2">
-                        <div className="flex-1 h-1.5 bg-white/[0.04] rounded-full overflow-hidden">
-                            <div
-                                className={`h-full rounded-full ${percentSpent > 100 ? 'bg-red-500' : percentSpent > 80 ? 'bg-amber-500' : 'bg-emerald-500'}`}
-                                style={{ width: `${Math.min(percentSpent, 100)}%` }}
-                            />
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-blue-500/10">
+                            <Wallet className="w-5 h-5 text-blue-400" />
                         </div>
-                        <span className="text-xs text-slate-400">{percentSpent.toFixed(0)}%</span>
+                        <div>
+                            <p className="text-xs text-slate-500">Total Budget</p>
+                            <p className="text-xl font-semibold">${totalBudget.toLocaleString()}</p>
+                        </div>
                     </div>
                 </Card>
-                <Card className="p-5">
-                    <p className="text-slate-500 text-sm">Remaining</p>
-                    <p className={`text-2xl font-semibold mt-1 ${remaining >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                        ${Math.abs(remaining).toLocaleString()}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1">{remaining >= 0 ? 'Left to spend' : 'Over budget'}</p>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-purple-500/10">
+                            <TrendingDown className="w-5 h-5 text-purple-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Total Spent</p>
+                            <p className="text-xl font-semibold">${totalSpent.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className={`p-2 rounded-lg ${remaining >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10'}`}>
+                            <TrendingUp className={`w-5 h-5 ${remaining >= 0 ? 'text-emerald-400' : 'text-red-400'}`} />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Remaining</p>
+                            <p className={`text-xl font-semibold ${remaining >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                ${Math.abs(remaining).toLocaleString()}
+                            </p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-amber-500/10">
+                            {overBudgetCount > 0 ? (
+                                <AlertTriangle className="w-5 h-5 text-amber-400" />
+                            ) : (
+                                <CheckCircle className="w-5 h-5 text-emerald-400" />
+                            )}
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Status</p>
+                            <p className="text-sm font-medium">
+                                {overBudgetCount > 0 ? (
+                                    <span className="text-amber-400">{overBudgetCount} over budget</span>
+                                ) : (
+                                    <span className="text-emerald-400">All on track</span>
+                                )}
+                            </p>
+                        </div>
+                    </div>
                 </Card>
             </div>
 
-            {/* AI Insights */}
-            <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    <h2 className="text-sm font-medium text-slate-300">AI Budget Insights</h2>
-                </div>
-                <div className="grid md:grid-cols-3 gap-4">
-                    {aiInsights.map((insight, i) => (
+            {/* Budget Cards */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {budgets.map((budget, index) => {
+                    const config = categoryConfig[budget.category] || categoryConfig['Other'];
+                    const Icon = config.icon;
+                    const progress = (budget.spent / budget.amount) * 100;
+                    const isOverBudget = progress > 100;
+                    const isWarning = progress >= 85 && progress <= 100;
+
+                    return (
                         <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 10 }}
+                            key={budget.id}
+                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
+                            transition={{ delay: index * 0.05 }}
                         >
-                            <Card className={`p-4 ${insight.type === 'warning' ? 'border-amber-500/20 bg-amber-500/[0.02]' :
-                                    insight.type === 'success' ? 'border-emerald-500/20 bg-emerald-500/[0.02]' :
-                                        'border-blue-500/20 bg-blue-500/[0.02]'
+                            <Card className={`p-5 border-l-4 ${isOverBudget ? 'border-l-red-500' :
+                                    isWarning ? 'border-l-amber-500' :
+                                        'border-l-emerald-500'
                                 }`}>
-                                <h3 className="font-medium text-sm">{insight.title}</h3>
-                                <p className="text-slate-500 text-xs mt-1">{insight.message}</p>
-                                {insight.action && (
-                                    <button className={`mt-3 text-xs font-medium flex items-center gap-1 ${insight.type === 'warning' ? 'text-amber-400' :
-                                            insight.type === 'tip' ? 'text-blue-400' : 'text-emerald-400'
-                                        }`}>
-                                        {insight.action} <ChevronRight className="w-3 h-3" />
-                                    </button>
-                                )}
-                            </Card>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Budget Categories */}
-            <div className="space-y-3">
-                <h2 className="text-sm font-medium text-slate-300">Categories</h2>
-                <div className="grid md:grid-cols-2 gap-4">
-                    {budgetCategories.map((category, i) => {
-                        const Icon = category.icon;
-                        const percent = (category.spent / category.budget) * 100;
-                        const isOver = percent > 100;
-
-                        const colorClasses: Record<string, string> = {
-                            blue: 'bg-blue-500',
-                            purple: 'bg-purple-500',
-                            amber: 'bg-amber-500',
-                            red: 'bg-red-500',
-                            emerald: 'bg-emerald-500',
-                            indigo: 'bg-indigo-500',
-                            pink: 'bg-pink-500',
-                            violet: 'bg-violet-500',
-                            cyan: 'bg-cyan-500',
-                            orange: 'bg-orange-500',
-                        };
-
-                        return (
-                            <motion.div
-                                key={category.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.03 }}
-                            >
-                                <Card className="p-4 hover:border-white/[0.08] transition-colors cursor-pointer group">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="p-2 rounded-lg bg-white/[0.04]">
-                                            <Icon className="w-4 h-4 text-slate-400" />
+                                {/* Header */}
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-lg ${config.bg}`}>
+                                            <Icon className={`w-5 h-5 ${config.color}`} />
                                         </div>
-                                        <div className="flex-1">
-                                            <h3 className="font-medium text-sm">{category.name}</h3>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className={`text-sm font-semibold ${isOver ? 'text-red-400' : ''}`}>
-                                                ${category.spent}
-                                            </p>
-                                            <p className="text-xs text-slate-500">of ${category.budget}</p>
-                                        </div>
+                                        <h3 className="font-medium">{budget.category}</h3>
                                     </div>
+                                    <button className="p-1.5 rounded-lg hover:bg-white/[0.04] transition-colors">
+                                        <MoreVertical className="w-4 h-4 text-slate-500" />
+                                    </button>
+                                </div>
 
-                                    <div className="h-2 bg-white/[0.04] rounded-full overflow-hidden">
+                                {/* Progress Bar */}
+                                <div className="mb-3">
+                                    <div className="h-3 bg-white/[0.04] rounded-full overflow-hidden">
                                         <motion.div
                                             initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min(percent, 100)}%` }}
-                                            transition={{ duration: 0.5, delay: i * 0.05 }}
-                                            className={`h-full rounded-full ${isOver ? 'bg-red-500' : colorClasses[category.color] || 'bg-emerald-500'}`}
+                                            animate={{ width: `${Math.min(progress, 100)}%` }}
+                                            transition={{ duration: 0.8, delay: index * 0.1 }}
+                                            className={`h-full rounded-full ${isOverBudget ? 'bg-red-500' :
+                                                    isWarning ? 'bg-amber-500' :
+                                                        'bg-emerald-500'
+                                                }`}
                                         />
                                     </div>
+                                </div>
 
-                                    <div className="flex justify-between mt-2 text-xs">
-                                        <span className={isOver ? 'text-red-400' : 'text-slate-500'}>
-                                            {isOver ? `$${category.spent - category.budget} over` : `$${category.budget - category.spent} left`}
-                                        </span>
-                                        <span className="text-slate-500">{percent.toFixed(0)}%</span>
+                                {/* Amounts */}
+                                <div className="flex justify-between items-end">
+                                    <div>
+                                        <p className={`text-lg font-semibold font-mono ${isOverBudget ? 'text-red-400' :
+                                                isWarning ? 'text-amber-400' :
+                                                    'text-white'
+                                            }`}>
+                                            ${budget.spent.toLocaleString()}
+                                        </p>
+                                        <p className="text-xs text-slate-500">of ${budget.amount.toLocaleString()}</p>
                                     </div>
-                                </Card>
-                            </motion.div>
-                        );
-                    })}
-                </div>
+                                    <div className="text-right">
+                                        <p className={`text-sm font-medium ${isOverBudget ? 'text-red-400' :
+                                                isWarning ? 'text-amber-400' :
+                                                    'text-emerald-400'
+                                            }`}>
+                                            {isOverBudget ? '+' : ''}{(budget.amount - budget.spent).toLocaleString()}
+                                        </p>
+                                        <p className="text-xs text-slate-500">
+                                            {isOverBudget ? 'over budget' : 'remaining'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Status badge */}
+                                <div className="mt-3 pt-3 border-t border-white/[0.04]">
+                                    {isOverBudget ? (
+                                        <span className="text-xs text-red-400 flex items-center gap-1">
+                                            <AlertTriangle className="w-3 h-3" />
+                                            Over budget by ${(budget.spent - budget.amount).toLocaleString()}
+                                        </span>
+                                    ) : isWarning ? (
+                                        <span className="text-xs text-amber-400">
+                                            ⚠️ Approaching budget limit
+                                        </span>
+                                    ) : (
+                                        <span className="text-xs text-emerald-400 flex items-center gap-1">
+                                            <CheckCircle className="w-3 h-3" />
+                                            On track
+                                        </span>
+                                    )}
+                                </div>
+                            </Card>
+                        </motion.div>
+                    );
+                })}
+
+                {/* Add Budget Card */}
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: budgets.length * 0.05 }}
+                    onClick={() => setShowAddModal(true)}
+                    className="p-5 rounded-2xl border border-dashed border-white/10 hover:border-white/20 hover:bg-white/[0.01] transition-all flex flex-col items-center justify-center min-h-[200px]"
+                >
+                    <PlusCircle className="w-8 h-8 text-slate-600 mb-2" />
+                    <span className="text-sm text-slate-500">Add Budget Category</span>
+                </motion.button>
             </div>
 
-            {/* 50/30/20 Breakdown (if selected) */}
-            {selectedMethod === '50-30-20' && (
-                <Card className="p-5">
-                    <h3 className="font-medium mb-4">50/30/20 Breakdown</h3>
-                    <div className="grid md:grid-cols-3 gap-6">
-                        <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-slate-400">Needs (50%)</span>
-                                <span className="text-sm font-medium">$3,800 / $4,000</span>
+            {/* Add Budget Modal */}
+            {showAddModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
+                    <Card className="relative z-10 w-full max-w-md p-6">
+                        <h2 className="text-lg font-semibold mb-4">Add Budget Category</h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-sm text-slate-500 block mb-1.5">Category</label>
+                                <select
+                                    value={formData.category}
+                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg focus:outline-none focus:border-emerald-500/50"
+                                >
+                                    <option value="">Select category</option>
+                                    {Object.keys(categoryConfig).map((cat) => (
+                                        <option key={cat} value={cat}>{cat}</option>
+                                    ))}
+                                </select>
                             </div>
-                            <div className="h-3 bg-white/[0.04] rounded-full overflow-hidden">
-                                <div className="h-full bg-blue-500 rounded-full" style={{ width: '95%' }} />
+                            <div>
+                                <label className="text-sm text-slate-500 block mb-1.5">Monthly Budget</label>
+                                <input
+                                    type="number"
+                                    value={formData.amount}
+                                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                                    placeholder="500"
+                                    className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg focus:outline-none focus:border-emerald-500/50"
+                                />
+                            </div>
+                            <div className="flex gap-3 pt-4">
+                                <Button variant="secondary" onClick={() => setShowAddModal(false)} className="flex-1">
+                                    Cancel
+                                </Button>
+                                <Button onClick={() => setShowAddModal(false)} className="flex-1">
+                                    Add Budget
+                                </Button>
                             </div>
                         </div>
-                        <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-slate-400">Wants (30%)</span>
-                                <span className="text-sm font-medium">$1,900 / $2,400</span>
-                            </div>
-                            <div className="h-3 bg-white/[0.04] rounded-full overflow-hidden">
-                                <div className="h-full bg-purple-500 rounded-full" style={{ width: '79%' }} />
-                            </div>
-                        </div>
-                        <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-slate-400">Savings (20%)</span>
-                                <span className="text-sm font-medium">$1,200 / $1,600</span>
-                            </div>
-                            <div className="h-3 bg-white/[0.04] rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: '75%' }} />
-                            </div>
-                        </div>
-                    </div>
-                </Card>
+                    </Card>
+                </div>
             )}
         </div>
     );

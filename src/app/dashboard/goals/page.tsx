@@ -1,112 +1,100 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
+    PlusCircle,
     Target,
     TrendingUp,
-    PiggyBank,
-    Home,
-    Plane,
-    Car,
-    GraduationCap,
-    Sparkles,
-    Plus,
-    ChevronRight,
     Calendar,
+    Edit3,
+    Trash2,
+    ChevronRight,
     DollarSign,
-    ArrowRight,
-    CheckCircle2,
-    Clock,
-    Zap,
+    PiggyBank,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
+import { createClient } from '@/lib/supabase/client';
 
-// Goal data
-const goals = [
-    {
-        id: 1,
-        name: 'Emergency Fund',
-        icon: PiggyBank,
-        target: 25000,
-        current: 18750,
-        deadline: 'Jun 2026',
-        color: 'emerald',
-        monthlyContribution: 850,
-        status: 'on-track',
-        linkedAccount: 'High-Yield Savings',
-    },
-    {
-        id: 2,
-        name: 'Home Down Payment',
-        icon: Home,
-        target: 80000,
-        current: 32000,
-        deadline: 'Dec 2027',
-        color: 'blue',
-        monthlyContribution: 2000,
-        status: 'on-track',
-        linkedAccount: 'Investment Account',
-    },
-    {
-        id: 3,
-        name: 'Vacation Fund',
-        icon: Plane,
-        target: 5000,
-        current: 4200,
-        deadline: 'Mar 2026',
-        color: 'purple',
-        monthlyContribution: 400,
-        status: 'ahead',
-        linkedAccount: 'Vacation Savings',
-    },
-    {
-        id: 4,
-        name: 'New Car',
-        icon: Car,
-        target: 35000,
-        current: 8500,
-        deadline: 'Jan 2028',
-        color: 'amber',
-        monthlyContribution: 750,
-        status: 'behind',
-        linkedAccount: 'Car Fund',
-    },
-    {
-        id: 5,
-        name: 'Education Fund',
-        icon: GraduationCap,
-        target: 50000,
-        current: 12000,
-        deadline: 'Sep 2030',
-        color: 'indigo',
-        monthlyContribution: 500,
-        status: 'on-track',
-        linkedAccount: '529 Plan',
-    },
+interface Goal {
+    id: string;
+    name: string;
+    target_amount: number;
+    current_amount: number;
+    target_date: string | null;
+    color: string;
+    status: string;
+    created_at: string;
+}
+
+const colorOptions = [
+    { name: 'emerald', class: 'bg-emerald-500', hex: '#10b981' },
+    { name: 'blue', class: 'bg-blue-500', hex: '#3b82f6' },
+    { name: 'purple', class: 'bg-purple-500', hex: '#a855f7' },
+    { name: 'rose', class: 'bg-rose-500', hex: '#f43f5e' },
+    { name: 'amber', class: 'bg-amber-500', hex: '#f59e0b' },
+    { name: 'cyan', class: 'bg-cyan-500', hex: '#06b6d4' },
 ];
 
-const aiRecommendations = [
-    {
-        title: 'Boost Your Emergency Fund',
-        description: 'You have $2,400 excess in checking. Move to emergency fund to hit goal 2 months earlier.',
-        impact: '+$2,400',
-        action: 'Transfer Now',
-    },
-    {
-        title: 'Round-Up Savings Available',
-        description: 'Enable round-ups on your card. Based on spending, you could save $127/month automatically.',
-        impact: '+$1,524/yr',
-        action: 'Enable',
-    },
+const mockGoals: Goal[] = [
+    { id: '1', name: 'Emergency Fund', target_amount: 25000, current_amount: 15000, target_date: '2026-06-30', color: 'emerald', status: 'active', created_at: '2025-01-01' },
+    { id: '2', name: 'House Down Payment', target_amount: 100000, current_amount: 42000, target_date: '2027-12-31', color: 'blue', status: 'active', created_at: '2025-01-01' },
+    { id: '3', name: 'Vacation Fund', target_amount: 5000, current_amount: 2800, target_date: '2026-08-01', color: 'purple', status: 'active', created_at: '2025-01-01' },
+    { id: '4', name: 'New Car', target_amount: 35000, current_amount: 8500, target_date: '2027-06-30', color: 'amber', status: 'active', created_at: '2025-02-01' },
 ];
 
 export default function GoalsPage() {
-    const [showNewGoal, setShowNewGoal] = useState(false);
+    const [goals, setGoals] = useState<Goal[]>(mockGoals);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
-    const totalTarget = goals.reduce((sum, g) => sum + g.target, 0);
-    const totalCurrent = goals.reduce((sum, g) => sum + g.current, 0);
-    const overallProgress = (totalCurrent / totalTarget) * 100;
+    // Form state
+    const [formData, setFormData] = useState({
+        name: '',
+        target_amount: '',
+        current_amount: '',
+        target_date: '',
+        color: 'emerald',
+    });
+
+    useEffect(() => {
+        async function fetchGoals() {
+            const supabase = createClient();
+            const { data } = await supabase
+                .from('goals')
+                .select('*')
+                .eq('status', 'active')
+                .order('created_at', { ascending: false });
+
+            if (data?.length) setGoals(data);
+        }
+        fetchGoals();
+    }, []);
+
+    const totalTargetAmount = goals.reduce((sum, g) => sum + g.target_amount, 0);
+    const totalCurrentAmount = goals.reduce((sum, g) => sum + g.current_amount, 0);
+    const overallProgress = (totalCurrentAmount / totalTargetAmount) * 100;
+
+    const handleAddGoal = async () => {
+        const newGoal: Goal = {
+            id: Date.now().toString(),
+            name: formData.name,
+            target_amount: parseFloat(formData.target_amount) || 0,
+            current_amount: parseFloat(formData.current_amount) || 0,
+            target_date: formData.target_date || null,
+            color: formData.color,
+            status: 'active',
+            created_at: new Date().toISOString(),
+        };
+
+        setGoals([...goals, newGoal]);
+        setShowAddModal(false);
+        setFormData({ name: '', target_amount: '', current_amount: '', target_date: '', color: 'emerald' });
+
+        // Save to database
+        const supabase = createClient();
+        await supabase.from('goals').insert(newGoal);
+    };
 
     return (
         <div className="space-y-6">
@@ -114,205 +102,232 @@ export default function GoalsPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-semibold">Financial Goals</h1>
-                    <p className="text-slate-500 text-sm mt-1">Track your progress and build wealth</p>
+                    <p className="text-slate-500 text-sm mt-1">Track your progress toward financial milestones</p>
                 </div>
-                <Button onClick={() => setShowNewGoal(true)} className="gap-2">
-                    <Plus className="w-4 h-4" />
-                    New Goal
+                <Button onClick={() => setShowAddModal(true)} className="gap-2">
+                    <PlusCircle className="w-4 h-4" />
+                    Add Goal
                 </Button>
             </div>
 
-            {/* Overall Progress */}
-            <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <div>
-                        <p className="text-slate-500 text-sm">Total Goals Progress</p>
-                        <p className="text-2xl font-semibold mt-1">
-                            ${totalCurrent.toLocaleString()} <span className="text-slate-500 text-lg font-normal">/ ${totalTarget.toLocaleString()}</span>
-                        </p>
+            {/* Overview Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-emerald-500/10">
+                            <Target className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Active Goals</p>
+                            <p className="text-xl font-semibold">{goals.length}</p>
+                        </div>
                     </div>
-                    <div className="text-right">
-                        <p className="text-3xl font-bold text-emerald-400">{overallProgress.toFixed(0)}%</p>
-                        <p className="text-slate-500 text-sm">Complete</p>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-blue-500/10">
+                            <DollarSign className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Total Target</p>
+                            <p className="text-xl font-semibold">${totalTargetAmount.toLocaleString()}</p>
+                        </div>
                     </div>
-                </div>
-                <div className="h-3 bg-white/[0.04] rounded-full overflow-hidden">
-                    <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${overallProgress}%` }}
-                        transition={{ duration: 1, ease: 'easeOut' }}
-                        className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
-                    />
-                </div>
-                <div className="flex justify-between mt-2 text-xs text-slate-500">
-                    <span>5 active goals</span>
-                    <span>${(totalTarget - totalCurrent).toLocaleString()} remaining</span>
-                </div>
-            </Card>
-
-            {/* AI Recommendations */}
-            <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    <h2 className="text-sm font-medium text-slate-300">AI Recommendations</h2>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                    {aiRecommendations.map((rec, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                        >
-                            <Card className="p-4 border-amber-500/20 bg-amber-500/[0.02]">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                        <h3 className="font-medium text-sm">{rec.title}</h3>
-                                        <p className="text-slate-500 text-xs mt-1">{rec.description}</p>
-                                    </div>
-                                    <span className="text-emerald-400 font-semibold text-sm">{rec.impact}</span>
-                                </div>
-                                <button className="mt-3 text-amber-400 text-xs font-medium flex items-center gap-1 hover:text-amber-300 transition-colors">
-                                    {rec.action} <ArrowRight className="w-3 h-3" />
-                                </button>
-                            </Card>
-                        </motion.div>
-                    ))}
-                </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-purple-500/10">
+                            <PiggyBank className="w-5 h-5 text-purple-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Current Savings</p>
+                            <p className="text-xl font-semibold">${totalCurrentAmount.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </Card>
+                <Card className="p-4">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-amber-500/10">
+                            <TrendingUp className="w-5 h-5 text-amber-400" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500">Overall Progress</p>
+                            <p className="text-xl font-semibold">{overallProgress.toFixed(0)}%</p>
+                        </div>
+                    </div>
+                </Card>
             </div>
 
             {/* Goals Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {goals.map((goal, i) => {
-                    const progress = (goal.current / goal.target) * 100;
-                    const Icon = goal.icon;
-                    const colorClasses: Record<string, { bg: string; text: string; ring: string }> = {
-                        emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', ring: 'ring-emerald-500/30' },
-                        blue: { bg: 'bg-blue-500/10', text: 'text-blue-400', ring: 'ring-blue-500/30' },
-                        purple: { bg: 'bg-purple-500/10', text: 'text-purple-400', ring: 'ring-purple-500/30' },
-                        amber: { bg: 'bg-amber-500/10', text: 'text-amber-400', ring: 'ring-amber-500/30' },
-                        indigo: { bg: 'bg-indigo-500/10', text: 'text-indigo-400', ring: 'ring-indigo-500/30' },
-                    };
-                    const colors = colorClasses[goal.color] || colorClasses.emerald;
+                {goals.map((goal, index) => {
+                    const progress = (goal.current_amount / goal.target_amount) * 100;
+                    const remaining = goal.target_amount - goal.current_amount;
+                    const colorHex = colorOptions.find(c => c.name === goal.color)?.hex || '#10b981';
+
+                    // Calculate days remaining
+                    let daysRemaining = null;
+                    if (goal.target_date) {
+                        const targetDate = new Date(goal.target_date);
+                        const today = new Date();
+                        daysRemaining = Math.ceil((targetDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+                    }
 
                     return (
                         <motion.div
                             key={goal.id}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.05 }}
+                            transition={{ delay: index * 0.05 }}
                         >
-                            <Card className="p-5 hover:border-white/[0.08] transition-colors cursor-pointer group">
+                            <Card className="p-5 hover:border-white/10 transition-colors cursor-pointer group">
+                                {/* Header */}
                                 <div className="flex items-start justify-between mb-4">
-                                    <div className={`p-2.5 rounded-xl ${colors.bg} ring-1 ${colors.ring}`}>
-                                        <Icon className={`w-5 h-5 ${colors.text}`} />
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        {goal.status === 'ahead' && (
-                                            <span className="flex items-center gap-1 text-xs text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-                                                <TrendingUp className="w-3 h-3" /> Ahead
-                                            </span>
-                                        )}
-                                        {goal.status === 'behind' && (
-                                            <span className="flex items-center gap-1 text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">
-                                                <Clock className="w-3 h-3" /> Behind
-                                            </span>
-                                        )}
-                                        {goal.status === 'on-track' && (
-                                            <span className="flex items-center gap-1 text-xs text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full">
-                                                <CheckCircle2 className="w-3 h-3" /> On Track
-                                            </span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <h3 className="font-medium mb-1">{goal.name}</h3>
-                                <p className="text-slate-500 text-xs mb-4">Target: {goal.deadline}</p>
-
-                                {/* Progress */}
-                                <div className="mb-3">
-                                    <div className="flex justify-between text-sm mb-1.5">
-                                        <span className="font-semibold">${goal.current.toLocaleString()}</span>
-                                        <span className="text-slate-500">${goal.target.toLocaleString()}</span>
-                                    </div>
-                                    <div className="h-2 bg-white/[0.04] rounded-full overflow-hidden">
-                                        <motion.div
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${progress}%` }}
-                                            transition={{ duration: 0.8, delay: i * 0.1 }}
-                                            className={`h-full rounded-full ${goal.color === 'emerald' ? 'bg-emerald-500' :
-                                                goal.color === 'blue' ? 'bg-blue-500' :
-                                                    goal.color === 'purple' ? 'bg-purple-500' :
-                                                        goal.color === 'amber' ? 'bg-amber-500' :
-                                                            'bg-indigo-500'
-                                                }`}
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className="w-3 h-10 rounded-full"
+                                            style={{ backgroundColor: colorHex }}
                                         />
+                                        <div>
+                                            <h3 className="font-medium">{goal.name}</h3>
+                                            {goal.target_date && (
+                                                <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                                                    <Calendar className="w-3 h-3" />
+                                                    {new Date(goal.target_date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                    {daysRemaining && daysRemaining > 0 && (
+                                                        <span className="text-slate-600">({daysRemaining} days)</span>
+                                                    )}
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-
-                                {/* Details */}
-                                <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-white/[0.04]">
-                                    <span className="flex items-center gap-1">
-                                        <DollarSign className="w-3 h-3" />
-                                        ${goal.monthlyContribution}/mo
-                                    </span>
-                                    <span className="flex items-center gap-1">
-                                        <Calendar className="w-3 h-3" />
-                                        {goal.deadline}
-                                    </span>
-                                </div>
-
-                                {/* Hover action */}
-                                <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button className="text-xs text-slate-400 hover:text-white flex items-center gap-1">
-                                        Manage Goal <ChevronRight className="w-3 h-3" />
+                                    <button
+                                        onClick={() => setEditingGoal(goal)}
+                                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-white/[0.04] transition-all"
+                                    >
+                                        <Edit3 className="w-4 h-4 text-slate-500" />
                                     </button>
                                 </div>
+
+                                {/* Progress */}
+                                <div className="mb-4">
+                                    <div className="flex justify-between text-sm mb-2">
+                                        <span className="font-mono">${goal.current_amount.toLocaleString()}</span>
+                                        <span className="text-slate-500">${goal.target_amount.toLocaleString()}</span>
+                                    </div>
+                                    <div className="h-3 bg-white/[0.04] rounded-full overflow-hidden">
+                                        <motion.div
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${Math.min(progress, 100)}%` }}
+                                            transition={{ duration: 1, delay: index * 0.1 }}
+                                            className="h-full rounded-full"
+                                            style={{ backgroundColor: colorHex }}
+                                        />
+                                    </div>
+                                    <div className="flex justify-between text-xs mt-2">
+                                        <span className="text-slate-500">{progress.toFixed(0)}% complete</span>
+                                        <span style={{ color: colorHex }}>${remaining.toLocaleString()} to go</span>
+                                    </div>
+                                </div>
+
+                                {/* Quick contribution suggestion */}
+                                {daysRemaining && daysRemaining > 0 && (
+                                    <div className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                                        <p className="text-xs text-slate-500">
+                                            Save <span className="text-white font-medium">${(remaining / (daysRemaining / 30)).toFixed(0)}/month</span> to reach goal on time
+                                        </p>
+                                    </div>
+                                )}
                             </Card>
                         </motion.div>
                     );
                 })}
 
                 {/* Add Goal Card */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     transition={{ delay: goals.length * 0.05 }}
+                    onClick={() => setShowAddModal(true)}
+                    className="p-5 rounded-2xl border border-dashed border-white/10 hover:border-white/20 hover:bg-white/[0.01] transition-all flex flex-col items-center justify-center min-h-[200px]"
                 >
-                    <div
-                        className="p-5 rounded-2xl border border-dashed border-white/[0.08] bg-white/[0.02] hover:border-[#7dd3a8]/30 transition-colors cursor-pointer flex flex-col items-center justify-center min-h-[240px] group"
-                        onClick={() => setShowNewGoal(true)}
-                    >
-                        <div className="p-3 rounded-full bg-[#7dd3a8]/10 group-hover:bg-[#7dd3a8]/20 transition-colors mb-3">
-                            <Plus className="w-6 h-6 text-[#7dd3a8]" />
-                        </div>
-                        <p className="font-medium text-slate-300 group-hover:text-white transition-colors">Create New Goal</p>
-                        <p className="text-xs text-slate-500 mt-1">Set a target and track your progress</p>
-                    </div>
-                </motion.div>
+                    <PlusCircle className="w-8 h-8 text-slate-600 mb-2" />
+                    <span className="text-sm text-slate-500">Add New Goal</span>
+                </motion.button>
             </div>
 
-            {/* Quick Tips */}
-            <Card className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                    <Zap className="w-4 h-4 text-amber-400" />
-                    <h3 className="font-medium text-sm">Quick Tips</h3>
+            {/* Add Goal Modal */}
+            {showAddModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setShowAddModal(false)} />
+                    <Card className="relative z-10 w-full max-w-md p-6">
+                        <h2 className="text-lg font-semibold mb-4">Add New Goal</h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-sm text-slate-500 block mb-1.5">Goal Name</label>
+                                <input
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    placeholder="e.g., Emergency Fund"
+                                    className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg focus:outline-none focus:border-emerald-500/50"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm text-slate-500 block mb-1.5">Target Amount</label>
+                                    <input
+                                        type="number"
+                                        value={formData.target_amount}
+                                        onChange={(e) => setFormData({ ...formData, target_amount: e.target.value })}
+                                        placeholder="10000"
+                                        className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg focus:outline-none focus:border-emerald-500/50"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-sm text-slate-500 block mb-1.5">Current Amount</label>
+                                    <input
+                                        type="number"
+                                        value={formData.current_amount}
+                                        onChange={(e) => setFormData({ ...formData, current_amount: e.target.value })}
+                                        placeholder="0"
+                                        className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg focus:outline-none focus:border-emerald-500/50"
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-sm text-slate-500 block mb-1.5">Target Date (Optional)</label>
+                                <input
+                                    type="date"
+                                    value={formData.target_date}
+                                    onChange={(e) => setFormData({ ...formData, target_date: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg focus:outline-none focus:border-emerald-500/50"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm text-slate-500 block mb-1.5">Color</label>
+                                <div className="flex gap-2">
+                                    {colorOptions.map((color) => (
+                                        <button
+                                            key={color.name}
+                                            onClick={() => setFormData({ ...formData, color: color.name })}
+                                            className={`w-8 h-8 rounded-full ${color.class} ${formData.color === color.name ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0a0a0f]' : ''}`}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex gap-3 pt-4">
+                                <Button variant="secondary" onClick={() => setShowAddModal(false)} className="flex-1">
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleAddGoal} className="flex-1">
+                                    Add Goal
+                                </Button>
+                            </div>
+                        </div>
+                    </Card>
                 </div>
-                <div className="grid md:grid-cols-3 gap-4">
-                    <div className="text-sm">
-                        <p className="text-slate-300 font-medium">Automate Savings</p>
-                        <p className="text-slate-500 text-xs mt-1">Set up automatic transfers to reach goals faster</p>
-                    </div>
-                    <div className="text-sm">
-                        <p className="text-slate-300 font-medium">Prioritize High-Interest</p>
-                        <p className="text-slate-500 text-xs mt-1">Focus on emergency fund first, then investments</p>
-                    </div>
-                    <div className="text-sm">
-                        <p className="text-slate-300 font-medium">Review Monthly</p>
-                        <p className="text-slate-500 text-xs mt-1">Adjust contributions based on income changes</p>
-                    </div>
-                </div>
-            </Card>
+            )}
         </div>
     );
 }

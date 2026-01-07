@@ -3,284 +3,273 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    MessageCircle,
-    X,
     Send,
     Sparkles,
-    Minimize2,
-    Bot,
     User,
     Loader2,
+    X,
+    Minimize2,
+    Maximize2,
+    RefreshCw,
 } from 'lucide-react';
+import { Card, Button } from '@/components/ui';
 
 interface Message {
-    id: string;
     role: 'user' | 'assistant';
     content: string;
     timestamp: Date;
 }
 
 const suggestedQuestions = [
-    'How much did I spend last month?',
+    'How am I doing on my budgets this month?',
+    'What subscriptions should I cancel?',
     'Where can I save money?',
-    'What\'s my tax situation?',
-    'Am I on track for retirement?',
+    'Am I on track for my goals?',
 ];
 
-export function AIChat() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isMinimized, setIsMinimized] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            role: 'assistant',
-            content: 'Hi! I\'m your AI financial assistant. I can help you understand your spending, find savings opportunities, optimize taxes, and plan for your goals. What would you like to know?',
-            timestamp: new Date(),
-        },
-    ]);
-    const [inputValue, setInputValue] = useState('');
+export function AIChatInterface() {
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
     }, [messages]);
 
-    const handleSendMessage = async () => {
-        if (!inputValue.trim() || isLoading) return;
+    const sendMessage = async (content: string) => {
+        if (!content.trim() || isLoading) return;
 
         const userMessage: Message = {
-            id: Date.now().toString(),
             role: 'user',
-            content: inputValue.trim(),
+            content: content.trim(),
             timestamp: new Date(),
         };
 
-        setMessages((prev) => [...prev, userMessage]);
-        setInputValue('');
+        setMessages(prev => [...prev, userMessage]);
+        setInput('');
         setIsLoading(true);
 
         try {
-            const response = await fetch('/api/ai-insights', {
+            const response = await fetch('/api/ai/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: userMessage.content }),
+                body: JSON.stringify({
+                    messages: [...messages, userMessage].map(m => ({
+                        role: m.role,
+                        content: m.content,
+                    })),
+                }),
             });
+
+            if (!response.ok) throw new Error('Failed to get response');
 
             const data = await response.json();
 
             const assistantMessage: Message = {
-                id: (Date.now() + 1).toString(),
                 role: 'assistant',
-                content: data.response || 'I apologize, but I encountered an issue. Please try again.',
+                content: data.response,
                 timestamp: new Date(),
             };
 
-            setMessages((prev) => [...prev, assistantMessage]);
-        } catch {
-            const errorMessage: Message = {
-                id: (Date.now() + 1).toString(),
-                role: 'assistant',
-                content: 'I\'m having trouble connecting right now. Please try again in a moment.',
-                timestamp: new Date(),
-            };
-            setMessages((prev) => [...prev, errorMessage]);
+            setMessages(prev => [...prev, assistantMessage]);
+        } catch (error) {
+            console.error('Chat error:', error);
+            setMessages(prev => [
+                ...prev,
+                {
+                    role: 'assistant',
+                    content: 'I apologize, but I encountered an error. Please try again.',
+                    timestamp: new Date(),
+                },
+            ]);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleQuestionClick = (question: string) => {
-        setInputValue(question);
-        handleSendMessage();
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        sendMessage(input);
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
-        }
+    const clearChat = () => {
+        setMessages([]);
     };
+
+    // Floating button when closed
+    if (!isOpen) {
+        return (
+            <motion.button
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg hover:shadow-xl transition-shadow"
+                onClick={() => setIsOpen(true)}
+            >
+                <Sparkles className="w-6 h-6" />
+            </motion.button>
+        );
+    }
 
     return (
-        <>
-            {/* Floating Button */}
-            <AnimatePresence>
-                {!isOpen && (
-                    <motion.button
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25 flex items-center justify-center text-white hover:shadow-emerald-500/40 transition-shadow"
-                    >
-                        <Sparkles className="w-6 h-6" />
-                    </motion.button>
-                )}
-            </AnimatePresence>
-
-            {/* Chat Window */}
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                        animate={{
-                            opacity: 1,
-                            y: 0,
-                            scale: 1,
-                            height: isMinimized ? 'auto' : 500,
-                        }}
-                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed bottom-6 right-6 z-50 w-[400px] max-w-[calc(100vw-48px)] bg-[#0c0c12] border border-white/[0.08] rounded-2xl shadow-2xl shadow-black/50 overflow-hidden flex flex-col"
-                    >
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-4 py-3 bg-white/[0.02] border-b border-white/[0.06]">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                                    <Sparkles className="w-4 h-4 text-white" />
-                                </div>
-                                <div>
-                                    <h3 className="font-medium text-sm">MoneyLoop AI</h3>
-                                    <p className="text-xs text-emerald-400">Online</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <button
-                                    onClick={() => setIsMinimized(!isMinimized)}
-                                    className="p-2 rounded-lg hover:bg-white/[0.04] transition-colors"
-                                >
-                                    <Minimize2 className="w-4 h-4 text-slate-400" />
-                                </button>
-                                <button
-                                    onClick={() => setIsOpen(false)}
-                                    className="p-2 rounded-lg hover:bg-white/[0.04] transition-colors"
-                                >
-                                    <X className="w-4 h-4 text-slate-400" />
-                                </button>
-                            </div>
+        <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className={`fixed z-50 ${isMinimized
+                    ? 'bottom-6 right-6 w-72'
+                    : 'bottom-6 right-6 w-96 h-[600px] max-h-[80vh]'
+                }`}
+        >
+            <Card className="h-full flex flex-col overflow-hidden border border-white/10 shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-white/[0.06] bg-gradient-to-r from-emerald-500/10 to-teal-500/10">
+                    <div className="flex items-center gap-2">
+                        <div className="relative">
+                            <Sparkles className="w-5 h-5 text-emerald-400" />
+                            <motion.div
+                                className="absolute -inset-1 bg-emerald-400/20 rounded-full blur-sm"
+                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                            />
                         </div>
+                        <div>
+                            <h3 className="font-semibold text-sm">MoneyLoop AI</h3>
+                            <p className="text-[10px] text-slate-500">Your financial assistant</p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                        {!isMinimized && messages.length > 0 && (
+                            <button
+                                onClick={clearChat}
+                                className="p-1.5 rounded-lg hover:bg-white/[0.04] text-slate-500 hover:text-white transition-colors"
+                                title="Clear chat"
+                            >
+                                <RefreshCw className="w-4 h-4" />
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setIsMinimized(!isMinimized)}
+                            className="p-1.5 rounded-lg hover:bg-white/[0.04] text-slate-500 hover:text-white transition-colors"
+                        >
+                            {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                        </button>
+                        <button
+                            onClick={() => setIsOpen(false)}
+                            className="p-1.5 rounded-lg hover:bg-white/[0.04] text-slate-500 hover:text-white transition-colors"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    </div>
+                </div>
 
+                {!isMinimized && (
+                    <>
                         {/* Messages */}
-                        {!isMinimized && (
-                            <>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                    {messages.map((message) => (
-                                        <motion.div
-                                            key={message.id}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''}`}
-                                        >
-                                            <div className={`w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center ${message.role === 'assistant'
-                                                    ? 'bg-gradient-to-br from-emerald-500 to-emerald-600'
-                                                    : 'bg-white/[0.08]'
-                                                }`}>
-                                                {message.role === 'assistant' ? (
-                                                    <Bot className="w-4 h-4 text-white" />
-                                                ) : (
-                                                    <User className="w-4 h-4 text-slate-400" />
-                                                )}
-                                            </div>
-                                            <div className={`max-w-[80%] ${message.role === 'user' ? 'text-right' : ''}`}>
-                                                <div className={`px-4 py-3 rounded-2xl text-sm ${message.role === 'user'
-                                                        ? 'bg-emerald-500/20 text-white rounded-br-md'
-                                                        : 'bg-white/[0.04] text-slate-200 rounded-bl-md'
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                            {messages.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <Sparkles className="w-12 h-12 mx-auto text-emerald-400/50 mb-4" />
+                                    <h4 className="font-medium mb-2">Ask me anything about your finances</h4>
+                                    <p className="text-xs text-slate-500 mb-6">
+                                        I can analyze spending, suggest savings, and help with budgets.
+                                    </p>
+                                    <div className="space-y-2">
+                                        {suggestedQuestions.map((q, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => sendMessage(q)}
+                                                className="block w-full text-left text-sm p-3 rounded-lg bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] transition-colors"
+                                            >
+                                                {q}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <AnimatePresence>
+                                        {messages.map((msg, i) => (
+                                            <motion.div
+                                                key={i}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
+                                            >
+                                                <div className={`p-2 rounded-full ${msg.role === 'user'
+                                                        ? 'bg-emerald-500/20'
+                                                        : 'bg-white/[0.04]'
                                                     }`}>
-                                                    <div className="whitespace-pre-wrap">{message.content}</div>
+                                                    {msg.role === 'user' ? (
+                                                        <User className="w-4 h-4 text-emerald-400" />
+                                                    ) : (
+                                                        <Sparkles className="w-4 h-4 text-slate-400" />
+                                                    )}
                                                 </div>
+                                                <div className={`flex-1 max-w-[80%] ${msg.role === 'user' ? 'text-right' : ''}`}>
+                                                    <div
+                                                        className={`inline-block p-3 rounded-2xl text-sm ${msg.role === 'user'
+                                                                ? 'bg-emerald-500/20 text-white'
+                                                                : 'bg-white/[0.04] text-slate-300'
+                                                            }`}
+                                                    >
+                                                        {msg.content}
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-600 mt-1">
+                                                        {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    </p>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </AnimatePresence>
+                                    {isLoading && (
+                                        <motion.div
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="flex gap-3"
+                                        >
+                                            <div className="p-2 rounded-full bg-white/[0.04]">
+                                                <Sparkles className="w-4 h-4 text-slate-400" />
+                                            </div>
+                                            <div className="p-3 rounded-2xl bg-white/[0.04]">
+                                                <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
                                             </div>
                                         </motion.div>
-                                    ))}
-
-                                    {isLoading && (
-                                        <div className="flex gap-3">
-                                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center">
-                                                <Bot className="w-4 h-4 text-white" />
-                                            </div>
-                                            <div className="bg-white/[0.04] px-4 py-3 rounded-2xl rounded-bl-md">
-                                                <Loader2 className="w-4 h-4 text-emerald-400 animate-spin" />
-                                            </div>
-                                        </div>
                                     )}
-
                                     <div ref={messagesEndRef} />
-                                </div>
+                                </>
+                            )}
+                        </div>
 
-                                {/* Suggested Questions */}
-                                {messages.length <= 2 && (
-                                    <div className="px-4 pb-3">
-                                        <p className="text-xs text-slate-500 mb-2">Try asking:</p>
-                                        <div className="flex flex-wrap gap-2">
-                                            {suggestedQuestions.map((question, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => {
-                                                        setInputValue(question);
-                                                        setTimeout(() => {
-                                                            const userMessage: Message = {
-                                                                id: Date.now().toString(),
-                                                                role: 'user',
-                                                                content: question,
-                                                                timestamp: new Date(),
-                                                            };
-                                                            setMessages((prev) => [...prev, userMessage]);
-                                                            setInputValue('');
-                                                            setIsLoading(true);
-                                                            fetch('/api/ai-insights', {
-                                                                method: 'POST',
-                                                                headers: { 'Content-Type': 'application/json' },
-                                                                body: JSON.stringify({ question }),
-                                                            })
-                                                                .then(res => res.json())
-                                                                .then(data => {
-                                                                    setMessages(prev => [...prev, {
-                                                                        id: (Date.now() + 1).toString(),
-                                                                        role: 'assistant',
-                                                                        content: data.response,
-                                                                        timestamp: new Date(),
-                                                                    }]);
-                                                                })
-                                                                .finally(() => setIsLoading(false));
-                                                        }, 0);
-                                                    }}
-                                                    className="text-xs px-3 py-1.5 rounded-full bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white transition-colors"
-                                                >
-                                                    {question}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Input */}
-                                <div className="p-4 border-t border-white/[0.06]">
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            value={inputValue}
-                                            onChange={(e) => setInputValue(e.target.value)}
-                                            onKeyDown={handleKeyDown}
-                                            placeholder="Ask me anything..."
-                                            disabled={isLoading}
-                                            className="flex-1 px-4 py-2.5 bg-white/[0.04] border border-white/[0.06] rounded-xl text-sm placeholder:text-slate-500 focus:outline-none focus:border-emerald-500/50 disabled:opacity-50"
-                                        />
-                                        <button
-                                            onClick={handleSendMessage}
-                                            disabled={!inputValue.trim() || isLoading}
-                                            className="p-2.5 rounded-xl bg-emerald-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-600 transition-colors"
-                                        >
-                                            <Send className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </motion.div>
+                        {/* Input */}
+                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/[0.06]">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder="Ask about your finances..."
+                                    className="flex-1 px-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-xl text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                    disabled={isLoading}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!input.trim() || isLoading}
+                                    className="p-2.5 rounded-xl bg-emerald-500 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-emerald-600 transition-colors"
+                                >
+                                    <Send className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </form>
+                    </>
                 )}
-            </AnimatePresence>
-        </>
+            </Card>
+        </motion.div>
     );
 }
