@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -42,7 +42,24 @@ const getErrorMessage = (error: string): string => {
     return error;
 };
 
+// Wrapper component to export as default
 export default function AuthPage() {
+    return (
+        <Suspense fallback={<AuthPageLoading />}>
+            <AuthPageContent />
+        </Suspense>
+    );
+}
+
+function AuthPageLoading() {
+    return (
+        <div className="min-h-screen bg-[#050508] flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
+        </div>
+    );
+}
+
+function AuthPageContent() {
     const searchParams = useSearchParams();
     const [authMode, setAuthMode] = useState<AuthMode>('signin');
     const [email, setEmail] = useState('');
@@ -472,8 +489,8 @@ export default function AuthPage() {
                                         type="button"
                                         onClick={() => setRememberMe(!rememberMe)}
                                         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${rememberMe
-                                                ? 'bg-emerald-500 border-emerald-500'
-                                                : 'border-white/20 hover:border-white/40'
+                                            ? 'bg-emerald-500 border-emerald-500'
+                                            : 'border-white/20 hover:border-white/40'
                                             }`}
                                     >
                                         {rememberMe && <CheckCircle2 className="w-3 h-3 text-white" />}

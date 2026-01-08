@@ -28,12 +28,12 @@ import {
     TransactionRow,
     AccountRow,
     InsightCard,
-} from './premium/DashboardPrimitives';
+} from './DashboardPrimitives';
 import {
     Sparkline,
     DonutChart,
     AreaChart,
-} from './premium/PremiumCharts';
+} from './PremiumCharts';
 
 interface DashboardData {
     user?: {
