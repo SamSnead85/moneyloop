@@ -1,4 +1,4 @@
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
+import { PremiumOnboardingWizard } from '@/components/onboarding/PremiumOnboardingWizard';
 
 export const metadata = {
     title: 'Get Started | MoneyLoop',
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function OnboardingPage() {
-    return <OnboardingWizard />;
+    return <PremiumOnboardingWizard />;
 }
