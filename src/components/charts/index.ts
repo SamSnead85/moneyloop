@@ -7,3 +7,7 @@ export {
     type TrendData,
     type ProjectionData,
 } from './AdvancedCharts';
+
+export { SankeyDiagram } from './SankeyDiagram';
+export { SpendingHeatmap } from './SpendingHeatmap';
+

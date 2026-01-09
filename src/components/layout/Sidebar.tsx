@@ -20,10 +20,12 @@ import {
     FileText,
     ShoppingCart,
     CalendarCheck,
+    MessageSquare,
 } from 'lucide-react';
 
 const navItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
+    { icon: MessageSquare, label: 'Ask MoneyLoop', href: '/dashboard/ask' },
     { icon: Wallet, label: 'Accounts', href: '/dashboard/accounts' },
     { icon: ArrowLeftRight, label: 'Transactions', href: '/dashboard/transactions' },
     { icon: PieChart, label: 'Budgets', href: '/dashboard/budgets' },
