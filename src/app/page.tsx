@@ -101,12 +101,20 @@ function PremiumBackground() {
   );
 }
 
+// Build version for deployment verification
+const BUILD_VERSION = 'v3.1';
+const BUILD_DATE = 'Jan 8 2026';
+
 // Navigation
 function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]">
+      {/* Deployment Verification Banner */}
+      <div className="bg-[#7dd3a8] text-[#050508] text-center py-1.5 text-xs font-medium">
+        🚀 Build {BUILD_VERSION} | Deployed {BUILD_DATE} | ✓ Latest changes active
+      </div>
       <div className="max-w-6xl mx-auto px-6">
         <div className="h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-4">
