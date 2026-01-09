@@ -115,9 +115,9 @@ export function AgentApprovalCard({
 
     return (
         <Card className={`overflow-hidden border-l-4 ${proposal.riskLevel === 'critical' ? 'border-l-red-500' :
-                proposal.riskLevel === 'high' ? 'border-l-orange-500' :
-                    proposal.riskLevel === 'medium' ? 'border-l-yellow-500' :
-                        'border-l-emerald-500'
+            proposal.riskLevel === 'high' ? 'border-l-orange-500' :
+                proposal.riskLevel === 'medium' ? 'border-l-yellow-500' :
+                    'border-l-emerald-500'
             }`}>
             <div className="p-4">
                 {/* Header */}
@@ -139,8 +139,8 @@ export function AgentApprovalCard({
                 {/* Impact */}
                 {proposal.impact && (
                     <div className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium mb-3 ${proposal.impact.type === 'savings' ? 'bg-emerald-500/10 text-emerald-400' :
-                            proposal.impact.type === 'cost' ? 'bg-red-500/10 text-red-400' :
-                                'bg-white/[0.04] text-slate-400'
+                        proposal.impact.type === 'cost' ? 'bg-red-500/10 text-red-400' :
+                            'bg-white/[0.04] text-slate-400'
                         }`}>
                         {proposal.impact.type === 'savings' ? '+' : proposal.impact.type === 'cost' ? '-' : ''}
                         ${proposal.impact.amount?.toLocaleString()}
