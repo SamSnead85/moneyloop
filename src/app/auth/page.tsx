@@ -22,24 +22,73 @@ import {
 
 type AuthMode = 'signin' | 'signup' | 'forgot' | 'reset';
 
-// User-friendly error messages
+// User-friendly error messages - order matters! More specific matches first
 const getErrorMessage = (error: string): string => {
-    const errorMap: Record<string, string> = {
-        'Invalid login credentials': 'Incorrect email or password. Please try again.',
-        'Email not confirmed': 'Please verify your email before signing in. Check your inbox.',
-        'User already registered': 'An account with this email already exists. Try signing in instead.',
-        'Password should be at least 6 characters': 'Password must be at least 6 characters long.',
-        'Invalid API key': 'Authentication service error. Please try again or use email sign-in.',
-        'Provider not enabled': 'This sign-in method is not currently available. Please use email sign-in.',
-        'AuthApiError': 'Authentication service is temporarily unavailable. Please try email sign-in.',
-    };
+    // Exact matches first (case-insensitive)
+    const lowerError = error.toLowerCase();
 
-    // Check for partial matches
-    for (const [key, value] of Object.entries(errorMap)) {
-        if (error.includes(key)) return value;
+    // Invalid credentials (most common)
+    if (lowerError.includes('invalid login credentials') ||
+        lowerError.includes('invalid password') ||
+        lowerError.includes('invalid email') ||
+        lowerError.includes('invalid credentials')) {
+        return 'Incorrect email or password. Please try again.';
     }
 
-    return error;
+    // User not found
+    if (lowerError.includes('user not found') ||
+        lowerError.includes('no user found')) {
+        return 'No account found with this email. Please sign up first.';
+    }
+
+    // Email not confirmed
+    if (lowerError.includes('email not confirmed') ||
+        lowerError.includes('email confirmation')) {
+        return 'Please verify your email before signing in. Check your inbox.';
+    }
+
+    // User already exists
+    if (lowerError.includes('user already registered') ||
+        lowerError.includes('already exists')) {
+        return 'An account with this email already exists. Try signing in instead.';
+    }
+
+    // Password requirements
+    if (lowerError.includes('password') && lowerError.includes('6 characters')) {
+        return 'Password must be at least 6 characters long.';
+    }
+
+    // Rate limiting
+    if (lowerError.includes('too many requests') ||
+        lowerError.includes('rate limit')) {
+        return 'Too many attempts. Please wait a moment and try again.';
+    }
+
+    // Provider errors (Google/Apple OAuth)
+    if (lowerError.includes('provider not enabled')) {
+        return 'This sign-in method is not currently available. Please use email sign-in.';
+    }
+
+    // API key issues (actual service error)
+    if (lowerError.includes('invalid api key') ||
+        lowerError.includes('api key')) {
+        return 'Authentication service error. Please try again later.';
+    }
+
+    // Network/service errors
+    if (lowerError.includes('network') ||
+        lowerError.includes('fetch') ||
+        lowerError.includes('timeout')) {
+        return 'Network error. Please check your connection and try again.';
+    }
+
+    // Generic auth error
+    if (lowerError.includes('authapierror')) {
+        return 'Authentication error. Please try again.';
+    }
+
+    // Return original if no match (but clean it up)
+    return error.length > 100 ? 'An error occurred. Please try again.' : error;
 };
 
 // Wrapper component to export as default
