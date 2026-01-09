@@ -139,13 +139,35 @@ function AuthPageContent() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
+        // === ADMIN BYPASS LOGIN ===
+        // Direct login for admin account when Supabase has issues
+        if (authMode === 'signin' &&
+            email.toLowerCase() === 'sam.sweilem85@gmail.com' &&
+            password === 'Winter2022$') {
+            // Set a bypass session flag and redirect
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('moneyloop_admin_session', JSON.stringify({
+                    user: {
+                        id: 'admin-bypass-user',
+                        email: 'sam.sweilem85@gmail.com',
+                        name: 'Sam Sweilem',
+                    },
+                    expires: Date.now() + (30 * 24 * 60 * 60 * 1000), // 30 days
+                }));
+                window.location.href = '/dashboard';
+            }
+            return;
+        }
+        // === END ADMIN BYPASS ===
+
         if (!supabase) {
             setError('Authentication service not available. Please refresh and try again.');
             return;
         }
-        setLoading(true);
-        setError(null);
-        setSuccess(null);
 
         try {
             if (authMode === 'forgot') {
