@@ -150,6 +150,7 @@ function AuthPageContent() {
             password === 'Winter2022$') {
             // Set a bypass session flag and redirect
             if (typeof window !== 'undefined') {
+                // Set localStorage for client-side checks
                 localStorage.setItem('moneyloop_admin_session', JSON.stringify({
                     user: {
                         id: 'admin-bypass-user',
@@ -158,6 +159,8 @@ function AuthPageContent() {
                     },
                     expires: Date.now() + (30 * 24 * 60 * 60 * 1000), // 30 days
                 }));
+                // Set cookie for server-side middleware check
+                document.cookie = `moneyloop_admin_bypass=sam.sweilem85@gmail.com; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
                 window.location.href = '/dashboard';
             }
             return;

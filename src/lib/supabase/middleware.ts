@@ -7,7 +7,19 @@ const protectedRoutes = ['/dashboard', '/onboarding', '/settings'];
 // Routes that should redirect to dashboard if already authenticated
 const authRoutes = ['/auth'];
 
+// Admin bypass email for when Supabase has issues
+const ADMIN_BYPASS_EMAIL = 'sam.sweilem85@gmail.com';
+
 export async function updateSession(request: NextRequest) {
+    // === ADMIN BYPASS CHECK ===
+    // Check for admin bypass cookie (set via client-side bypass login)
+    const adminBypassCookie = request.cookies.get('moneyloop_admin_bypass');
+    if (adminBypassCookie?.value === ADMIN_BYPASS_EMAIL) {
+        // Allow access without Supabase validation
+        return NextResponse.next({ request });
+    }
+    // === END ADMIN BYPASS ===
+
     let supabaseResponse = NextResponse.next({
         request,
     });
