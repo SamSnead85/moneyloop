@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react';
 import { usePlaidLink, PlaidLinkOptions, PlaidLinkOnSuccess } from 'react-plaid-link';
 import { Button } from '@/components/ui';
-import { Building2, Loader2, CheckCircle } from 'lucide-react';
+import { Building2, Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
 
 interface PlaidLinkButtonProps {
     onSuccess?: () => void;
@@ -11,18 +11,56 @@ interface PlaidLinkButtonProps {
     children?: React.ReactNode;
 }
 
+// Demo accounts to simulate when Plaid is not configured
+const DEMO_ACCOUNTS = {
+    institution: 'Bank of America',
+    accounts: [
+        { id: 'demo-checking-1', name: 'BoA Core Checking', type: 'depository', subtype: 'checking', balance: 12847.32 },
+        { id: 'demo-savings-1', name: 'BoA Savings', type: 'depository', subtype: 'savings', balance: 44802.18 },
+        { id: 'demo-credit-1', name: 'BoA Cash Rewards Visa', type: 'credit', subtype: 'credit card', balance: -2341.56 },
+    ],
+};
+
 export function PlaidLinkButton({ onSuccess, className, children }: PlaidLinkButtonProps) {
     const [linkToken, setLinkToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isConnecting, setIsConnecting] = useState(false);
+    const [showDemoOption, setShowDemoOption] = useState(false);
     const [connectionResult, setConnectionResult] = useState<{
         success: boolean;
         message: string;
     } | null>(null);
 
+    // Demo mode: Simulate connecting Bank of America
+    const connectDemoBank = useCallback(() => {
+        setIsConnecting(true);
+
+        // Simulate network delay
+        setTimeout(() => {
+            // Store demo accounts in localStorage
+            if (typeof window !== 'undefined') {
+                const existingAccounts = JSON.parse(localStorage.getItem('moneyloop_demo_accounts') || '[]');
+                const newAccounts = DEMO_ACCOUNTS.accounts.map(acc => ({
+                    ...acc,
+                    institution: DEMO_ACCOUNTS.institution,
+                    connected_at: new Date().toISOString(),
+                }));
+                localStorage.setItem('moneyloop_demo_accounts', JSON.stringify([...existingAccounts, ...newAccounts]));
+            }
+
+            setConnectionResult({
+                success: true,
+                message: `Connected ${DEMO_ACCOUNTS.institution} with ${DEMO_ACCOUNTS.accounts.length} account(s)!`,
+            });
+            setIsConnecting(false);
+            onSuccess?.();
+        }, 2000);
+    }, [onSuccess]);
+
     // Fetch link token when component mounts or user clicks
     const fetchLinkToken = useCallback(async () => {
         setIsLoading(true);
+        setShowDemoOption(false);
         try {
             const response = await fetch('/api/plaid/create-link-token', {
                 method: 'POST',
@@ -37,9 +75,11 @@ export function PlaidLinkButton({ onSuccess, className, children }: PlaidLinkBut
             }
         } catch (error) {
             console.error('Error fetching link token:', error);
+            // Show demo option when Plaid fails
+            setShowDemoOption(true);
             setConnectionResult({
                 success: false,
-                message: 'Failed to initialize bank connection. Please try again.',
+                message: 'Plaid not configured. Use demo mode to preview.',
             });
         } finally {
             setIsLoading(false);
@@ -109,11 +149,45 @@ export function PlaidLinkButton({ onSuccess, className, children }: PlaidLinkBut
         }
     };
 
+    // Show demo option after Plaid fails
+    if (showDemoOption && !connectionResult?.success) {
+        return (
+            <div className="space-y-3">
+                <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <AlertTriangle className="w-5 h-5 text-amber-400" />
+                    <span className="text-sm text-amber-400">
+                        Plaid API not configured
+                    </span>
+                </div>
+                <Button
+                    onClick={connectDemoBank}
+                    disabled={isConnecting}
+                    className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 ${className}`}
+                >
+                    {isConnecting ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Connecting Demo Account...
+                        </>
+                    ) : (
+                        <>
+                            <Building2 className="w-4 h-4" />
+                            Connect Demo Bank of America
+                        </>
+                    )}
+                </Button>
+                <p className="text-center text-xs text-white/40">
+                    This will simulate a Bank of America connection with sample data
+                </p>
+            </div>
+        );
+    }
+
     if (connectionResult) {
         return (
             <div className={`flex items-center gap-3 px-4 py-3 rounded-xl ${connectionResult.success
-                    ? 'bg-[#7dd3a8]/10 border border-[#7dd3a8]/20'
-                    : 'bg-red-500/10 border border-red-500/20'
+                ? 'bg-[#7dd3a8]/10 border border-[#7dd3a8]/20'
+                : 'bg-red-500/10 border border-red-500/20'
                 }`}>
                 <CheckCircle className={`w-5 h-5 ${connectionResult.success ? 'text-[#7dd3a8]' : 'text-red-400'
                     }`} />
@@ -128,6 +202,7 @@ export function PlaidLinkButton({ onSuccess, className, children }: PlaidLinkBut
                         onClick={() => {
                             setConnectionResult(null);
                             setLinkToken(null);
+                            setShowDemoOption(false);
                         }}
                         className="ml-auto text-xs"
                     >
