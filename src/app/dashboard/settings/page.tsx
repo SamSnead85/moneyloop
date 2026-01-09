@@ -20,8 +20,15 @@ import {
     ExternalLink,
     LogOut,
     Trash2,
+    Database,
+    Code,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
+import DataBackupManager from '@/components/settings/DataBackupManager';
+import ApiKeyManager from '@/components/settings/ApiKeyManager';
+import { PasskeyManager } from '@/components/settings';
+import { NotificationSettings } from '@/components/settings';
+import { SessionAudit } from '@/components/settings';
 
 const settingsSections = [
     { id: 'profile', name: 'Profile', icon: User },
@@ -30,6 +37,7 @@ const settingsSections = [
     { id: 'accounts', name: 'Connected Accounts', icon: Link2 },
     { id: 'billing', name: 'Billing & Subscription', icon: CreditCard },
     { id: 'data', name: 'Data & Privacy', icon: Download },
+    { id: 'developer', name: 'Developer API', icon: Code },
 ];
 
 const connectedAccounts = [
@@ -72,8 +80,8 @@ export default function SettingsPage() {
                                     key={section.id}
                                     onClick={() => setActiveSection(section.id)}
                                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${isActive
-                                            ? 'bg-white/[0.06] text-white'
-                                            : 'text-slate-400 hover:bg-white/[0.03] hover:text-white'
+                                        ? 'bg-white/[0.06] text-white'
+                                        : 'text-slate-400 hover:bg-white/[0.03] hover:text-white'
                                         }`}
                                 >
                                     <Icon className="w-4 h-4" />
@@ -155,8 +163,8 @@ export default function SettingsPage() {
                                                 key={option.id}
                                                 onClick={() => setTheme(option.id as 'dark' | 'light' | 'system')}
                                                 className={`flex-1 p-4 rounded-xl border transition-all ${theme === option.id
-                                                        ? 'border-emerald-500/50 bg-emerald-500/[0.05]'
-                                                        : 'border-white/[0.06] hover:border-white/[0.1]'
+                                                    ? 'border-emerald-500/50 bg-emerald-500/[0.05]'
+                                                    : 'border-white/[0.06] hover:border-white/[0.1]'
                                                     }`}
                                             >
                                                 <Icon className={`w-5 h-5 mx-auto mb-2 ${theme === option.id ? 'text-emerald-400' : 'text-slate-400'}`} />
@@ -395,6 +403,20 @@ export default function SettingsPage() {
                                         </Button>
                                     </div>
                                 </div>
+
+                                {/* Data Backup Manager */}
+                                <div className="mt-8 pt-6 border-t border-white/[0.04]">
+                                    <DataBackupManager />
+                                </div>
+                            </Card>
+                        </motion.div>
+                    )}
+
+                    {/* Developer API Section */}
+                    {activeSection === 'developer' && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <Card className="p-6">
+                                <ApiKeyManager />
                             </Card>
                         </motion.div>
                     )}

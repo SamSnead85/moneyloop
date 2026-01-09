@@ -19,9 +19,11 @@ import {
     Zap,
     Film,
     Heart,
+    BarChart3,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
+import BudgetForecast from '@/components/budgets/BudgetForecast';
 
 interface Budget {
     id: string;
@@ -60,6 +62,7 @@ export default function BudgetsPage() {
     const [loading, setLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [period, setPeriod] = useState<'weekly' | 'monthly' | 'yearly'>('monthly');
+    const [showForecast, setShowForecast] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -115,8 +118,27 @@ export default function BudgetsPage() {
                         <PlusCircle className="w-4 h-4" />
                         Add Budget
                     </Button>
+                    <Button
+                        variant={showForecast ? 'primary' : 'secondary'}
+                        onClick={() => setShowForecast(!showForecast)}
+                        className="gap-2"
+                    >
+                        <BarChart3 className="w-4 h-4" />
+                        {showForecast ? 'Hide' : 'Show'} Forecast
+                    </Button>
                 </div>
             </div>
+
+            {/* 6-Month Forecast */}
+            {showForecast && (
+                <Card className="p-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">6-Month Spending Forecast</h3>
+                    <BudgetForecast
+                        budgets={budgets.map(b => ({ category: b.category, budget: b.amount, spent: b.spent }))}
+                        historicalSpending={[totalSpent * 0.9, totalSpent * 0.95, totalSpent * 1.02, totalSpent * 0.98, totalSpent * 1.05, totalSpent]}
+                    />
+                </Card>
+            )}
 
             {/* Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

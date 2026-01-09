@@ -21,8 +21,13 @@ import {
     Home,
     Zap,
     CreditCard,
+    AlertTriangle,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
+import DuplicateDetector from '@/components/transactions/DuplicateDetector';
+import TagManager from '@/components/transactions/TagManager';
+
+type TabType = 'transactions' | 'duplicates' | 'tags';
 
 // Transaction data
 const transactions = [
@@ -48,6 +53,7 @@ export default function TransactionsPage() {
     const [selectedAccount, setSelectedAccount] = useState('All Accounts');
     const [selectedDateRange, setSelectedDateRange] = useState('Last 30 days');
     const [showFilters, setShowFilters] = useState(false);
+    const [activeTab, setActiveTab] = useState<TabType>('transactions');
 
     const filteredTransactions = transactions.filter(t => {
         const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -80,186 +86,224 @@ export default function TransactionsPage() {
                 </div>
             </div>
 
-            {/* Summary Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="p-4">
-                    <p className="text-slate-500 text-xs">Total Income</p>
-                    <p className="text-xl font-semibold text-emerald-400 mt-1">+${totalIncome.toLocaleString()}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-slate-500 text-xs">Total Expenses</p>
-                    <p className="text-xl font-semibold text-red-400 mt-1">-${totalExpenses.toLocaleString()}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-slate-500 text-xs">Net Cash Flow</p>
-                    <p className={`text-xl font-semibold mt-1 ${totalIncome - totalExpenses > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                        {totalIncome - totalExpenses > 0 ? '+' : '-'}${Math.abs(totalIncome - totalExpenses).toLocaleString()}
-                    </p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-slate-500 text-xs">Transactions</p>
-                    <p className="text-xl font-semibold mt-1">{transactions.length}</p>
-                </Card>
+            {/* Tabs */}
+            <div className="flex items-center gap-1 p-1 bg-white/[0.02] border border-white/[0.06] rounded-lg w-fit">
+                {[
+                    { id: 'transactions' as TabType, label: 'All Transactions' },
+                    { id: 'duplicates' as TabType, label: 'Duplicates', icon: AlertTriangle },
+                    { id: 'tags' as TabType, label: 'Tags', icon: Tag },
+                ].map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                        className={`flex items-center gap-2 px-4 py-2 text-sm rounded-md transition-colors ${activeTab === tab.id
+                            ? 'bg-emerald-500/20 text-emerald-400'
+                            : 'text-slate-400 hover:text-white'
+                            }`}
+                    >
+                        {tab.icon && <tab.icon className="w-4 h-4" />}
+                        {tab.label}
+                    </button>
+                ))}
             </div>
 
-            {/* Search and Filters */}
-            <Card className="p-4">
-                <div className="flex flex-col md:flex-row gap-4">
-                    {/* Search */}
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                        <input
-                            type="text"
-                            placeholder="Search transactions..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
-                        />
+            {/* Tab Content */}
+            {activeTab === 'duplicates' && (
+                <Card className="p-6">
+                    <DuplicateDetector />
+                </Card>
+            )}
+
+            {activeTab === 'tags' && (
+                <Card className="p-6">
+                    <TagManager />
+                </Card>
+            )}
+
+            {activeTab === 'transactions' && (
+                <>
+                    {/* Summary Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <Card className="p-4">
+                            <p className="text-slate-500 text-xs">Total Income</p>
+                            <p className="text-xl font-semibold text-emerald-400 mt-1">+${totalIncome.toLocaleString()}</p>
+                        </Card>
+                        <Card className="p-4">
+                            <p className="text-slate-500 text-xs">Total Expenses</p>
+                            <p className="text-xl font-semibold text-red-400 mt-1">-${totalExpenses.toLocaleString()}</p>
+                        </Card>
+                        <Card className="p-4">
+                            <p className="text-slate-500 text-xs">Net Cash Flow</p>
+                            <p className={`text-xl font-semibold mt-1 ${totalIncome - totalExpenses > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                {totalIncome - totalExpenses > 0 ? '+' : '-'}${Math.abs(totalIncome - totalExpenses).toLocaleString()}
+                            </p>
+                        </Card>
+                        <Card className="p-4">
+                            <p className="text-slate-500 text-xs">Transactions</p>
+                            <p className="text-xl font-semibold mt-1">{transactions.length}</p>
+                        </Card>
                     </div>
 
-                    {/* Quick Filters */}
-                    <div className="flex items-center gap-2">
-                        <div className="relative">
-                            <select
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="appearance-none pl-3 pr-8 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-emerald-500/50 cursor-pointer"
-                            >
-                                {categories.map(cat => (
-                                    <option key={cat} value={cat} className="bg-[#0a0a0f]">{cat}</option>
-                                ))}
-                            </select>
-                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-                        </div>
+                    {/* Search and Filters */}
+                    <Card className="p-4">
+                        <div className="flex flex-col md:flex-row gap-4">
+                            {/* Search */}
+                            <div className="relative flex-1">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input
+                                    type="text"
+                                    placeholder="Search transactions..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                />
+                            </div>
 
-                        <div className="relative">
-                            <select
-                                value={selectedAccount}
-                                onChange={(e) => setSelectedAccount(e.target.value)}
-                                className="appearance-none pl-3 pr-8 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-emerald-500/50 cursor-pointer"
-                            >
-                                {accounts.map(acc => (
-                                    <option key={acc} value={acc} className="bg-[#0a0a0f]">{acc}</option>
-                                ))}
-                            </select>
-                            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
-                        </div>
-
-                        <button
-                            onClick={() => setShowFilters(!showFilters)}
-                            className={`p-2.5 rounded-lg border transition-colors ${showFilters ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-white'}`}
-                        >
-                            <Filter className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Advanced Filters */}
-                {showFilters && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        className="mt-4 pt-4 border-t border-white/[0.04] grid md:grid-cols-4 gap-4"
-                    >
-                        <div>
-                            <label className="text-xs text-slate-500 mb-1.5 block">Date Range</label>
-                            <select className="w-full appearance-none px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm">
-                                {dateRanges.map(range => (
-                                    <option key={range} value={range} className="bg-[#0a0a0f]">{range}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="text-xs text-slate-500 mb-1.5 block">Amount Range</label>
+                            {/* Quick Filters */}
                             <div className="flex items-center gap-2">
-                                <input type="text" placeholder="Min" className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm" />
-                                <span className="text-slate-500">-</span>
-                                <input type="text" placeholder="Max" className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm" />
+                                <div className="relative">
+                                    <select
+                                        value={selectedCategory}
+                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                        className="appearance-none pl-3 pr-8 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-emerald-500/50 cursor-pointer"
+                                    >
+                                        {categories.map(cat => (
+                                            <option key={cat} value={cat} className="bg-[#0a0a0f]">{cat}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                                </div>
+
+                                <div className="relative">
+                                    <select
+                                        value={selectedAccount}
+                                        onChange={(e) => setSelectedAccount(e.target.value)}
+                                        className="appearance-none pl-3 pr-8 py-2.5 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm focus:outline-none focus:border-emerald-500/50 cursor-pointer"
+                                    >
+                                        {accounts.map(acc => (
+                                            <option key={acc} value={acc} className="bg-[#0a0a0f]">{acc}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                                </div>
+
+                                <button
+                                    onClick={() => setShowFilters(!showFilters)}
+                                    className={`p-2.5 rounded-lg border transition-colors ${showFilters ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-white/[0.02] border-white/[0.06] text-slate-400 hover:text-white'}`}
+                                >
+                                    <Filter className="w-4 h-4" />
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <label className="text-xs text-slate-500 mb-1.5 block">Transaction Type</label>
-                            <select className="w-full appearance-none px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm">
-                                <option className="bg-[#0a0a0f]">All Types</option>
-                                <option className="bg-[#0a0a0f]">Income</option>
-                                <option className="bg-[#0a0a0f]">Expenses</option>
-                                <option className="bg-[#0a0a0f]">Transfers</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="text-xs text-slate-500 mb-1.5 block">Status</label>
-                            <select className="w-full appearance-none px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm">
-                                <option className="bg-[#0a0a0f]">All</option>
-                                <option className="bg-[#0a0a0f]">Posted</option>
-                                <option className="bg-[#0a0a0f]">Pending</option>
-                            </select>
-                        </div>
-                    </motion.div>
-                )}
-            </Card>
 
-            {/* Transactions List */}
-            <Card className="overflow-hidden">
-                <div className="divide-y divide-white/[0.04]">
-                    {filteredTransactions.map((transaction, i) => {
-                        const Icon = transaction.icon;
-                        return (
+                        {/* Advanced Filters */}
+                        {showFilters && (
                             <motion.div
-                                key={transaction.id}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: i * 0.02 }}
-                                className="flex items-center gap-4 p-4 hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-4 pt-4 border-t border-white/[0.04] grid md:grid-cols-4 gap-4"
                             >
-                                {/* Icon */}
-                                <div className={`p-2.5 rounded-xl ${transaction.amount > 0 ? 'bg-emerald-500/10' : 'bg-white/[0.04]'}`}>
-                                    <Icon className={`w-5 h-5 ${transaction.amount > 0 ? 'text-emerald-400' : 'text-slate-400'}`} />
+                                <div>
+                                    <label className="text-xs text-slate-500 mb-1.5 block">Date Range</label>
+                                    <select className="w-full appearance-none px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm">
+                                        {dateRanges.map(range => (
+                                            <option key={range} value={range} className="bg-[#0a0a0f]">{range}</option>
+                                        ))}
+                                    </select>
                                 </div>
-
-                                {/* Details */}
-                                <div className="flex-1 min-w-0">
+                                <div>
+                                    <label className="text-xs text-slate-500 mb-1.5 block">Amount Range</label>
                                     <div className="flex items-center gap-2">
-                                        <span className="font-medium truncate">{transaction.name}</span>
-                                        {transaction.pending && (
-                                            <span className="text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">Pending</span>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
-                                        <span>{transaction.category}</span>
-                                        <span>•</span>
-                                        <span>{transaction.account}</span>
+                                        <input type="text" placeholder="Min" className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm" />
+                                        <span className="text-slate-500">-</span>
+                                        <input type="text" placeholder="Max" className="w-full px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm" />
                                     </div>
                                 </div>
-
-                                {/* Date */}
-                                <div className="hidden md:block text-right">
-                                    <p className="text-sm text-slate-400">{transaction.date}</p>
-                                    <p className="text-xs text-slate-500">{transaction.time}</p>
+                                <div>
+                                    <label className="text-xs text-slate-500 mb-1.5 block">Transaction Type</label>
+                                    <select className="w-full appearance-none px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm">
+                                        <option className="bg-[#0a0a0f]">All Types</option>
+                                        <option className="bg-[#0a0a0f]">Income</option>
+                                        <option className="bg-[#0a0a0f]">Expenses</option>
+                                        <option className="bg-[#0a0a0f]">Transfers</option>
+                                    </select>
                                 </div>
-
-                                {/* Amount */}
-                                <div className="text-right min-w-[100px]">
-                                    <p className={`font-semibold ${transaction.amount > 0 ? 'text-emerald-400' : 'text-white'}`}>
-                                        {transaction.amount > 0 ? '+' : ''}{transaction.amount < 0 ? '-' : ''}${Math.abs(transaction.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                    </p>
+                                <div>
+                                    <label className="text-xs text-slate-500 mb-1.5 block">Status</label>
+                                    <select className="w-full appearance-none px-3 py-2 bg-white/[0.02] border border-white/[0.06] rounded-lg text-sm">
+                                        <option className="bg-[#0a0a0f]">All</option>
+                                        <option className="bg-[#0a0a0f]">Posted</option>
+                                        <option className="bg-[#0a0a0f]">Pending</option>
+                                    </select>
                                 </div>
-
-                                {/* Actions */}
-                                <button className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-white/[0.04] transition-all">
-                                    <MoreVertical className="w-4 h-4 text-slate-500" />
-                                </button>
                             </motion.div>
-                        );
-                    })}
-                </div>
+                        )}
+                    </Card>
 
-                {/* Load More */}
-                <div className="p-4 border-t border-white/[0.04] text-center">
-                    <button className="text-sm text-slate-400 hover:text-white transition-colors">
-                        Load more transactions
-                    </button>
-                </div>
-            </Card>
+                    {/* Transactions List */}
+                    <Card className="overflow-hidden">
+                        <div className="divide-y divide-white/[0.04]">
+                            {filteredTransactions.map((transaction, i) => {
+                                const Icon = transaction.icon;
+                                return (
+                                    <motion.div
+                                        key={transaction.id}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: i * 0.02 }}
+                                        className="flex items-center gap-4 p-4 hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                                    >
+                                        {/* Icon */}
+                                        <div className={`p-2.5 rounded-xl ${transaction.amount > 0 ? 'bg-emerald-500/10' : 'bg-white/[0.04]'}`}>
+                                            <Icon className={`w-5 h-5 ${transaction.amount > 0 ? 'text-emerald-400' : 'text-slate-400'}`} />
+                                        </div>
+
+                                        {/* Details */}
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium truncate">{transaction.name}</span>
+                                                {transaction.pending && (
+                                                    <span className="text-xs text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full">Pending</span>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-500">
+                                                <span>{transaction.category}</span>
+                                                <span>•</span>
+                                                <span>{transaction.account}</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Date */}
+                                        <div className="hidden md:block text-right">
+                                            <p className="text-sm text-slate-400">{transaction.date}</p>
+                                            <p className="text-xs text-slate-500">{transaction.time}</p>
+                                        </div>
+
+                                        {/* Amount */}
+                                        <div className="text-right min-w-[100px]">
+                                            <p className={`font-semibold ${transaction.amount > 0 ? 'text-emerald-400' : 'text-white'}`}>
+                                                {transaction.amount > 0 ? '+' : ''}{transaction.amount < 0 ? '-' : ''}${Math.abs(transaction.amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                            </p>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <button className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-white/[0.04] transition-all">
+                                            <MoreVertical className="w-4 h-4 text-slate-500" />
+                                        </button>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Load More */}
+                        <div className="p-4 border-t border-white/[0.04] text-center">
+                            <button className="text-sm text-slate-400 hover:text-white transition-colors">
+                                Load more transactions
+                            </button>
+                        </div>
+                    </Card>
+                </>
+            )}
         </div>
     );
 }
