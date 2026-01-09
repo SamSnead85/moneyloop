@@ -1,21 +1,140 @@
 {
-    "name": "MoneyLoop",
+    "name": "MoneyLoop - Personal Finance",
     "short_name": "MoneyLoop",
-    "description": "Track all your wealth in one place",
-    "start_url": "/",
+    "description": "Your complete financial command center. Track all your wealth, connect bank accounts, manage budgets, and get AI-powered insights.",
+    "start_url": "/dashboard",
     "display": "standalone",
+    "orientation": "portrait-primary",
     "background_color": "#08080c",
     "theme_color": "#08080c",
+    "scope": "/",
+    "categories": [
+        "finance",
+        "productivity",
+        "utilities"
+    ],
+    "dir": "ltr",
+    "lang": "en-US",
+    "prefer_related_applications": false,
     "icons": [
+        {
+            "src": "/icon-72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-128.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-144.png",
+            "sizes": "144x144",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-152.png",
+            "sizes": "152x152",
+            "type": "image/png",
+            "purpose": "any"
+        },
         {
             "src": "/icon-192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-384.png",
+            "sizes": "384x384",
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "/icon-512.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         }
-    ]
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshots/dashboard.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Dashboard Overview"
+        },
+        {
+            "src": "/screenshots/mobile.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Mobile View"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "description": "View your financial overview",
+            "url": "/dashboard",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Ask MoneyLoop",
+            "short_name": "Ask AI",
+            "description": "Chat with AI about your finances",
+            "url": "/dashboard/ask",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Transactions",
+            "short_name": "Transactions",
+            "description": "View recent transactions",
+            "url": "/dashboard/transactions",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Add Account",
+            "short_name": "Add Account",
+            "description": "Connect a new bank account",
+            "url": "/dashboard/accounts?add=true",
+            "icons": [
+                {
+                    "src": "/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "related_applications": [],
+    "handle_links": "preferred",
+    "launch_handler": {
+        "client_mode": "focus-existing"
+    }
 }
