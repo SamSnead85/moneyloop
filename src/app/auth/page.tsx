@@ -186,6 +186,8 @@ function AuthPageContent() {
                 window.location.href = '/dashboard';
             }
         } catch (err: any) {
+            // Log actual error for debugging
+            console.error('[Auth Error]', err.message, err);
             setError(getErrorMessage(err.message || 'An error occurred'));
         } finally {
             setLoading(false);

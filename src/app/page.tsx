@@ -102,7 +102,7 @@ function PremiumBackground() {
 }
 
 // Build version for deployment verification
-const BUILD_VERSION = 'v3.1';
+const BUILD_VERSION = 'v3.2';
 const BUILD_DATE = 'Jan 8 2026';
 
 // Navigation
