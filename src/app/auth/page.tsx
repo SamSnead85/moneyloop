@@ -229,8 +229,9 @@ function AuthPageContent() {
 
         try {
             const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+            console.log('[Google OAuth] Initiating with redirectTo:', `${siteUrl}/auth/callback`);
 
-            const { error } = await supabase.auth.signInWithOAuth({
+            const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: `${siteUrl}/auth/callback`,
@@ -240,10 +241,15 @@ function AuthPageContent() {
                     },
                 },
             });
+
+            console.log('[Google OAuth] Response:', { data, error });
+
             if (error) {
+                console.error('[Google OAuth] Error details:', error.message, error.status, error);
                 throw error;
             }
         } catch (err: any) {
+            console.error('[Google OAuth] Full error:', err);
             setError(getErrorMessage(err.message || 'Google sign-in failed'));
             setGoogleLoading(false);
         }
