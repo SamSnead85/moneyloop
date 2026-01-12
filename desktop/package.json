@@ -1,0 +1,29 @@
+{
+    "name": "moneyloop-desktop",
+    "version": "1.0.0",
+    "description": "MoneyLoop Desktop - Cross-platform financial management",
+    "main": "dist/main.js",
+    "author": "MoneyLoop",
+    "license": "MIT",
+    "scripts": {
+        "dev": "electron-forge start",
+        "build": "electron-forge make",
+        "package": "electron-forge package",
+        "publish": "electron-forge publish"
+    },
+    "dependencies": {
+        "electron-squirrel-startup": "^1.0.0"
+    },
+    "devDependencies": {
+        "@electron-forge/cli": "^7.2.0",
+        "@electron-forge/maker-dmg": "^7.2.0",
+        "@electron-forge/maker-squirrel": "^7.2.0",
+        "@electron-forge/maker-zip": "^7.2.0",
+        "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+        "electron": "^28.0.0",
+        "typescript": "^5.0.0"
+    },
+    "config": {
+        "forge": "./forge.config.js"
+    }
+}

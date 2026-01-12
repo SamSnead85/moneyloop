@@ -1,0 +1,54 @@
+{
+    "expo": {
+        "name": "MoneyLoop",
+        "slug": "moneyloop",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "dark",
+        "scheme": "moneyloop",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#08080c"
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.moneyloop.app",
+            "buildNumber": "1",
+            "infoPlist": {
+                "NSFaceIDUsageDescription": "MoneyLoop uses Face ID for secure authentication"
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#08080c"
+            },
+            "package": "com.moneyloop.app",
+            "versionCode": 1
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            "expo-router",
+            "expo-secure-store"
+        ],
+        "experiments": {
+            "typedRoutes": true
+        },
+        "extra": {
+            "eas": {
+                "projectId": "your-project-id"
+            },
+            "supabaseUrl": "https://your-project.supabase.co",
+            "supabaseAnonKey": "your-anon-key"
+        }
+    }
+}
