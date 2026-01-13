@@ -4,4 +4,4 @@ export { PasskeyManager } from './PasskeyManager';
 export { NotificationSettings } from './NotificationSettings';
 export { SessionAudit } from './SessionAudit';
 export { ApiKeyManager } from './ApiKeyManager';
-
+export { IntegrationsPanel } from './IntegrationsPanel';

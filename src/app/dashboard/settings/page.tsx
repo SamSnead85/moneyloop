@@ -26,7 +26,7 @@ import {
 import { Card, Button } from '@/components/ui';
 import DataBackupManager from '@/components/settings/DataBackupManager';
 import ApiKeyManager from '@/components/settings/ApiKeyManager';
-import { PasskeyManager } from '@/components/settings';
+import { PasskeyManager, IntegrationsPanel } from '@/components/settings';
 import { NotificationSettings } from '@/components/settings';
 import { SessionAudit } from '@/components/settings';
 
@@ -35,6 +35,7 @@ const settingsSections = [
     { id: 'security', name: 'Security', icon: Shield },
     { id: 'notifications', name: 'Notifications', icon: Bell },
     { id: 'accounts', name: 'Connected Accounts', icon: Link2 },
+    { id: 'integrations', name: 'Integrations', icon: Link2 },
     { id: 'billing', name: 'Billing & Subscription', icon: CreditCard },
     { id: 'data', name: 'Data & Privacy', icon: Download },
     { id: 'developer', name: 'Developer API', icon: Code },
@@ -417,6 +418,15 @@ export default function SettingsPage() {
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                             <Card className="p-6">
                                 <ApiKeyManager />
+                            </Card>
+                        </motion.div>
+                    )}
+
+                    {/* Integrations Section */}
+                    {activeSection === 'integrations' && (
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                            <Card className="p-6">
+                                <IntegrationsPanel />
                             </Card>
                         </motion.div>
                     )}
