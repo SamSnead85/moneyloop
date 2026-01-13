@@ -21,11 +21,17 @@ import {
     ShoppingCart,
     CalendarCheck,
     MessageSquare,
+    Users,
+    Bot,
+    Baby,
 } from 'lucide-react';
 
 const navItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
     { icon: MessageSquare, label: 'Ask MoneyLoop', href: '/dashboard/ask' },
+    { icon: Users, label: 'Household', href: '/dashboard/household' },
+    { icon: Bot, label: 'AI Agents', href: '/dashboard/ai' },
+    { icon: Baby, label: 'Family', href: '/dashboard/family' },
     { icon: Wallet, label: 'Accounts', href: '/dashboard/accounts' },
     { icon: ArrowLeftRight, label: 'Transactions', href: '/dashboard/transactions' },
     { icon: PieChart, label: 'Budgets', href: '/dashboard/budgets' },
