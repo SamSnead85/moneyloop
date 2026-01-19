@@ -26,8 +26,8 @@ export function BankConnectionStep({ onComplete, onSkip }: BankConnectionStepPro
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <div className="w-16 h-16 rounded-2xl bg-[#7dd3a8]/10 flex items-center justify-center mx-auto mb-6">
-                    <Building2 className="w-8 h-8 text-[#7dd3a8]" />
+                <div className="w-16 h-16 rounded-2xl bg-[#34d399]/10 flex items-center justify-center mx-auto mb-6">
+                    <Building2 className="w-8 h-8 text-[#34d399]" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold mb-3">
                     Connect Your Bank Account
@@ -56,7 +56,7 @@ export function BankConnectionStep({ onComplete, onSkip }: BankConnectionStepPro
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.15 + index * 0.05 }}
                         >
-                            <CheckCircle className="w-5 h-5 text-[#7dd3a8] flex-shrink-0" />
+                            <CheckCircle className="w-5 h-5 text-[#34d399] flex-shrink-0" />
                             <span className="text-slate-300">{benefit}</span>
                         </motion.li>
                     ))}
@@ -72,7 +72,7 @@ export function BankConnectionStep({ onComplete, onSkip }: BankConnectionStepPro
             >
                 <PlaidLinkButton
                     onSuccess={onComplete}
-                    className="w-full bg-[#7dd3a8] hover:bg-[#6bc497] text-[#0a0a0f] font-medium py-4 text-lg"
+                    className="w-full bg-[#34d399] hover:bg-[#6bc497] text-[#0a0a0f] font-medium py-4 text-lg"
                 >
                     <Building2 className="w-5 h-5 mr-2" />
                     Connect with Plaid

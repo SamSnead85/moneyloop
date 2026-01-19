@@ -56,9 +56,11 @@ export function Sidebar() {
             {/* Logo */}
             <div className="p-5 border-b border-white/[0.04]">
                 <Link href="/" className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-white/[0.08] border border-white/[0.08] flex items-center justify-center">
-                        <span className="text-white font-semibold text-sm">M</span>
-                    </div>
+                    <img
+                        src="/logo.png"
+                        alt="MoneyLoop"
+                        className="w-8 h-8 rounded-lg"
+                    />
                     <span className="text-base font-medium">MoneyLoop</span>
                 </Link>
             </div>

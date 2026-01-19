@@ -85,8 +85,8 @@ export function FileUploadStep({ onComplete, onSkip }: FileUploadStepProps) {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <div className="w-16 h-16 rounded-2xl bg-[#c9b896]/10 flex items-center justify-center mx-auto mb-6">
-                    <Upload className="w-8 h-8 text-[#c9b896]" />
+                <div className="w-16 h-16 rounded-2xl bg-[#818cf8]/10 flex items-center justify-center mx-auto mb-6">
+                    <Upload className="w-8 h-8 text-[#818cf8]" />
                 </div>
                 <h1 className="text-2xl md:text-3xl font-bold mb-3">
                     Upload Financial Documents
@@ -107,14 +107,14 @@ export function FileUploadStep({ onComplete, onSkip }: FileUploadStepProps) {
                     className={`
                         relative border-2 border-dashed rounded-2xl p-8 cursor-pointer transition-all mb-6
                         ${isDragActive
-                            ? 'border-[#c9b896] bg-[#c9b896]/5'
+                            ? 'border-[#818cf8] bg-[#818cf8]/5'
                             : 'border-white/20 hover:border-white/40 bg-white/[0.02]'
                         }
                     `}
                 >
                     <input {...getInputProps()} />
                     <div className="text-center">
-                        <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragActive ? 'text-[#c9b896]' : 'text-slate-500'}`} />
+                        <Upload className={`w-12 h-12 mx-auto mb-4 ${isDragActive ? 'text-[#818cf8]' : 'text-slate-500'}`} />
                         <p className="text-lg font-medium mb-2">
                             {isDragActive ? 'Drop files here' : 'Drag & drop files here'}
                         </p>
@@ -169,8 +169,8 @@ export function FileUploadStep({ onComplete, onSkip }: FileUploadStepProps) {
                                     </div>
                                 )}
                                 {file.status === 'analyzing' && (
-                                    <div className="flex items-center gap-2 text-[#c9b896] text-sm">
-                                        <div className="w-4 h-4 border-2 border-[#c9b896] border-t-transparent rounded-full animate-spin" />
+                                    <div className="flex items-center gap-2 text-[#818cf8] text-sm">
+                                        <div className="w-4 h-4 border-2 border-[#818cf8] border-t-transparent rounded-full animate-spin" />
                                         Analyzing...
                                     </div>
                                 )}
@@ -195,12 +195,12 @@ export function FileUploadStep({ onComplete, onSkip }: FileUploadStepProps) {
             {/* Analysis Note */}
             {files.length > 0 && (
                 <motion.div
-                    className="p-4 rounded-xl bg-[#c9b896]/5 border border-[#c9b896]/20 mb-6"
+                    className="p-4 rounded-xl bg-[#818cf8]/5 border border-[#818cf8]/20 mb-6"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                 >
                     <p className="text-sm text-slate-300">
-                        <span className="text-[#c9b896] font-medium">AI Analysis:</span>{' '}
+                        <span className="text-[#818cf8] font-medium">AI Analysis:</span>{' '}
                         Our system will extract recurring expenses and categorize transactions from your documents.
                     </p>
                 </motion.div>
@@ -216,7 +216,7 @@ export function FileUploadStep({ onComplete, onSkip }: FileUploadStepProps) {
                 {(files.length === 0 || allComplete) && (
                     <Button
                         onClick={onComplete}
-                        className="w-full bg-[#c9b896] hover:bg-[#b8a785] text-[#0a0a0f] py-3"
+                        className="w-full bg-[#818cf8] hover:bg-[#b8a785] text-[#0a0a0f] py-3"
                         icon={<ArrowRight className="w-5 h-5" />}
                     >
                         {files.length > 0 ? 'Continue' : 'Skip Upload'}

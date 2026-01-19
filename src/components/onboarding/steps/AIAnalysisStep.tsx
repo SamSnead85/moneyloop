@@ -60,11 +60,11 @@ export function AIAnalysisStep({ onComplete }: AIAnalysisStepProps) {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#7dd3a8]/20 to-[#c9b896]/20 flex items-center justify-center mx-auto mb-6 relative">
-                    <Brain className="w-10 h-10 text-[#7dd3a8]" />
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#34d399]/20 to-[#818cf8]/20 flex items-center justify-center mx-auto mb-6 relative">
+                    <Brain className="w-10 h-10 text-[#34d399]" />
                     {/* Pulsing animation */}
                     <motion.div
-                        className="absolute inset-0 rounded-2xl bg-[#7dd3a8]/20"
+                        className="absolute inset-0 rounded-2xl bg-[#34d399]/20"
                         animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity }}
                     />
@@ -86,7 +86,7 @@ export function AIAnalysisStep({ onComplete }: AIAnalysisStepProps) {
             >
                 <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                     <motion.div
-                        className="h-full bg-gradient-to-r from-[#7dd3a8] to-[#5bc898] rounded-full"
+                        className="h-full bg-gradient-to-r from-[#34d399] to-[#5bc898] rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
                         transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -109,7 +109,7 @@ export function AIAnalysisStep({ onComplete }: AIAnalysisStepProps) {
                             key={step.label}
                             className={`
                                 flex items-center gap-4 p-4 rounded-xl transition-all duration-300
-                                ${isActive ? 'bg-[#7dd3a8]/10 border border-[#7dd3a8]/30' :
+                                ${isActive ? 'bg-[#34d399]/10 border border-[#34d399]/30' :
                                     isDone ? 'bg-white/[0.02]' : 'opacity-40'}
                             `}
                             initial={{ opacity: 0, x: -20 }}
@@ -119,8 +119,8 @@ export function AIAnalysisStep({ onComplete }: AIAnalysisStepProps) {
                             <div
                                 className={`
                                     w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-                                    ${isDone ? 'bg-[#7dd3a8] text-[#0a0a0f]' :
-                                        isActive ? 'bg-[#7dd3a8]/20 text-[#7dd3a8]' :
+                                    ${isDone ? 'bg-[#34d399] text-[#0a0a0f]' :
+                                        isActive ? 'bg-[#34d399]/20 text-[#34d399]' :
                                             'bg-white/5 text-slate-500'}
                                 `}
                             >
@@ -136,7 +136,7 @@ export function AIAnalysisStep({ onComplete }: AIAnalysisStepProps) {
                                 </p>
                             </div>
                             {isActive && (
-                                <div className="w-5 h-5 border-2 border-[#7dd3a8] border-t-transparent rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-[#34d399] border-t-transparent rounded-full animate-spin" />
                             )}
                         </motion.div>
                     );
@@ -146,15 +146,15 @@ export function AIAnalysisStep({ onComplete }: AIAnalysisStepProps) {
             {/* Results Preview */}
             {currentStep >= analysisSteps.length && (
                 <motion.div
-                    className="mt-8 p-6 rounded-2xl bg-[#7dd3a8]/10 border border-[#7dd3a8]/30 text-center"
+                    className="mt-8 p-6 rounded-2xl bg-[#34d399]/10 border border-[#34d399]/30 text-center"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                 >
-                    <CheckCircle className="w-12 h-12 text-[#7dd3a8] mx-auto mb-4" />
+                    <CheckCircle className="w-12 h-12 text-[#34d399] mx-auto mb-4" />
                     <h3 className="text-xl font-semibold mb-2">Analysis Complete!</h3>
                     <p className="text-slate-400">
-                        Found <span className="text-[#7dd3a8] font-medium">{mockDetectedExpenses.length}</span> recurring expenses totaling{' '}
-                        <span className="text-[#7dd3a8] font-medium font-mono">
+                        Found <span className="text-[#34d399] font-medium">{mockDetectedExpenses.length}</span> recurring expenses totaling{' '}
+                        <span className="text-[#34d399] font-medium font-mono">
                             ${mockDetectedExpenses.reduce((sum, e) => sum + e.amount, 0).toFixed(2)}/month
                         </span>
                     </p>

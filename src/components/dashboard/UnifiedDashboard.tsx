@@ -200,11 +200,11 @@ export function UnifiedDashboard({ accounts = [], transactions = [] }: UnifiedDa
                                 <div className="flex items-center gap-3">
                                     <div
                                         className="p-2 rounded-lg"
-                                        style={{ backgroundColor: `${summary.context?.color || '#7dd3a8'}20` }}
+                                        style={{ backgroundColor: `${summary.context?.color || '#34d399'}20` }}
                                     >
                                         <Icon
                                             className="w-5 h-5"
-                                            style={{ color: summary.context?.color || '#7dd3a8' }}
+                                            style={{ color: summary.context?.color || '#34d399' }}
                                         />
                                     </div>
                                     <div>

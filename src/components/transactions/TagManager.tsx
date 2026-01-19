@@ -21,7 +21,7 @@ interface TagData {
 }
 
 const PRESET_COLORS = [
-    '#7dd3a8', // emerald
+    '#34d399', // emerald
     '#60a5fa', // blue
     '#a78bfa', // purple
     '#fbbf24', // amber
@@ -34,7 +34,7 @@ const PRESET_COLORS = [
 const DEMO_TAGS: TagData[] = [
     { id: '1', name: 'Tax Deductible', color: '#60a5fa', count: 45 },
     { id: '2', name: 'Work Expenses', color: '#a78bfa', count: 23 },
-    { id: '3', name: 'Recurring', color: '#7dd3a8', count: 18 },
+    { id: '3', name: 'Recurring', color: '#34d399', count: 18 },
     { id: '4', name: 'Needs Review', color: '#fbbf24', count: 12 },
     { id: '5', name: 'Reimbursable', color: '#fb923c', count: 8 },
     { id: '6', name: 'Business', color: '#34d399', count: 156 },

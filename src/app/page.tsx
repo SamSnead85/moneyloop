@@ -112,7 +112,7 @@ function Navigation() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]">
       {/* Deployment Verification Banner */}
-      <div className="bg-[#7dd3a8] text-[#050508] text-center py-1.5 text-xs font-medium">
+      <div className="bg-[#34d399] text-[#050508] text-center py-1.5 text-xs font-medium">
         🚀 Build {BUILD_VERSION} | Deployed {BUILD_DATE} | ✓ Latest changes active
       </div>
       <div className="max-w-6xl mx-auto px-6">
@@ -200,7 +200,7 @@ function HeroSection() {
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm mb-8"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-[#7dd3a8]/80" />
+              <div className="w-1.5 h-1.5 rounded-full bg-[#34d399]/80" />
               <span className="text-xs text-white/60 font-medium tracking-widest uppercase">Free Forever</span>
             </motion.div>
 
@@ -381,9 +381,9 @@ function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
             >
-              <div className="group p-7 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#7dd3a8]/20 transition-all duration-300">
-                <div className="w-10 h-10 rounded-xl bg-[#7dd3a8]/10 flex items-center justify-center mb-5 group-hover:bg-[#7dd3a8]/15 transition-colors">
-                  <feature.icon className="w-5 h-5 text-[#7dd3a8]" />
+              <div className="group p-7 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#34d399]/20 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-[#34d399]/10 flex items-center justify-center mb-5 group-hover:bg-[#34d399]/15 transition-colors">
+                  <feature.icon className="w-5 h-5 text-[#34d399]" />
                 </div>
                 <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
                 <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
@@ -429,8 +429,8 @@ function HowItWorksSection() {
               transition={{ delay: index * 0.1 }}
               className="text-center group"
             >
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-5 group-hover:border-[#7dd3a8]/30 group-hover:bg-[#7dd3a8]/5 transition-all">
-                <step.icon className="w-6 h-6 text-white/40 group-hover:text-[#7dd3a8] transition-colors" />
+              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-5 group-hover:border-[#34d399]/30 group-hover:bg-[#34d399]/5 transition-all">
+                <step.icon className="w-6 h-6 text-white/40 group-hover:text-[#34d399] transition-colors" />
               </div>
               <h3 className="text-lg font-medium mb-2">{step.title}</h3>
               <p className="text-sm text-white/40">{step.description}</p>
@@ -522,9 +522,9 @@ function PricingSection() {
           </p>
 
           {/* Savings Guarantee Badge */}
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#7dd3a8]/8 border border-[#7dd3a8]/15">
-            <Shield className="w-5 h-5 text-[#7dd3a8]" />
-            <span className="text-sm text-[#7dd3a8]/90 font-medium">
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#34d399]/8 border border-[#34d399]/15">
+            <Shield className="w-5 h-5 text-[#34d399]" />
+            <span className="text-sm text-[#34d399]/90 font-medium">
               Savings Guarantee: If we don&apos;t save you at least your subscription cost each month, we&apos;ll refund you. Period.
             </span>
           </div>
@@ -544,7 +544,7 @@ function PricingSection() {
                 : 'premium-card'
                 }`}>
                 {plan.popular && (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-[#7dd3a8] uppercase tracking-wider mb-4">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-[#34d399] uppercase tracking-wider mb-4">
                     <Sparkles className="w-3 h-3" />
                     Most Popular
                   </span>
@@ -561,7 +561,7 @@ function PricingSection() {
                 <ul className="space-y-3 mb-8 flex-1">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm">
-                      <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-[#7dd3a8]/60' : 'text-white/30'}`} />
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-[#34d399]/60' : 'text-white/30'}`} />
                       <span className="text-white/60">{feature}</span>
                     </li>
                   ))}

@@ -115,15 +115,15 @@ export function PlaidLinkButton({ onSuccess, className, children }: PlaidLinkBut
     if (connectionResult) {
         return (
             <div className={`flex items-center gap-3 px-4 py-3 rounded-xl ${connectionResult.success
-                ? 'bg-[#7dd3a8]/10 border border-[#7dd3a8]/20'
+                ? 'bg-[#34d399]/10 border border-[#34d399]/20'
                 : 'bg-red-500/10 border border-red-500/20'
                 }`}>
                 {connectionResult.success ? (
-                    <CheckCircle className="w-5 h-5 text-[#7dd3a8]" />
+                    <CheckCircle className="w-5 h-5 text-[#34d399]" />
                 ) : (
                     <AlertTriangle className="w-5 h-5 text-red-400" />
                 )}
-                <span className={`text-sm ${connectionResult.success ? 'text-[#7dd3a8]' : 'text-red-400'}`}>
+                <span className={`text-sm ${connectionResult.success ? 'text-[#34d399]' : 'text-red-400'}`}>
                     {connectionResult.message}
                 </span>
                 <Button

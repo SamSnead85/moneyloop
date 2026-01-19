@@ -217,7 +217,7 @@ export function OnboardingWizard() {
     if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
-                <div className="w-8 h-8 border-2 border-[#7dd3a8] border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-[#34d399] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -307,7 +307,7 @@ export function OnboardingWizard() {
     return (
         <div className="min-h-screen bg-[#0a0a0f] text-white">
             {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#7dd3a8]/5 via-transparent to-[#c9b896]/5 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#34d399]/5 via-transparent to-[#818cf8]/5 pointer-events-none" />
 
             {/* Progress Header */}
             {state.path && state.currentStep > 0 && state.currentStep < steps.length - 1 && (

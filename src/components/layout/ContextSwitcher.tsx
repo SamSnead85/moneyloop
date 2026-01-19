@@ -56,7 +56,7 @@ export function ContextSwitcher({ showAll = true, className }: ContextSwitcherPr
             >
                 <div
                     className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: currentContext?.color || '#7dd3a8' }}
+                    style={{ backgroundColor: currentContext?.color || '#34d399' }}
                 />
                 <CurrentIcon className="w-4 h-4 text-zinc-400" />
                 <span>{currentContext?.name || 'All Contexts'}</span>

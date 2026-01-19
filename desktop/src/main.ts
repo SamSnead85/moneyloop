@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, nativeTheme } from 'electron';
+import { app, BrowserWindow, Menu, shell, nativeTheme, session } from 'electron';
 import * as path from 'path';
 
 // Handle Squirrel events for Windows installer
@@ -10,10 +10,11 @@ if (require('electron-squirrel-startup')) {
 let mainWindow: BrowserWindow | null = null;
 
 // Production URL (your deployed web app)
-const PRODUCTION_URL = 'https://moneyloop.app';
-const DEV_URL = 'http://localhost:3000';
+const PRODUCTION_URL = 'https://moneyloop.netlify.app';
+const DEV_URL = 'http://localhost:3010';
 
-const isDev = process.env.NODE_ENV === 'development';
+// For now, always use dev URL until production is deployed
+const isDev = !app.isPackaged || process.env.NODE_ENV === 'development';
 
 function createWindow(): void {
     // Force dark mode to match the app aesthetic
@@ -27,18 +28,36 @@ function createWindow(): void {
         title: 'MoneyLoop',
         titleBarStyle: 'hiddenInset', // macOS native title bar
         trafficLightPosition: { x: 16, y: 16 },
-        backgroundColor: '#08080c', // Match app background
+        backgroundColor: '#050508', // Match new app background
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
             contextIsolation: true,
-            sandbox: true,
+            sandbox: false, // Disabled to allow Next.js hydration
+            webSecurity: !isDev, // Disable in dev for localhost
         },
         show: false, // Don't show until ready
     });
 
-    // Load the app
+    // Load the app - use DEV_URL if dev server is running, fallback to production
     const url = isDev ? DEV_URL : PRODUCTION_URL;
+    console.log('Loading URL:', url, 'isPackaged:', app.isPackaged, 'isDev:', isDev);
+
+    // Handle load failures
+    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+        console.error('Failed to load:', validatedURL, errorCode, errorDescription);
+        // If dev URL fails, try production
+        if (validatedURL === DEV_URL) {
+            console.log('Dev server not available, trying production...');
+            mainWindow?.loadURL(PRODUCTION_URL);
+        }
+    });
+
+    // Open DevTools in development for debugging
+    if (isDev) {
+        mainWindow.webContents.openDevTools({ mode: 'detach' });
+    }
+
     mainWindow.loadURL(url);
 
     // Show window once ready

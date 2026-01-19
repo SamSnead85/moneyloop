@@ -97,12 +97,12 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                         animate={{ opacity: 1, y: 0 }}
                     >
                         <motion.div
-                            className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#c9b896]/20 to-[#c9b896]/5 flex items-center justify-center mx-auto mb-6 border border-[#c9b896]/20"
+                            className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#818cf8]/20 to-[#818cf8]/5 flex items-center justify-center mx-auto mb-6 border border-[#818cf8]/20"
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{ type: "spring", stiffness: 200 }}
                         >
-                            <TrendingUp className="w-8 h-8 text-[#c9b896]" />
+                            <TrendingUp className="w-8 h-8 text-[#818cf8]" />
                         </motion.div>
                         <h1 className="text-2xl md:text-3xl font-bold mb-3 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
                             What&apos;s Your Income?
@@ -128,13 +128,13 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                                     bg-gradient-to-br ${type.color}
                                     border transition-all duration-300
                                     ${selectedType === type.label
-                                        ? 'border-[#c9b896]/50 shadow-lg shadow-[#c9b896]/10'
+                                        ? 'border-[#818cf8]/50 shadow-lg shadow-[#818cf8]/10'
                                         : 'border-white/10 hover:border-white/20'}
                                 `}
                                 whileHover={{ scale: 1.05, y: -2 }}
                                 whileTap={{ scale: 0.98 }}
                             >
-                                <type.icon className="w-6 h-6 text-[#c9b896]" />
+                                <type.icon className="w-6 h-6 text-[#818cf8]" />
                                 <span className="text-sm font-medium">{type.label}</span>
                             </motion.button>
                         ))}
@@ -162,7 +162,7 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                                                 value={stream.name}
                                                 onChange={(e) => updateStream(stream.id, { name: e.target.value })}
                                                 placeholder="e.g., Primary Salary"
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all"
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-[#818cf8]/50 focus:outline-none focus:ring-2 focus:ring-[#818cf8]/20 transition-all"
                                             />
                                         </div>
 
@@ -179,7 +179,7 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                                                         value={stream.amount || ''}
                                                         onChange={(e) => updateStream(stream.id, { amount: parseFloat(e.target.value) || 0 })}
                                                         placeholder="0.00"
-                                                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-3 focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all font-mono"
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-3 focus:border-[#818cf8]/50 focus:outline-none focus:ring-2 focus:ring-[#818cf8]/20 transition-all font-mono"
                                                     />
                                                 </div>
                                             </div>
@@ -190,7 +190,7 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                                                 <select
                                                     value={stream.frequency}
                                                     onChange={(e) => updateStream(stream.id, { frequency: e.target.value as IncomeStream['frequency'] })}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all appearance-none cursor-pointer"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:border-[#818cf8]/50 focus:outline-none focus:ring-2 focus:ring-[#818cf8]/20 transition-all appearance-none cursor-pointer"
                                                 >
                                                     {frequencyOptions.map((opt) => (
                                                         <option key={opt.value} value={opt.value} className="bg-[#12121a]">
@@ -221,7 +221,7 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                     {/* Add Another Button */}
                     <motion.button
                         onClick={addStream}
-                        className="w-full p-4 rounded-2xl border-2 border-dashed border-white/20 hover:border-[#c9b896]/50 text-slate-400 hover:text-[#c9b896] flex items-center justify-center gap-2 transition-all mb-6 group"
+                        className="w-full p-4 rounded-2xl border-2 border-dashed border-white/20 hover:border-[#818cf8]/50 text-slate-400 hover:text-[#818cf8] flex items-center justify-center gap-2 transition-all mb-6 group"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
@@ -240,7 +240,7 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                         >
                             <p className="text-sm text-emerald-400/80 mb-1 font-medium">Estimated Monthly Income</p>
                             <motion.p
-                                className="text-4xl font-bold font-mono bg-gradient-to-r from-emerald-400 to-[#7dd3a8] bg-clip-text text-transparent"
+                                className="text-4xl font-bold font-mono bg-gradient-to-r from-emerald-400 to-[#34d399] bg-clip-text text-transparent"
                                 key={monthlyTotal}
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
@@ -259,7 +259,7 @@ export function IncomeEntryStep({ incomeStreams: initial, onComplete, onSkip }: 
                     >
                         <Button
                             onClick={handleContinue}
-                            className="w-full bg-gradient-to-r from-[#c9b896] to-[#b8a785] hover:from-[#b8a785] hover:to-[#a89775] text-[#0a0a0f] py-3.5 font-semibold shadow-lg shadow-[#c9b896]/20"
+                            className="w-full bg-gradient-to-r from-[#818cf8] to-[#b8a785] hover:from-[#b8a785] hover:to-[#a89775] text-[#0a0a0f] py-3.5 font-semibold shadow-lg shadow-[#818cf8]/20"
                             icon={<ArrowRight className="w-5 h-5" />}
                             disabled={!streams.some(s => s.name && s.amount > 0)}
                         >

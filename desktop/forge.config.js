@@ -1,16 +1,13 @@
 module.exports = {
     packagerConfig: {
+        asar: true,
         name: 'MoneyLoop',
         executableName: 'moneyloop',
         icon: './assets/icon',
         appBundleId: 'com.moneyloop.desktop',
         appCategoryType: 'public.app-category.finance',
-        osxSign: {},
-        osxNotarize: {
-            appleId: process.env.APPLE_ID,
-            appleIdPassword: process.env.APPLE_PASSWORD,
-            teamId: process.env.APPLE_TEAM_ID,
-        },
+        // Code signing disabled for development builds
+        // Enable osxSign and osxNotarize for production releases
     },
     rebuildConfig: {},
     makers: [

@@ -22,7 +22,7 @@ export function CompletionStep({ path, onComplete }: CompletionStepProps) {
                 particleCount: 100,
                 spread: 70,
                 origin: { y: 0.6 },
-                colors: ['#7dd3a8', '#c9b896', '#ffffff'],
+                colors: ['#34d399', '#818cf8', '#ffffff'],
             });
             setShowContent(true);
         }, 300);
@@ -51,8 +51,8 @@ export function CompletionStep({ path, onComplete }: CompletionStepProps) {
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
             >
-                <div className="absolute inset-0 bg-[#7dd3a8]/20 rounded-full animate-ping" />
-                <div className="relative w-full h-full bg-gradient-to-br from-[#7dd3a8] to-[#5bc898] rounded-full flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#34d399]/20 rounded-full animate-ping" />
+                <div className="relative w-full h-full bg-gradient-to-br from-[#34d399] to-[#5bc898] rounded-full flex items-center justify-center">
                     <CheckCircle className="w-12 h-12 text-[#0a0a0f]" />
                 </div>
             </motion.div>
@@ -64,7 +64,7 @@ export function CompletionStep({ path, onComplete }: CompletionStepProps) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#7dd3a8]/10 text-[#7dd3a8] text-sm mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#34d399]/10 text-[#34d399] text-sm mb-6">
                         <Sparkles className="w-4 h-4" />
                         Setup Complete!
                     </div>
@@ -88,8 +88,8 @@ export function CompletionStep({ path, onComplete }: CompletionStepProps) {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: 0.1 + index * 0.1 }}
                                 >
-                                    <div className="w-6 h-6 rounded-full bg-[#7dd3a8]/20 flex items-center justify-center flex-shrink-0">
-                                        <CheckCircle className="w-4 h-4 text-[#7dd3a8]" />
+                                    <div className="w-6 h-6 rounded-full bg-[#34d399]/20 flex items-center justify-center flex-shrink-0">
+                                        <CheckCircle className="w-4 h-4 text-[#34d399]" />
                                     </div>
                                     <span className="text-slate-300">{benefit}</span>
                                 </motion.li>
@@ -105,7 +105,7 @@ export function CompletionStep({ path, onComplete }: CompletionStepProps) {
                     >
                         <Button
                             onClick={onComplete}
-                            className="bg-[#7dd3a8] hover:bg-[#6bc497] text-[#0a0a0f] px-8 py-4 text-lg"
+                            className="bg-[#34d399] hover:bg-[#6bc497] text-[#0a0a0f] px-8 py-4 text-lg"
                             icon={<Rocket className="w-5 h-5" />}
                         >
                             Go to Dashboard

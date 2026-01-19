@@ -120,8 +120,8 @@ export default function AccountsPage() {
                 <div className="grid md:grid-cols-3 gap-6">
                     <div>
                         <p className="text-slate-500 text-sm">Net Worth</p>
-                        <p className="text-3xl font-bold mt-1 text-[#7dd3a8]">${netWorth.toLocaleString()}</p>
-                        <p className="text-xs text-[#7dd3a8] mt-2 flex items-center gap-1">
+                        <p className="text-3xl font-bold mt-1 text-[#34d399]">${netWorth.toLocaleString()}</p>
+                        <p className="text-xs text-[#34d399] mt-2 flex items-center gap-1">
                             <TrendingUp className="w-3 h-3" /> +$3,240 this month
                         </p>
                     </div>
@@ -146,7 +146,7 @@ export default function AccountsPage() {
                     <div className="h-3 rounded-full overflow-hidden flex">
                         <div className="bg-blue-500 h-full" style={{ width: '9%' }} title="Cash" />
                         <div className="bg-purple-500 h-full" style={{ width: '20%' }} title="Investments" />
-                        <div className="bg-[#7dd3a8] h-full" style={{ width: '68%' }} title="Real Estate" />
+                        <div className="bg-[#34d399] h-full" style={{ width: '68%' }} title="Real Estate" />
                         <div className="bg-amber-500 h-full" style={{ width: '3%' }} title="Other" />
                     </div>
                     <div className="flex flex-wrap gap-4 mt-3">
@@ -157,7 +157,7 @@ export default function AccountsPage() {
                             <span className="w-2.5 h-2.5 rounded-full bg-purple-500" /> Investments 20%
                         </span>
                         <span className="flex items-center gap-1.5 text-xs text-slate-400">
-                            <span className="w-2.5 h-2.5 rounded-full bg-[#7dd3a8]" /> Real Estate 68%
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#34d399]" /> Real Estate 68%
                         </span>
                         <span className="flex items-center gap-1.5 text-xs text-slate-400">
                             <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Other 3%
@@ -217,7 +217,7 @@ export default function AccountsPage() {
                                                     <span>•</span>
                                                     <span className="flex items-center gap-1">
                                                         {account.status === 'connected' ? (
-                                                            <CheckCircle2 className="w-3 h-3 text-[#7dd3a8]" />
+                                                            <CheckCircle2 className="w-3 h-3 text-[#34d399]" />
                                                         ) : account.status === 'needs-attention' ? (
                                                             <AlertCircle className="w-3 h-3 text-amber-400" />
                                                         ) : (
@@ -228,13 +228,13 @@ export default function AccountsPage() {
                                                     {'apy' in account && (
                                                         <>
                                                             <span>•</span>
-                                                            <span className="text-[#7dd3a8]">{account.apy} APY</span>
+                                                            <span className="text-[#34d399]">{account.apy} APY</span>
                                                         </>
                                                     )}
                                                     {'change' in account && (
                                                         <>
                                                             <span>•</span>
-                                                            <span className="text-[#7dd3a8]">{account.change}</span>
+                                                            <span className="text-[#34d399]">{account.change}</span>
                                                         </>
                                                     )}
                                                     {'rate' in account && (
@@ -269,8 +269,8 @@ export default function AccountsPage() {
 
             {/* Add Account CTA */}
             <Card className="p-6 border-dashed border-white/[0.08] flex flex-col items-center justify-center text-center">
-                <div className="p-3 rounded-full bg-[#7dd3a8]/10 mb-3">
-                    <Building2 className="w-6 h-6 text-[#7dd3a8]" />
+                <div className="p-3 rounded-full bg-[#34d399]/10 mb-3">
+                    <Building2 className="w-6 h-6 text-[#34d399]" />
                 </div>
                 <h3 className="font-medium">Connect More Accounts</h3>
                 <p className="text-sm text-slate-500 mt-1 max-w-md">

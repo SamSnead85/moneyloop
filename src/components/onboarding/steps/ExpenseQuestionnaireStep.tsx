@@ -233,7 +233,7 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                         </div>
                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                             <motion.div
-                                className="h-full bg-gradient-to-r from-[#c9b896] to-[#7dd3a8] rounded-full"
+                                className="h-full bg-gradient-to-r from-[#818cf8] to-[#34d399] rounded-full"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.3 }}
@@ -254,12 +254,12 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                             {/* Question Header with Icon */}
                             <div className="flex items-start gap-4 mb-6">
                                 <motion.div
-                                    className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#c9b896]/20 to-[#c9b896]/5 flex items-center justify-center flex-shrink-0 border border-[#c9b896]/20"
+                                    className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#818cf8]/20 to-[#818cf8]/5 flex items-center justify-center flex-shrink-0 border border-[#818cf8]/20"
                                     initial={{ scale: 0, rotate: -180 }}
                                     animate={{ scale: 1, rotate: 0 }}
                                     transition={{ type: "spring", stiffness: 200 }}
                                 >
-                                    <Icon className="w-7 h-7 text-[#c9b896]" />
+                                    <Icon className="w-7 h-7 text-[#818cf8]" />
                                 </motion.div>
                                 <div className="flex-1 min-w-0">
                                     <motion.h2
@@ -296,7 +296,7 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                                             className={`
                                                 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                                                 ${nameValue === option
-                                                    ? 'bg-[#c9b896] text-[#0a0a0f] shadow-lg shadow-[#c9b896]/20'
+                                                    ? 'bg-[#818cf8] text-[#0a0a0f] shadow-lg shadow-[#818cf8]/20'
                                                     : 'bg-white/5 hover:bg-white/10 border border-white/10'}
                                             `}
                                         >
@@ -316,7 +316,7 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                                     <input
                                         type="text"
                                         placeholder="Enter provider name"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 focus:border-[#818cf8]/50 focus:outline-none focus:ring-2 focus:ring-[#818cf8]/20 transition-all"
                                         onChange={(e) => setNameValue(e.target.value)}
                                     />
                                 </motion.div>
@@ -335,7 +335,7 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="0"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-24 py-5 text-3xl font-mono font-medium focus:border-[#c9b896]/50 focus:outline-none focus:ring-2 focus:ring-[#c9b896]/20 transition-all placeholder:text-slate-600"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-24 py-5 text-3xl font-mono font-medium focus:border-[#818cf8]/50 focus:outline-none focus:ring-2 focus:ring-[#818cf8]/20 transition-all placeholder:text-slate-600"
                                     autoFocus
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -358,7 +358,7 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                                 exit={{ opacity: 0, y: -10 }}
                             >
                                 <p className="text-sm text-slate-400 mb-1">Monthly expenses so far</p>
-                                <p className="text-3xl font-bold font-mono bg-gradient-to-r from-[#c9b896] to-[#7dd3a8] bg-clip-text text-transparent">
+                                <p className="text-3xl font-bold font-mono bg-gradient-to-r from-[#818cf8] to-[#34d399] bg-clip-text text-transparent">
                                     ${totalSoFar.toLocaleString()}/mo
                                 </p>
                             </motion.div>
@@ -375,14 +375,14 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                             {Object.entries(answers).map(([id, data]) => (
                                 <motion.div
                                     key={id}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#c9b896]/10 border border-[#c9b896]/20 text-[#c9b896] text-sm"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#818cf8]/10 border border-[#818cf8]/20 text-[#818cf8] text-sm"
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: "spring", stiffness: 300 }}
                                 >
                                     <Check className="w-3 h-3" />
                                     <span className="font-medium">{data.name}</span>
-                                    <span className="text-[#c9b896]/60">${data.amount}</span>
+                                    <span className="text-[#818cf8]/60">${data.amount}</span>
                                 </motion.div>
                             ))}
                         </motion.div>
@@ -399,7 +399,7 @@ export function ExpenseQuestionnaireStep({ expenses: initial, onComplete, onSkip
                         </Button>
                         <Button
                             onClick={handleNext}
-                            className="flex-1 bg-gradient-to-r from-[#c9b896] to-[#b8a785] hover:from-[#b8a785] hover:to-[#a89775] text-[#0a0a0f] font-semibold shadow-lg shadow-[#c9b896]/20"
+                            className="flex-1 bg-gradient-to-r from-[#818cf8] to-[#b8a785] hover:from-[#b8a785] hover:to-[#a89775] text-[#0a0a0f] font-semibold shadow-lg shadow-[#818cf8]/20"
                             icon={<ArrowRight className="w-5 h-5" />}
                         >
                             {currentQuestion < questions.length - 1 ? 'Next' : 'Finish'}

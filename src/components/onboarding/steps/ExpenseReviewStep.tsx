@@ -64,7 +64,7 @@ export function ExpenseReviewStep({ expenses: initialExpenses, onConfirm }: Expe
 
             {/* Summary Card */}
             <motion.div
-                className="bg-gradient-to-br from-[#7dd3a8]/10 to-[#c9b896]/10 rounded-2xl border border-white/10 p-6 mb-6"
+                className="bg-gradient-to-br from-[#34d399]/10 to-[#818cf8]/10 rounded-2xl border border-white/10 p-6 mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -104,7 +104,7 @@ export function ExpenseReviewStep({ expenses: initialExpenses, onConfirm }: Expe
                             className={`
                                 w-8 h-8 rounded-lg flex items-center justify-center transition-colors
                                 ${expense.confirmed
-                                    ? 'bg-[#7dd3a8] text-[#0a0a0f]'
+                                    ? 'bg-[#34d399] text-[#0a0a0f]'
                                     : 'bg-white/5 text-slate-500 hover:bg-white/10'}
                             `}
                         >
@@ -173,7 +173,7 @@ export function ExpenseReviewStep({ expenses: initialExpenses, onConfirm }: Expe
             >
                 <Button
                     onClick={handleContinue}
-                    className="bg-[#7dd3a8] hover:bg-[#6bc497] text-[#0a0a0f] px-8 py-3"
+                    className="bg-[#34d399] hover:bg-[#6bc497] text-[#0a0a0f] px-8 py-3"
                     icon={<ArrowRight className="w-5 h-5" />}
                 >
                     Continue with {confirmedExpenses.length} expenses

@@ -41,13 +41,13 @@ export function WizardProgress({ steps, currentStep, onBack }: WizardProgressPro
                             <span className="text-sm text-slate-400">
                                 Step {currentStep + 1} of {steps.length}
                             </span>
-                            <span className="text-sm text-[#7dd3a8]">
+                            <span className="text-sm text-[#34d399]">
                                 {Math.round(progress)}% complete
                             </span>
                         </div>
                         <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                             <motion.div
-                                className="h-full bg-gradient-to-r from-[#7dd3a8] to-[#5bc898] rounded-full"
+                                className="h-full bg-gradient-to-r from-[#34d399] to-[#5bc898] rounded-full"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
                                 transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -66,9 +66,9 @@ export function WizardProgress({ steps, currentStep, onBack }: WizardProgressPro
                                     w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
                                     transition-all duration-300
                                     ${index < currentStep
-                                        ? 'bg-[#7dd3a8] text-[#0a0a0f]'
+                                        ? 'bg-[#34d399] text-[#0a0a0f]'
                                         : index === currentStep
-                                            ? 'bg-[#7dd3a8]/20 text-[#7dd3a8] ring-2 ring-[#7dd3a8]'
+                                            ? 'bg-[#34d399]/20 text-[#34d399] ring-2 ring-[#34d399]'
                                             : 'bg-white/5 text-slate-500'
                                     }
                                 `}
@@ -95,7 +95,7 @@ export function WizardProgress({ steps, currentStep, onBack }: WizardProgressPro
                                 <div
                                     className={`
                                         w-8 lg:w-12 h-0.5 mx-2
-                                        ${index < currentStep ? 'bg-[#7dd3a8]' : 'bg-white/10'}
+                                        ${index < currentStep ? 'bg-[#34d399]' : 'bg-white/10'}
                                     `}
                                 />
                             )}

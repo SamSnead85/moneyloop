@@ -65,8 +65,8 @@ export function DataConsentModal({ isOpen, onClose, onConfirm }: DataConsentModa
                                     <X className="w-5 h-5" />
                                 </button>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <div className="p-2 rounded-xl bg-[#7dd3a8]/10">
-                                        <Shield className="w-6 h-6 text-[#7dd3a8]" />
+                                    <div className="p-2 rounded-xl bg-[#34d399]/10">
+                                        <Shield className="w-6 h-6 text-[#34d399]" />
                                     </div>
                                     <h2 className="text-xl font-semibold">Your Data, Your Control</h2>
                                 </div>
@@ -86,7 +86,7 @@ export function DataConsentModal({ isOpen, onClose, onConfirm }: DataConsentModa
                                         transition={{ delay: index * 0.1 }}
                                     >
                                         <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                                            <point.icon className="w-5 h-5 text-[#7dd3a8]" />
+                                            <point.icon className="w-5 h-5 text-[#34d399]" />
                                         </div>
                                         <div>
                                             <h3 className="font-medium text-white mb-1">{point.title}</h3>
@@ -113,7 +113,7 @@ export function DataConsentModal({ isOpen, onClose, onConfirm }: DataConsentModa
                                 </Button>
                                 <Button
                                     onClick={onConfirm}
-                                    className="flex-1 bg-[#7dd3a8] hover:bg-[#6bc497] text-[#0a0a0f]"
+                                    className="flex-1 bg-[#34d399] hover:bg-[#6bc497] text-[#0a0a0f]"
                                     icon={<CheckCircle className="w-4 h-4" />}
                                 >
                                     I Understand, Continue

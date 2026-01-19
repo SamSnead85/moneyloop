@@ -22,7 +22,7 @@ const paths = [
             'AI-powered categorization',
         ],
         time: '~2 minutes',
-        color: '#7dd3a8',
+        color: '#34d399',
     },
     {
         id: 'manual' as const,
@@ -36,7 +36,7 @@ const paths = [
             'Full control over data',
         ],
         time: '~8 minutes',
-        color: '#c9b896',
+        color: '#818cf8',
     },
 ];
 
@@ -49,7 +49,7 @@ export function PathSelector({ onSelect, onSkip }: PathSelectorProps) {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
             >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#7dd3a8]/10 text-[#7dd3a8] text-sm mb-6">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#34d399]/10 text-[#34d399] text-sm mb-6">
                     <span className="text-lg">🎉</span>
                     Welcome to MoneyLoop!
                 </div>
@@ -133,7 +133,7 @@ export function PathSelector({ onSelect, onSkip }: PathSelectorProps) {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
             >
-                <Shield className="w-4 h-4 text-[#7dd3a8]" />
+                <Shield className="w-4 h-4 text-[#34d399]" />
                 <span>Bank-level encryption. Your data is never shared without consent.</span>
             </motion.div>
 
