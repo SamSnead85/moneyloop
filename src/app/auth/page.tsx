@@ -311,9 +311,7 @@ function AuthPageContent() {
                 </div>
                 <div className="relative z-10 flex flex-col justify-center px-16">
                     <Link href="/" className="flex items-center gap-3 mb-12">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/20 flex items-center justify-center">
-                            <span className="text-emerald-400 font-bold text-xl">M</span>
-                        </div>
+                        <img src="/logo.png" alt="MoneyLoop" className="w-12 h-12 rounded-xl" />
                         <span className="text-2xl font-semibold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">MoneyLoop</span>
                     </Link>
 
@@ -359,9 +357,7 @@ function AuthPageContent() {
                     {/* Mobile Logo */}
                     <div className="text-center mb-8 lg:hidden">
                         <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 border border-emerald-500/20 flex items-center justify-center">
-                                <span className="text-emerald-400 font-bold">M</span>
-                            </div>
+                            <img src="/logo.png" alt="MoneyLoop" className="w-10 h-10 rounded-xl" />
                             <span className="text-xl font-semibold">MoneyLoop</span>
                         </Link>
                     </div>
