@@ -10,7 +10,7 @@ if (require('electron-squirrel-startup')) {
 let mainWindow: BrowserWindow | null = null;
 
 // Production URL (your deployed web app)
-const PRODUCTION_URL = 'https://moneyloop.netlify.app';
+const PRODUCTION_URL = 'https://moneyloop.ai';
 const DEV_URL = 'http://localhost:3010';
 
 // Use production URL by default for packaged apps
