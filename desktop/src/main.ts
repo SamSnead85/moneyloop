@@ -13,8 +13,8 @@ let mainWindow: BrowserWindow | null = null;
 const PRODUCTION_URL = 'https://moneyloop.netlify.app';
 const DEV_URL = 'http://localhost:3010';
 
-// For now, always use dev URL until production is deployed
-const isDev = !app.isPackaged || process.env.NODE_ENV === 'development';
+// Use production URL by default for packaged apps
+const isDev = process.env.NODE_ENV === 'development' && !require('electron').app.isPackaged;
 
 function createWindow(): void {
     // Force dark mode to match the app aesthetic

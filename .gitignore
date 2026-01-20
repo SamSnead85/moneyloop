@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 node_modules/
+
+# desktop builds (large Electron files)
+desktop/out/
+desktop/dist/
