@@ -73,9 +73,7 @@ export default function AboutPage() {
             <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/90 backdrop-blur-2xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center">
-                            <span className="text-white font-bold text-lg">M</span>
-                        </div>
+                        <img src="/logo.png" alt="MoneyLoop" className="w-10 h-10 rounded-2xl" />
                         <span className="text-xl font-bold">MoneyLoop</span>
                     </Link>
                     <Link href="/">
