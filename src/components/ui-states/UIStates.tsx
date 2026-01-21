@@ -1,217 +1,390 @@
 'use client';
 
-import { ReactNode } from 'react';
+/**
+ * UI State Components
+ * 
+ * Skeleton loaders, empty states, and error states
+ * for consistent loading experiences.
+ */
+
 import { motion } from 'framer-motion';
 import {
-    Loader2,
-    AlertCircle,
-    RefreshCw,
+    FileQuestion,
+    SearchX,
     WifiOff,
+    AlertCircle,
+    Plus,
+    RefreshCw,
+    ArrowRight,
+    Inbox,
+    Target,
+    Wallet,
+    Receipt,
+    PiggyBank,
 } from 'lucide-react';
-import { Surface, Text } from '@/components/primitives';
-import { cn } from '@/lib/utils';
 
-// ===== LOADING STATES =====
+// ============ SKELETON LOADERS ============
 
-interface LoadingStateProps {
-    message?: string;
-    variant?: 'spinner' | 'skeleton' | 'pulse';
+interface SkeletonProps {
     className?: string;
+    animate?: boolean;
+    style?: React.CSSProperties;
 }
 
-export function LoadingState({
-    message = 'Loading...',
-    variant = 'spinner',
-    className
-}: LoadingStateProps) {
-    if (variant === 'skeleton') {
-        return (
-            <div className={cn('space-y-4', className)}>
-                {[...Array(3)].map((_, i) => (
-                    <div key={i} className="animate-pulse">
-                        <div className="h-4 bg-[var(--surface-elevated-2)] rounded w-3/4 mb-2" />
-                        <div className="h-4 bg-[var(--surface-elevated-2)] rounded w-1/2" />
-                    </div>
-                ))}
-            </div>
-        );
-    }
-
-    if (variant === 'pulse') {
-        return (
-            <div className={cn('flex items-center gap-2', className)}>
-                <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: Infinity, duration: 1 }}
-                    className="w-2 h-2 rounded-full bg-[var(--accent-primary)]"
-                />
-                <Text variant="body-sm" color="tertiary">{message}</Text>
-            </div>
-        );
-    }
-
+export function Skeleton({ className = '', animate = true, style }: SkeletonProps) {
     return (
-        <div className={cn('flex flex-col items-center justify-center py-12', className)}>
-            <Loader2 className="w-8 h-8 text-[var(--accent-primary)] animate-spin mb-4" />
-            <Text variant="body-sm" color="tertiary">{message}</Text>
+        <div
+            className={`bg-[var(--surface-tertiary)] rounded ${animate ? 'animate-pulse' : ''} ${className}`}
+            style={style}
+        />
+    );
+}
+
+export function SkeletonText({ lines = 3, className = '' }: { lines?: number; className?: string }) {
+    return (
+        <div className={`space-y-2 ${className}`}>
+            {Array.from({ length: lines }).map((_, i) => (
+                <Skeleton
+                    key={i}
+                    className={`h-4 ${i === lines - 1 ? 'w-3/4' : 'w-full'}`}
+                />
+            ))}
         </div>
     );
 }
 
-// ===== ERROR STATE =====
+export function SkeletonCard({ className = '' }: { className?: string }) {
+    return (
+        <div className={`p-4 bg-[var(--surface-secondary)] rounded-xl border border-[var(--border-primary)] ${className}`}>
+            <div className="flex items-center gap-3 mb-4">
+                <Skeleton className="w-10 h-10 rounded-lg" />
+                <div className="flex-1">
+                    <Skeleton className="h-4 w-24 mb-2" />
+                    <Skeleton className="h-3 w-16" />
+                </div>
+                <Skeleton className="h-6 w-16 rounded-full" />
+            </div>
+            <SkeletonText lines={2} />
+        </div>
+    );
+}
+
+export function SkeletonTable({ rows = 5, cols = 4 }: { rows?: number; cols?: number }) {
+    return (
+        <div className="space-y-3">
+            {/* Header */}
+            <div className="flex gap-4 p-3 bg-[var(--surface-secondary)] rounded-lg">
+                {Array.from({ length: cols }).map((_, i) => (
+                    <Skeleton key={i} className="h-4 flex-1" />
+                ))}
+            </div>
+            {/* Rows */}
+            {Array.from({ length: rows }).map((_, rowIndex) => (
+                <div key={rowIndex} className="flex gap-4 p-3">
+                    {Array.from({ length: cols }).map((_, colIndex) => (
+                        <Skeleton key={colIndex} className="h-4 flex-1" />
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export function SkeletonChart({ className = '' }: { className?: string }) {
+    return (
+        <div className={`p-4 bg-[var(--surface-secondary)] rounded-xl border border-[var(--border-primary)] ${className}`}>
+            <div className="flex items-center justify-between mb-4">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-8 w-24 rounded-lg" />
+            </div>
+            <div className="flex items-end gap-2 h-40">
+                {Array.from({ length: 12 }).map((_, i) => (
+                    <Skeleton
+                        key={i}
+                        className="flex-1 rounded-t"
+                        style={{ height: `${Math.random() * 60 + 20}%` }}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
+
+export function SkeletonDashboard() {
+    return (
+        <div className="space-y-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                    <SkeletonCard key={i} />
+                ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <SkeletonChart />
+                <SkeletonChart />
+            </div>
+            <SkeletonTable rows={5} cols={5} />
+        </div>
+    );
+}
+
+// ============ EMPTY STATES ============
+
+interface EmptyStateProps {
+    icon?: React.ReactNode;
+    title: string;
+    description?: string;
+    action?: { label: string; onClick: () => void };
+    secondaryAction?: { label: string; onClick: () => void };
+    className?: string;
+}
+
+export function EmptyState({
+    icon,
+    title,
+    description,
+    action,
+    secondaryAction,
+    className = '',
+}: EmptyStateProps) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`flex flex-col items-center justify-center text-center p-8 ${className}`}
+        >
+            {icon && (
+                <div className="w-16 h-16 rounded-full bg-[var(--surface-tertiary)] flex items-center justify-center mb-4">
+                    {icon}
+                </div>
+            )}
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
+                {title}
+            </h3>
+            {description && (
+                <p className="text-sm text-[var(--text-secondary)] max-w-sm mb-6">
+                    {description}
+                </p>
+            )}
+            {(action || secondaryAction) && (
+                <div className="flex flex-col sm:flex-row gap-3">
+                    {action && (
+                        <button
+                            onClick={action.onClick}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--accent-primary)] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
+                        >
+                            <Plus className="w-4 h-4" />
+                            {action.label}
+                        </button>
+                    )}
+                    {secondaryAction && (
+                        <button
+                            onClick={secondaryAction.onClick}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--surface-secondary)] border border-[var(--border-primary)] rounded-lg font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                        >
+                            {secondaryAction.label}
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                    )}
+                </div>
+            )}
+        </motion.div>
+    );
+}
+
+// Pre-built empty states
+export function EmptyTransactions({ onAdd }: { onAdd?: () => void }) {
+    return (
+        <EmptyState
+            icon={<Receipt className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="No transactions yet"
+            description="Connect a bank account or add transactions manually to see your spending."
+            action={onAdd ? { label: 'Add Transaction', onClick: onAdd } : undefined}
+        />
+    );
+}
+
+export function EmptyBudgets({ onAdd }: { onAdd?: () => void }) {
+    return (
+        <EmptyState
+            icon={<Wallet className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="No budgets set"
+            description="Create budgets to track your spending and reach your financial goals."
+            action={onAdd ? { label: 'Create Budget', onClick: onAdd } : undefined}
+        />
+    );
+}
+
+export function EmptyGoals({ onAdd }: { onAdd?: () => void }) {
+    return (
+        <EmptyState
+            icon={<Target className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="No savings goals"
+            description="Set up goals to save for what matters most to you."
+            action={onAdd ? { label: 'Create Goal', onClick: onAdd } : undefined}
+        />
+    );
+}
+
+export function EmptySearch({ query }: { query: string }) {
+    return (
+        <EmptyState
+            icon={<SearchX className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="No results found"
+            description={`We couldn't find anything matching "${query}". Try adjusting your search.`}
+        />
+    );
+}
+
+export function EmptyInbox() {
+    return (
+        <EmptyState
+            icon={<Inbox className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="All caught up!"
+            description="You have no pending notifications or actions."
+        />
+    );
+}
+
+// ============ ERROR STATES ============
 
 interface ErrorStateProps {
     title?: string;
-    message: string;
+    description?: string;
     onRetry?: () => void;
     className?: string;
 }
 
 export function ErrorState({
     title = 'Something went wrong',
-    message,
+    description = 'We encountered an error loading this content.',
     onRetry,
-    className,
+    className = '',
 }: ErrorStateProps) {
     return (
-        <Surface elevation={1} className={cn('p-8 text-center', className)}>
-            <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-[var(--accent-danger-subtle)] flex items-center justify-center">
-                <AlertCircle className="w-6 h-6 text-[var(--accent-danger)]" />
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className={`flex flex-col items-center justify-center text-center p-8 ${className}`}
+        >
+            <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
+                <AlertCircle className="w-8 h-8 text-red-400" />
             </div>
-            <Text variant="heading-sm" className="mb-2">{title}</Text>
-            <Text variant="body-sm" color="tertiary" className="mb-6">{message}</Text>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">
+                {title}
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)] max-w-sm mb-6">
+                {description}
+            </p>
             {onRetry && (
                 <button
                     onClick={onRetry}
-                    className="flex items-center gap-2 px-4 py-2 mx-auto rounded-xl bg-[var(--surface-elevated)] hover:bg-[var(--surface-elevated-2)]"
+                    className="flex items-center gap-2 px-4 py-2 bg-[var(--surface-secondary)] border border-[var(--border-primary)] rounded-lg font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                 >
                     <RefreshCw className="w-4 h-4" />
                     Try Again
                 </button>
             )}
-        </Surface>
+        </motion.div>
     );
 }
 
-// ===== OFFLINE STATE =====
-
-interface OfflineStateProps {
-    message?: string;
-    className?: string;
-}
-
-export function OfflineState({
-    message = 'You appear to be offline. Some features may be unavailable.',
-    className
-}: OfflineStateProps) {
+export function OfflineState({ onRetry }: { onRetry?: () => void }) {
     return (
-        <div className={cn(
-            'flex items-center gap-3 p-4 rounded-xl bg-[var(--accent-warning-subtle)] border border-[var(--accent-warning)]/20',
-            className
-        )}>
-            <WifiOff className="w-5 h-5 text-[var(--accent-warning)]" />
-            <Text variant="body-sm">{message}</Text>
-        </div>
+        <EmptyState
+            icon={<WifiOff className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="You're offline"
+            description="Check your internet connection and try again."
+            action={onRetry ? { label: 'Retry', onClick: onRetry } : undefined}
+        />
     );
 }
 
-// ===== PAGE WRAPPER =====
-
-interface PageWrapperProps {
-    title: string;
-    subtitle?: string;
-    actions?: ReactNode;
-    children: ReactNode;
-    loading?: boolean;
-    error?: string;
-    onRetry?: () => void;
-    className?: string;
-}
-
-export function PageWrapper({
-    title,
-    subtitle,
-    actions,
-    children,
-    loading,
-    error,
-    onRetry,
-    className,
-}: PageWrapperProps) {
+export function NotFoundState() {
     return (
-        <div className={cn('space-y-6', className)}>
-            {/* Header */}
-            <div className="flex items-start justify-between">
-                <div>
-                    <Text variant="heading-lg">{title}</Text>
-                    {subtitle && (
-                        <Text variant="body-sm" color="tertiary">{subtitle}</Text>
-                    )}
-                </div>
-                {actions && <div className="flex items-center gap-2">{actions}</div>}
-            </div>
-
-            {/* Content */}
-            {loading ? (
-                <LoadingState />
-            ) : error ? (
-                <ErrorState message={error} onRetry={onRetry} />
-            ) : (
-                children
-            )}
-        </div>
+        <EmptyState
+            icon={<FileQuestion className="w-8 h-8 text-[var(--text-tertiary)]" />}
+            title="Page not found"
+            description="The page you're looking for doesn't exist or has been moved."
+            secondaryAction={{
+                label: 'Go to Dashboard',
+                onClick: () => (window.location.href = '/dashboard'),
+            }}
+        />
     );
 }
 
-// ===== SECTION DIVIDER =====
+// ============ LOADING STATES ============
 
-interface SectionDividerProps {
-    title?: string;
-    action?: ReactNode;
-    className?: string;
-}
-
-export function SectionDivider({ title, action, className }: SectionDividerProps) {
-    return (
-        <div className={cn('flex items-center gap-4 my-8', className)}>
-            <div className="flex-1 h-px bg-[var(--border-subtle)]" />
-            {title && (
-                <Text variant="caption" color="tertiary" className="uppercase tracking-wider">
-                    {title}
-                </Text>
-            )}
-            {action}
-            <div className="flex-1 h-px bg-[var(--border-subtle)]" />
-        </div>
-    );
-}
-
-// ===== STATUS INDICATOR =====
-
-interface StatusIndicatorProps {
-    status: 'online' | 'offline' | 'syncing' | 'error';
-    label?: string;
-    className?: string;
-}
-
-export function StatusIndicator({ status, label, className }: StatusIndicatorProps) {
-    const colors = {
-        online: 'bg-[var(--accent-success)]',
-        offline: 'bg-[var(--text-quaternary)]',
-        syncing: 'bg-[var(--accent-warning)]',
-        error: 'bg-[var(--accent-danger)]',
+export function LoadingSpinner({ size = 'md', className = '' }: { size?: 'sm' | 'md' | 'lg'; className?: string }) {
+    const sizeClasses = {
+        sm: 'w-4 h-4',
+        md: 'w-6 h-6',
+        lg: 'w-8 h-8',
     };
 
     return (
-        <div className={cn('flex items-center gap-2', className)}>
-            <motion.div
-                animate={status === 'syncing' ? { scale: [1, 1.2, 1] } : {}}
-                transition={{ repeat: Infinity, duration: 1 }}
-                className={cn('w-2 h-2 rounded-full', colors[status])}
-            />
-            {label && <Text variant="caption" color="tertiary">{label}</Text>}
+        <div className={`${sizeClasses[size]} ${className}`}>
+            <svg className="animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                />
+                <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+            </svg>
         </div>
     );
 }
 
-export default PageWrapper;
+export function LoadingOverlay({ message = 'Loading...' }: { message?: string }) {
+    return (
+        <div className="absolute inset-0 bg-[var(--surface-base)]/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="flex flex-col items-center gap-3">
+                <LoadingSpinner size="lg" className="text-[var(--accent-primary)]" />
+                <span className="text-sm text-[var(--text-secondary)]">{message}</span>
+            </div>
+        </div>
+    );
+}
+
+export function PageLoader() {
+    return (
+        <div className="min-h-[400px] flex items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+                <div className="relative">
+                    <div className="w-12 h-12 rounded-full border-2 border-[var(--surface-tertiary)]" />
+                    <div className="absolute inset-0 w-12 h-12 rounded-full border-2 border-[var(--accent-primary)] border-t-transparent animate-spin" />
+                </div>
+                <span className="text-sm text-[var(--text-tertiary)]">Loading...</span>
+            </div>
+        </div>
+    );
+}
+
+export default {
+    Skeleton,
+    SkeletonText,
+    SkeletonCard,
+    SkeletonTable,
+    SkeletonChart,
+    SkeletonDashboard,
+    EmptyState,
+    EmptyTransactions,
+    EmptyBudgets,
+    EmptyGoals,
+    EmptySearch,
+    EmptyInbox,
+    ErrorState,
+    OfflineState,
+    NotFoundState,
+    LoadingSpinner,
+    LoadingOverlay,
+    PageLoader,
+};
