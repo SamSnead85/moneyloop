@@ -6,56 +6,35 @@ import { motion } from 'framer-motion';
 import {
     LayoutDashboard,
     TrendingUp,
-    Receipt,
     Settings,
     LogOut,
     Target,
     ArrowLeftRight,
     PieChart,
     Wallet,
-    CreditCard,
-    Heart,
-    Sparkles,
-    FileText,
-    ShoppingCart,
     CalendarCheck,
-    MessageSquare,
-    Users,
-    Bot,
-    Baby,
     Building2,
     Home,
     ChevronRight,
 } from 'lucide-react';
 
-// Personal/Household focused navigation items
+// Focused navigation - only essential features for personal/family finance
 const navItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
-    { icon: MessageSquare, label: 'Ask MoneyLoop', href: '/dashboard/ask' },
-    { icon: Users, label: 'Household', href: '/dashboard/household' },
-    { icon: Bot, label: 'AI Agents', href: '/dashboard/ai' },
-    { icon: Baby, label: 'Family', href: '/dashboard/family' },
     { icon: Wallet, label: 'Accounts', href: '/dashboard/accounts' },
     { icon: ArrowLeftRight, label: 'Transactions', href: '/dashboard/transactions' },
     { icon: PieChart, label: 'Budgets', href: '/dashboard/budgets' },
-    { icon: Target, label: 'Goals', href: '/dashboard/goals' },
     { icon: CalendarCheck, label: 'Bills', href: '/dashboard/bills' },
-    { icon: CreditCard, label: 'Subscriptions', href: '/dashboard/subscriptions' },
-    { icon: ShoppingCart, label: 'Grocery', href: '/dashboard/grocery' },
+    { icon: Target, label: 'Goals', href: '/dashboard/goals' },
     { icon: TrendingUp, label: 'Investments', href: '/dashboard/investments' },
-    { icon: Receipt, label: 'Tax Center', href: '/dashboard/tax-optimizer' },
-    { icon: Heart, label: 'Healthcare', href: '/dashboard/healthcare' },
-    { icon: Sparkles, label: 'AI Insights', href: '/dashboard/insights' },
-    { icon: FileText, label: 'Reports', href: '/dashboard/reports' },
 ];
-
 
 export function Sidebar() {
     const pathname = usePathname();
 
     return (
         <aside className="fixed left-0 top-0 bottom-0 w-56 bg-[#08080c] border-r border-white/[0.04] flex flex-col z-50">
-            {/* Logo & Mode Indicator */}
+            {/* Logo */}
             <div className="p-5 border-b border-white/[0.04]">
                 <Link href="/" className="flex items-center gap-2.5 mb-4">
                     <img
@@ -66,7 +45,7 @@ export function Sidebar() {
                     <span className="text-base font-medium">MoneyLoop</span>
                 </Link>
 
-                {/* Mode Indicator - Personal */}
+                {/* Mode Indicator */}
                 <div className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-[#34d399]/5 border border-[#34d399]/10">
                     <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#34d399] to-[#818cf8] flex items-center justify-center">
                         <Home className="w-4 h-4 text-white" />

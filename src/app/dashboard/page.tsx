@@ -12,15 +12,10 @@ import {
     Coins,
     DollarSign,
     Receipt,
-    Heart,
     Target,
     ChevronRight,
     X,
-    ExternalLink,
-    Building2,
     Briefcase,
-    CreditCard,
-    PiggyBank,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
 import { MoneyFlowChart } from '@/components/dashboard/MoneyFlowChart';
@@ -284,8 +279,8 @@ export default function DashboardPage() {
                                 <div
                                     key={insight.title}
                                     className={`p-3 rounded-xl border cursor-pointer transition-colors ${insight.type === 'savings'
-                                            ? 'bg-emerald-500/5 border-emerald-500/10 hover:bg-emerald-500/10'
-                                            : 'bg-amber-500/5 border-amber-500/10 hover:bg-amber-500/10'
+                                        ? 'bg-emerald-500/5 border-emerald-500/10 hover:bg-emerald-500/10'
+                                        : 'bg-amber-500/5 border-amber-500/10 hover:bg-amber-500/10'
                                         }`}
                                 >
                                     <div className="flex items-start justify-between mb-1">
@@ -337,35 +332,7 @@ export default function DashboardPage() {
                     </Card>
                 </div>
 
-                {/* Healthcare Summary */}
-                <Link href="/dashboard/healthcare">
-                    <Card padding="lg" className="cursor-pointer group" hover>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 rounded-xl bg-rose-500/10">
-                                    <Heart className="w-5 h-5 text-rose-400" />
-                                </div>
-                                <div>
-                                    <h3 className="text-lg font-semibold mb-1">Healthcare</h3>
-                                    <p className="text-sm text-slate-500">Track coverage, claims, and medical expenses</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-6">
-                                <div className="text-right">
-                                    <p className="text-xs text-slate-500">2025 Spending</p>
-                                    <p className="font-mono font-medium">$12,565</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-xs text-slate-500">HSA Balance</p>
-                                    <p className="font-mono text-emerald-400">$4,250</p>
-                                </div>
-                                <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-white transition-colors" />
-                            </div>
-                        </div>
-                    </Card>
-                </Link>
-
-                {/* Recent Activity - Clickable */}
+                {/* Recent Activity */}
                 <Card padding="lg" hover={false}>
                     <div className="flex items-center justify-between mb-5">
                         <h2 className="text-lg font-semibold">Recent Activity</h2>
