@@ -29,6 +29,14 @@ import {
   BarChart3,
   Check,
   Play,
+  Lock,
+  Award,
+  Globe,
+  Briefcase,
+  CreditCard,
+  ChevronRight,
+  Star,
+  ArrowUpRight,
 } from 'lucide-react';
 import { Button, Card } from '@/components/ui';
 import DashboardPreview from '@/components/landing/DashboardPreview';
@@ -36,6 +44,10 @@ import { SecurityBadges, PartnerLogos, DataPromise } from '@/components/landing/
 
 // Types
 type ProductMode = 'personal' | 'business';
+
+// Build version for deployment verification
+const BUILD_VERSION = 'v6.0';
+const BUILD_DATE = 'Jan 25 2026';
 
 // Animated counter
 function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: string }) {
@@ -55,70 +67,65 @@ function AnimatedCounter({ value, suffix = '' }: { value: number; suffix?: strin
   return <span>{displayValue}{suffix}</span>;
 }
 
-// Premium Elegant Background with Animated Mesh
-function PremiumBackground({ mode }: { mode: ProductMode }) {
+// Professional Background for Business Mode
+function ProfessionalBackground({ mode }: { mode: ProductMode }) {
+  if (mode === 'personal') {
+    return (
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0">
+          <Image
+            src="/premium-bg.png"
+            alt=""
+            fill
+            className="object-cover"
+            priority
+            quality={95}
+          />
+        </div>
+        <div className="absolute inset-0 bg-[#050508]/50" />
+        <motion.div className="mesh-orb mesh-orb-emerald w-[600px] h-[600px] top-[-10%] left-[20%]" />
+        <motion.div className="mesh-orb mesh-orb-gold w-[500px] h-[500px] top-[30%] right-[-10%]" style={{ animationDelay: '3s' }} />
+        <motion.div className="mesh-orb mesh-orb-purple w-[400px] h-[400px] bottom-[20%] left-[5%]" style={{ animationDelay: '6s' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at center, transparent 0%, #050508 85%)' }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050508]/20 via-transparent to-[#050508]/90" />
+      </div>
+    );
+  }
+
+  // Professional Business Background - Deep navy, subtle gradients
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Premium background image */}
-      <div className="absolute inset-0">
-        <Image
-          src="/premium-bg.png"
-          alt=""
-          fill
-          className="object-cover"
-          priority
-          quality={95}
-        />
-      </div>
+      {/* Deep professional navy base */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1425] to-[#080c18]" />
 
-      {/* Dark overlay for depth */}
-      <div className="absolute inset-0 bg-[#050508]/50" />
+      {/* Subtle professional gradient overlays */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.08)_0%,transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(6,182,212,0.05)_0%,transparent_40%)]" />
 
-      {/* Animated mesh gradient orbs - color changes based on mode */}
-      <motion.div
-        className={`mesh-orb w-[600px] h-[600px] top-[-10%] left-[20%] transition-all duration-1000 ${mode === 'business' ? 'mesh-orb-gold' : 'mesh-orb-emerald'
-          }`}
-        style={{ animationDelay: '0s' }}
-        animate={{ scale: mode === 'business' ? 1.2 : 1 }}
-        transition={{ duration: 1 }}
-      />
-      <motion.div
-        className={`mesh-orb w-[500px] h-[500px] top-[30%] right-[-10%] transition-all duration-1000 ${mode === 'business' ? 'mesh-orb-purple' : 'mesh-orb-gold'
-          }`}
-        style={{ animationDelay: '3s' }}
-      />
-      <motion.div
-        className={`mesh-orb w-[400px] h-[400px] bottom-[20%] left-[5%] transition-all duration-1000 ${mode === 'business' ? 'mesh-orb-emerald' : 'mesh-orb-purple'
-          }`}
-        style={{ animationDelay: '6s' }}
-      />
-
-      {/* Subtle vignette effect */}
+      {/* Fine grid pattern for depth */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 opacity-[0.03]"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, #050508 85%)',
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px'
         }}
       />
 
-      {/* Top-to-bottom gradient for content readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#050508]/20 via-transparent to-[#050508]/90" />
+      {/* Subtle vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(8,12,24,0.7)_100%)]" />
     </div>
   );
 }
 
-// Build version for deployment verification
-const BUILD_VERSION = 'v5.0';
-const BUILD_DATE = 'Jan 24 2026';
-
-// Product Mode Toggle
+// Product Mode Toggle - More Professional
 function ProductModeToggle({ mode, setMode }: { mode: ProductMode; setMode: (mode: ProductMode) => void }) {
   return (
-    <div className="inline-flex items-center p-1 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm">
+    <div className="inline-flex items-center p-1 rounded-lg bg-white/[0.03] border border-white/[0.08]">
       <button
         onClick={() => setMode('personal')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${mode === 'personal'
-            ? 'bg-gradient-to-r from-[#34d399] to-[#2dd4bf] text-[#050508] shadow-lg shadow-[#34d399]/20'
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${mode === 'personal'
+            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg'
             : 'text-white/50 hover:text-white'
           }`}
       >
@@ -127,8 +134,8 @@ function ProductModeToggle({ mode, setMode }: { mode: ProductMode; setMode: (mod
       </button>
       <button
         onClick={() => setMode('business')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${mode === 'business'
-            ? 'bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] text-white shadow-lg shadow-[#0ea5e9]/20'
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${mode === 'business'
+            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
             : 'text-white/50 hover:text-white'
           }`}
       >
@@ -145,9 +152,10 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
 
   const navLinks = mode === 'business'
     ? [
-      { href: '#features', label: 'Features' },
-      { href: '#payroll', label: 'Payroll' },
+      { href: '#platform', label: 'Platform' },
+      { href: '#features', label: 'Solutions' },
       { href: '#pricing', label: 'Pricing' },
+      { href: '#customers', label: 'Customers' },
     ]
     : [
       { href: '#features', label: 'Features' },
@@ -156,15 +164,18 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
     ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]">
+    <nav className={`fixed top-0 left-0 right-0 z-50 ${mode === 'business'
+        ? 'bg-[#0a0f1c]/90 backdrop-blur-xl border-b border-white/[0.05]'
+        : 'bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]'
+      }`}>
       {/* Deployment Verification Banner */}
       <div className={`text-center py-1.5 text-xs font-medium ${mode === 'business'
-          ? 'bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] text-white'
-          : 'bg-[#34d399] text-[#050508]'
+          ? 'bg-gradient-to-r from-cyan-600 to-blue-700 text-white'
+          : 'bg-emerald-500 text-[#050508]'
         }`}>
         🚀 Build {BUILD_VERSION} | Deployed {BUILD_DATE} | ✓ Latest changes active
       </div>
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6">
         <div className="h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-4">
             <div className="relative">
@@ -187,7 +198,7 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
 
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a key={link.href} href={link.href} className="text-sm text-white/40 hover:text-white transition-colors">
+              <a key={link.href} href={link.href} className="text-sm text-white/40 hover:text-white transition-colors font-medium">
                 {link.label}
               </a>
             ))}
@@ -195,14 +206,14 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
 
           <div className="hidden lg:flex items-center gap-3">
             <Link href={mode === 'business' ? '/employer' : '/auth'}>
-              <Button variant="ghost" className="text-sm text-white/50 hover:text-white">
+              <Button variant="ghost" className="text-sm text-white/50 hover:text-white font-medium">
                 Sign In
               </Button>
             </Link>
             <Link href={mode === 'business' ? '/employer/onboarding' : '/auth'}>
-              <Button size="sm" className={`text-sm font-medium border backdrop-blur-sm ${mode === 'business'
-                  ? 'bg-gradient-to-r from-[#0ea5e9]/20 to-[#8b5cf6]/20 text-white hover:from-[#0ea5e9]/30 hover:to-[#8b5cf6]/30 border-[#0ea5e9]/30'
-                  : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border-white/[0.1]'
+              <Button size="sm" className={`text-sm font-semibold ${mode === 'business'
+                  ? 'bg-cyan-500 hover:bg-cyan-400 text-white shadow-lg shadow-cyan-500/20'
+                  : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
                 }`}>
                 {mode === 'business' ? 'Start Free Trial' : 'Get Started'}
               </Button>
@@ -222,7 +233,7 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
-          className="lg:hidden border-t border-white/5 bg-[#050508] p-6 space-y-4"
+          className="lg:hidden border-t border-white/5 bg-[#0a0f1c] p-6 space-y-4"
         >
           <div className="mb-4">
             <ProductModeToggle mode={mode} setMode={setMode} />
@@ -236,7 +247,7 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
             </Link>
             <Link href={mode === 'business' ? '/employer/onboarding' : '/auth'}>
               <Button className={`w-full ${mode === 'business'
-                  ? 'bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] text-white'
+                  ? 'bg-cyan-500 text-white'
                   : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
                 }`}>
                 {mode === 'business' ? 'Start Free Trial' : 'Get Started'}
@@ -249,24 +260,21 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
   );
 }
 
-// Personal Hero Section
+// Personal Hero Section (unchanged)
 function PersonalHeroSection() {
   return (
     <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-      {/* Left column - Text */}
       <div className="text-center lg:text-left">
-        {/* Badge */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm mb-6 sm:mb-8"
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-[#34d399]/80 animate-pulse" />
-          <span className="text-[10px] sm:text-xs text-white/60 font-medium tracking-widest uppercase">Trusted by 2,800+ Startups</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400/80 animate-pulse" />
+          <span className="text-[10px] sm:text-xs text-white/60 font-medium tracking-widest uppercase">Trusted by 2,800+ Users</span>
         </motion.div>
 
-        {/* Main headline */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -289,7 +297,6 @@ function PersonalHeroSection() {
           Discover hidden savings. Build wealth with clarity.
         </motion.p>
 
-        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -309,7 +316,6 @@ function PersonalHeroSection() {
           </Link>
         </motion.div>
 
-        {/* Asset types */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -330,7 +336,6 @@ function PersonalHeroSection() {
         </motion.div>
       </div>
 
-      {/* Right column - Dashboard Preview */}
       <div className="hidden lg:block">
         <DashboardPreview />
       </div>
@@ -338,84 +343,165 @@ function PersonalHeroSection() {
   );
 }
 
-// Business Hero Section
+// Enterprise Business Hero Section - Professional & Corporate
 function BusinessHeroSection() {
   return (
-    <div className="max-w-4xl mx-auto text-center">
-      {/* Badge */}
+    <div className="max-w-6xl mx-auto">
+      {/* Trust Banner */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#0ea5e9]/10 border border-[#0ea5e9]/20 backdrop-blur-sm mb-8"
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-center gap-6 mb-10"
       >
-        <Building2 className="w-4 h-4 text-[#0ea5e9]" />
-        <span className="text-xs text-[#0ea5e9] font-medium tracking-widest uppercase">Employer Hub</span>
+        <div className="flex items-center gap-2 text-white/40 text-sm">
+          <Shield className="w-4 h-4 text-cyan-400" />
+          <span>SOC 2 Certified</span>
+        </div>
+        <div className="w-px h-4 bg-white/10" />
+        <div className="flex items-center gap-2 text-white/40 text-sm">
+          <Lock className="w-4 h-4 text-cyan-400" />
+          <span>Bank-Level Security</span>
+        </div>
+        <div className="w-px h-4 bg-white/10" />
+        <div className="flex items-center gap-2 text-white/40 text-sm">
+          <Award className="w-4 h-4 text-cyan-400" />
+          <span>IRS Authorized</span>
+        </div>
       </motion.div>
 
-      {/* Main headline */}
-      <motion.h1
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.2 }}
-        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight mb-6 leading-[1.1]"
-        style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
-      >
-        Payroll & HR
-        <br />
-        <span className="bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] bg-clip-text text-transparent">that just works.</span>
-      </motion.h1>
+      {/* Main Hero Content */}
+      <div className="text-center">
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-semibold tracking-tight mb-6 leading-[1.08]"
+        >
+          <span className="text-white">The Modern Platform for</span>
+          <br />
+          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+            Payroll, HR & Benefits
+          </span>
+        </motion.h1>
 
-      <motion.p
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.35 }}
-        className="text-lg sm:text-xl text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed"
-      >
-        Run payroll in minutes. Automate onboarding. Manage benefits.
-        All-in-one platform that&apos;s 10x easier than Gusto.
-      </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="text-lg sm:text-xl text-white/50 max-w-3xl mx-auto mb-10 leading-relaxed font-light"
+        >
+          Trusted by 15,000+ companies to automate payroll, streamline HR operations,
+          and manage employee benefits. Built for scale. Designed for simplicity.
+        </motion.p>
 
-      {/* CTAs */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.5 }}
-        className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
-      >
-        <Link href="/employer/onboarding">
-          <Button size="lg" className="px-10 py-5 bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] text-white hover:opacity-90 font-medium shadow-2xl shadow-[#0ea5e9]/20">
-            Start Free Trial
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        </Link>
-        <Link href="#demo">
-          <Button variant="ghost" size="lg" className="px-8 py-5 text-white/60 hover:text-white border border-white/10 hover:border-white/20">
-            <Play className="w-4 h-4" />
-            Watch Demo
-          </Button>
-        </Link>
-      </motion.div>
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
+        >
+          <Link href="/employer/onboarding">
+            <Button size="lg" className="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-white font-semibold shadow-xl shadow-cyan-500/25 text-base">
+              Start Free Trial
+              <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
+          <Link href="#demo">
+            <Button variant="ghost" size="lg" className="px-8 py-4 text-white/70 hover:text-white border border-white/10 hover:border-white/20 font-medium text-base">
+              <Play className="w-4 h-4 mr-2" />
+              Watch 2-Min Demo
+            </Button>
+          </Link>
+        </motion.div>
 
-      {/* Feature highlights */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, delay: 0.7 }}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-      >
-        {[
-          { icon: DollarSign, text: 'Auto Payroll', desc: 'Run in 2 clicks' },
-          { icon: Users, text: 'Team Onboarding', desc: 'Self-service portal' },
-          { icon: Heart, text: 'Benefits Admin', desc: 'Health, 401k, etc.' },
-          { icon: FileText, text: 'Tax Filing', desc: '941, W-2, 1099' },
-        ].map((item) => (
-          <div key={item.text} className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-[#0ea5e9]/30 transition-all">
-            <item.icon className="w-6 h-6 text-[#0ea5e9] mx-auto mb-2" />
-            <p className="text-sm font-medium text-white">{item.text}</p>
-            <p className="text-xs text-white/40">{item.desc}</p>
+        {/* Social Proof */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.55 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+            ))}
+            <span className="ml-2 text-white/50 text-sm">4.9/5 from 2,400+ reviews</span>
           </div>
-        ))}
+          <p className="text-white/30 text-sm">No credit card required · Free for first 2 employees · Cancel anytime</p>
+        </motion.div>
+      </div>
+
+      {/* Platform Preview */}
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.7 }}
+        className="mt-16 relative"
+      >
+        {/* Glow effect */}
+        <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-cyan-500/10 blur-3xl rounded-3xl" />
+
+        {/* Desktop mockup */}
+        <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0d1425]/80 shadow-2xl">
+          {/* Browser chrome */}
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-[#0a0f1c]/80">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-white/10" />
+              <div className="w-3 h-3 rounded-full bg-white/10" />
+              <div className="w-3 h-3 rounded-full bg-white/10" />
+            </div>
+            <div className="flex-1 flex justify-center">
+              <div className="px-4 py-1 rounded-md bg-white/[0.03] text-white/30 text-xs font-mono">
+                app.moneyloop.com/employer
+              </div>
+            </div>
+          </div>
+
+          {/* Dashboard preview */}
+          <div className="p-6 grid grid-cols-4 gap-4 h-[380px]">
+            {/* Sidebar */}
+            <div className="col-span-1 space-y-2">
+              {['Overview', 'Team', 'Payroll', 'Benefits', 'Reports'].map((item, i) => (
+                <div key={item} className={`px-3 py-2 rounded-lg text-sm ${i === 0 ? 'bg-cyan-500/20 text-cyan-400' : 'text-white/30'}`}>
+                  {item}
+                </div>
+              ))}
+            </div>
+
+            {/* Main content */}
+            <div className="col-span-3 space-y-4">
+              {/* Stats row */}
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: 'Next Payroll', value: '$47,852.30', sub: 'Feb 1, 2026' },
+                  { label: 'Team Size', value: '24', sub: '+2 this month' },
+                  { label: 'Tax Savings', value: '$12,450', sub: 'YTD' },
+                ].map((stat) => (
+                  <div key={stat.label} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <p className="text-white/40 text-xs mb-1">{stat.label}</p>
+                    <p className="text-white text-xl font-semibold">{stat.value}</p>
+                    <p className="text-cyan-400 text-xs">{stat.sub}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Chart placeholder */}
+              <div className="h-48 rounded-xl bg-white/[0.02] border border-white/[0.06] p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-white text-sm font-medium">Payroll Trend</span>
+                  <span className="text-white/30 text-xs">Last 6 months</span>
+                </div>
+                <div className="flex items-end gap-2 h-28">
+                  {[40, 55, 48, 62, 58, 72].map((h, i) => (
+                    <div key={i} className="flex-1 bg-gradient-to-t from-cyan-500/40 to-cyan-400/20 rounded-t" style={{ height: `${h}%` }} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
@@ -424,10 +510,11 @@ function BusinessHeroSection() {
 // Hero Section with Mode Toggle
 function HeroSection({ mode }: { mode: ProductMode }) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-28 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6 overflow-hidden">
+    <section className={`relative min-h-screen flex items-center justify-center pt-28 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6 overflow-hidden ${mode === 'business' ? 'pt-32' : ''
+      }`}>
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-transparent to-[#050508]/50" />
 
-      <div className="relative z-10 max-w-6xl mx-auto w-full">
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
         <AnimatePresence mode="wait">
           {mode === 'personal' ? (
             <motion.div
@@ -456,17 +543,37 @@ function HeroSection({ mode }: { mode: ProductMode }) {
   );
 }
 
-// Business Stats Section
+// Business Logos Section - Enterprise Clients
+function EnterpriseLogosSection() {
+  return (
+    <section className="py-16 px-6 border-t border-white/[0.04]">
+      <div className="max-w-6xl mx-auto">
+        <p className="text-center text-white/30 text-sm font-medium mb-10 tracking-wider uppercase">
+          Trusted by Leading Companies
+        </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-6">
+          {['Stripe', 'Notion', 'Linear', 'Vercel', 'Figma', 'Loom'].map((company) => (
+            <div key={company} className="text-white/20 text-xl font-semibold tracking-tight hover:text-white/40 transition-colors">
+              {company}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Business Stats Section - More Professional
 function BusinessStatsSection() {
   return (
-    <section className="py-20 px-6">
+    <section className="py-24 px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { value: 15000, suffix: '+', label: 'Companies' },
-            { value: 250000, suffix: '+', label: 'Employees Paid' },
-            { value: 99.99, suffix: '%', label: 'Uptime' },
-            { value: 2, prefix: '<', suffix: ' min', label: 'Payroll Run' },
+            { value: 15000, suffix: '+', label: 'Companies Trust Us', icon: Building2 },
+            { value: 250000, suffix: '+', label: 'Employees Paid', icon: Users },
+            { value: 99.99, suffix: '%', label: 'Uptime Guarantee', icon: Shield },
+            { value: 2, prefix: '<', suffix: ' min', label: 'To Run Payroll', icon: Clock },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -474,12 +581,15 @@ function BusinessStatsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="flex flex-col items-center justify-center p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-[#0ea5e9]/20 transition-all duration-300"
+              className="text-center"
             >
-              <p className="text-2xl lg:text-3xl font-semibold text-white mb-1 font-mono">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mx-auto mb-4">
+                <stat.icon className="w-6 h-6 text-cyan-400" />
+              </div>
+              <p className="text-3xl lg:text-4xl font-semibold text-white mb-2">
                 {stat.prefix}<AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-xs text-white/50">{stat.label}</p>
+              <p className="text-sm text-white/40">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -488,51 +598,474 @@ function BusinessStatsSection() {
   );
 }
 
-// Business Features Section
+// Platform Features Section - Corporate Design
+function PlatformFeaturesSection() {
+  const capabilities = [
+    {
+      category: 'Payroll',
+      icon: DollarSign,
+      color: 'from-cyan-500 to-blue-600',
+      features: [
+        'Unlimited payroll runs',
+        'Multi-state tax filing',
+        'Direct deposit & checks',
+        'Garnishment handling',
+        'Contractor payments (1099)',
+      ],
+    },
+    {
+      category: 'HR & Onboarding',
+      icon: Users,
+      color: 'from-blue-500 to-indigo-600',
+      features: [
+        'Employee self-service portal',
+        'Digital I-9 & W-4',
+        'Org chart & directory',
+        'Performance reviews',
+        'Offboarding workflows',
+      ],
+    },
+    {
+      category: 'Benefits',
+      icon: Heart,
+      color: 'from-indigo-500 to-violet-600',
+      features: [
+        'Health, dental & vision',
+        '401(k) administration',
+        'HSA/FSA management',
+        'Open enrollment tools',
+        'COBRA compliance',
+      ],
+    },
+    {
+      category: 'Compliance',
+      icon: Shield,
+      color: 'from-violet-500 to-purple-600',
+      features: [
+        'Automatic tax deposits',
+        'Year-end W-2 & 1099 filing',
+        'ACA reporting',
+        'New hire reporting',
+        'Audit-ready records',
+      ],
+    },
+  ];
+
+  return (
+    <section className="py-32 px-6 border-t border-white/[0.04]" id="platform">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
+          <span className="text-cyan-400 text-sm font-semibold tracking-wider uppercase mb-4 block">Platform Capabilities</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-5 text-white">
+            One Platform. Complete Control.
+          </h2>
+          <p className="text-lg text-white/40 max-w-2xl mx-auto">
+            Everything you need to pay your team, stay compliant, and build a great workplace—all in one unified platform.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {capabilities.map((cap, index) => (
+            <motion.div
+              key={cap.category}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-cyan-500/30 transition-all duration-300"
+            >
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cap.color} flex items-center justify-center mb-5`}>
+                <cap.icon className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-4">{cap.category}</h3>
+              <ul className="space-y-3">
+                {cap.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm text-white/50">
+                    <Check className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Business Features Section - More Professional
 function BusinessFeaturesSection() {
   const features = [
     {
-      icon: DollarSign,
-      title: 'Automated Payroll',
-      description: 'Run payroll in 2 clicks. Automatic tax calculations, deductions, and direct deposit.',
-      color: 'text-[#0ea5e9]',
-      bg: 'bg-[#0ea5e9]/10',
+      icon: Zap,
+      title: '2-Click Payroll',
+      description: 'Review and approve payroll in under two minutes. Automatic calculations for taxes, deductions, and overtime.',
     },
     {
-      icon: Users,
-      title: 'Employee Onboarding',
-      description: 'Self-service portal for I-9, W-4, direct deposit, and benefits enrollment.',
-      color: 'text-purple-400',
-      bg: 'bg-purple-400/10',
+      icon: Globe,
+      title: 'Multi-State Support',
+      description: 'Hire anywhere in the US. We handle state and local tax registrations, withholding, and filings.',
     },
     {
-      icon: Clock,
-      title: 'Time & Attendance',
-      description: 'Clock in/out, PTO tracking, timesheet approvals, and overtime calculations.',
-      color: 'text-amber-400',
-      bg: 'bg-amber-400/10',
-    },
-    {
-      icon: Heart,
-      title: 'Benefits Administration',
-      description: 'Health, dental, vision, 401(k), and custom benefit plans with open enrollment.',
-      color: 'text-rose-400',
-      bg: 'bg-rose-400/10',
-    },
-    {
-      icon: FileText,
-      title: 'Tax Compliance',
-      description: 'Automatic Form 941, 940, W-2, 1099-NEC filing. State and local tax support.',
-      color: 'text-[#34d399]',
-      bg: 'bg-[#34d399]/10',
+      icon: CreditCard,
+      title: 'Next-Day Direct Deposit',
+      description: 'Pay your team faster with next-day direct deposit. No more waiting for paycheck clearance.',
     },
     {
       icon: BarChart3,
-      title: 'HR Analytics',
-      description: 'Workforce insights, compensation analysis, turnover tracking, and custom reports.',
-      color: 'text-cyan-400',
-      bg: 'bg-cyan-400/10',
+      title: 'Real-Time Analytics',
+      description: 'Workforce insights, compensation benchmarks, and custom reports to make smarter decisions.',
     },
+    {
+      icon: Lock,
+      title: 'Enterprise Security',
+      description: 'SOC 2 Type II certified. 256-bit encryption. Role-based access controls. Audit logging.',
+    },
+    {
+      icon: Briefcase,
+      title: 'Dedicated Support',
+      description: 'US-based support team available via chat, email, and phone. Average response time under 2 hours.',
+    },
+  ];
+
+  return (
+    <section className="py-32 px-6 border-t border-white/[0.04]" id="features">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
+          <span className="text-cyan-400 text-sm font-semibold tracking-wider uppercase mb-4 block">Why MoneyLoop</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-5 text-white">
+            Built for Modern Businesses
+          </h2>
+          <p className="text-lg text-white/40 max-w-2xl mx-auto">
+            Whether you have 5 employees or 500, MoneyLoop scales with your business
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.05 }}
+              className="group"
+            >
+              <div className="p-8 rounded-2xl border border-white/[0.04] bg-white/[0.01] hover:bg-white/[0.03] hover:border-cyan-500/20 transition-all duration-300 h-full">
+                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6 group-hover:bg-cyan-500/20 transition-colors">
+                  <feature.icon className="w-6 h-6 text-cyan-400" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-white">{feature.title}</h3>
+                <p className="text-white/40 leading-relaxed">{feature.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Testimonials Section - Professional
+function TestimonialsSection() {
+  const testimonials = [
+    {
+      quote: "MoneyLoop cut our payroll processing time by 80%. What used to take all day now takes 15 minutes.",
+      author: "Sarah Chen",
+      role: "VP of Operations",
+      company: "Acme Technologies",
+    },
+    {
+      quote: "Finally, a payroll platform that doesn't feel like it was built in 2005. Clean, fast, and actually enjoyable to use.",
+      author: "Marcus Johnson",
+      role: "CFO",
+      company: "Horizon Labs",
+    },
+    {
+      quote: "The compliance features alone are worth it. We used to stress about tax deadlines. Now it's all automated.",
+      author: "Emily Rodriguez",
+      role: "HR Director",
+      company: "Summit Group",
+    },
+  ];
+
+  return (
+    <section className="py-32 px-6 border-t border-white/[0.04]" id="customers">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="text-cyan-400 text-sm font-semibold tracking-wider uppercase mb-4 block">Customer Stories</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-white">
+            Loved by Finance Teams
+          </h2>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <motion.div
+              key={testimonial.author}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="p-8 rounded-2xl bg-white/[0.02] border border-white/[0.06]"
+            >
+              <div className="flex gap-1 mb-6">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                ))}
+              </div>
+              <p className="text-white/70 mb-6 leading-relaxed italic">&ldquo;{testimonial.quote}&rdquo;</p>
+              <div>
+                <p className="font-semibold text-white">{testimonial.author}</p>
+                <p className="text-sm text-white/40">{testimonial.role}, {testimonial.company}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Business Pricing Section - Professional
+function BusinessPricingSection() {
+  const plans = [
+    {
+      name: 'Starter',
+      price: '$40',
+      period: '/mo',
+      perEmployee: '+ $6/employee',
+      description: 'For growing teams getting started with payroll',
+      features: [
+        'Unlimited payroll runs',
+        'Direct deposit',
+        'Tax filing (federal & state)',
+        'Employee self-service',
+        'Basic reporting',
+        'Email support',
+      ],
+      cta: 'Start Free Trial',
+      highlighted: false,
+    },
+    {
+      name: 'Professional',
+      price: '$80',
+      period: '/mo',
+      perEmployee: '+ $12/employee',
+      description: 'For teams that need HR and benefits',
+      features: [
+        'Everything in Starter',
+        'HR onboarding workflows',
+        'Time & attendance',
+        'PTO management',
+        'Benefits administration',
+        'Priority support',
+        'Custom reports',
+      ],
+      cta: 'Start Free Trial',
+      highlighted: true,
+    },
+    {
+      name: 'Enterprise',
+      price: 'Custom',
+      period: '',
+      perEmployee: '',
+      description: 'For large organizations with complex needs',
+      features: [
+        'Everything in Professional',
+        'Dedicated account manager',
+        'Custom integrations',
+        'API access',
+        'Advanced security (SSO)',
+        'SLA guarantees',
+        'On-site training',
+      ],
+      cta: 'Contact Sales',
+      highlighted: false,
+    },
+  ];
+
+  return (
+    <section className="py-32 px-6 border-t border-white/[0.04]" id="pricing">
+      <div className="max-w-6xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="text-cyan-400 text-sm font-semibold tracking-wider uppercase mb-4 block">Pricing</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-5 text-white">
+            Simple, Transparent Pricing
+          </h2>
+          <p className="text-lg text-white/40 max-w-xl mx-auto">
+            No hidden fees. No long-term contracts. Cancel anytime.
+          </p>
+        </motion.div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className={`relative p-8 rounded-2xl ${plan.highlighted
+                  ? 'bg-gradient-to-b from-cyan-500/10 to-transparent border-2 border-cyan-500/30'
+                  : 'bg-white/[0.02] border border-white/[0.06]'
+                }`}
+            >
+              {plan.highlighted && (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-cyan-500 text-white text-xs font-semibold rounded-full">
+                  Most Popular
+                </div>
+              )}
+
+              <h3 className="text-xl font-semibold text-white mb-2">{plan.name}</h3>
+              <div className="mb-2">
+                <span className="text-4xl font-bold text-white">{plan.price}</span>
+                <span className="text-white/40">{plan.period}</span>
+              </div>
+              {plan.perEmployee && (
+                <p className="text-sm text-cyan-400 mb-4">{plan.perEmployee}</p>
+              )}
+              <p className="text-sm text-white/40 mb-6">{plan.description}</p>
+
+              <ul className="space-y-3 mb-8">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex items-start gap-3 text-sm text-white/60">
+                    <Check className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              <Link href={plan.cta === 'Contact Sales' ? '#' : '/employer/onboarding'}>
+                <Button className={`w-full ${plan.highlighted
+                    ? 'bg-cyan-500 hover:bg-cyan-400 text-white'
+                    : 'bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/[0.1]'
+                  }`}>
+                  {plan.cta}
+                </Button>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// CTA Section - Professional
+function BusinessCTASection() {
+  return (
+    <section className="py-32 px-6">
+      <div className="max-w-4xl mx-auto text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="p-12 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-indigo-500/10 border border-cyan-500/20"
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold mb-6 text-white">
+            Ready to simplify payroll?
+          </h2>
+          <p className="text-lg text-white/50 mb-10 max-w-xl mx-auto">
+            Join 15,000+ companies using MoneyLoop to pay their teams and stay compliant.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/employer/onboarding">
+              <Button size="lg" className="px-10 py-5 bg-cyan-500 hover:bg-cyan-400 text-white font-semibold shadow-xl shadow-cyan-500/25">
+                Start Your Free Trial
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
+            <Link href="#">
+              <Button variant="ghost" size="lg" className="px-8 py-5 text-white/60 hover:text-white border border-white/10">
+                Schedule a Demo
+              </Button>
+            </Link>
+          </div>
+          <p className="text-white/30 text-sm mt-6">Free for first 2 employees · No credit card required</p>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// Footer - Professional
+function Footer({ mode }: { mode: ProductMode }) {
+  return (
+    <footer className="py-16 px-6 border-t border-white/[0.04]">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-5 gap-8 mb-12">
+          <div className="md:col-span-2">
+            <Link href="/" className="flex items-center gap-3 mb-4">
+              <Image src="/logo.png" alt="MoneyLoop" width={32} height={32} className="rounded-lg" />
+              <span className="text-lg font-semibold text-white">MoneyLoop</span>
+            </Link>
+            <p className="text-sm text-white/40 max-w-xs">
+              The modern platform for payroll, HR, and benefits. Trusted by 15,000+ companies.
+            </p>
+          </div>
+
+          {[
+            { title: 'Product', links: ['Payroll', 'HR', 'Benefits', 'Time Tracking', 'Reports'] },
+            { title: 'Company', links: ['About', 'Careers', 'Press', 'Security'] },
+            { title: 'Resources', links: ['Help Center', 'API Docs', 'Webinars', 'Blog'] },
+          ].map((section) => (
+            <div key={section.title}>
+              <h4 className="font-semibold text-white mb-4">{section.title}</h4>
+              <ul className="space-y-2">
+                {section.links.map((link) => (
+                  <li key={link}>
+                    <a href="#" className="text-sm text-white/40 hover:text-white transition-colors">{link}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/[0.04]">
+          <p className="text-sm text-white/30">© 2026 MoneyLoop. All rights reserved.</p>
+          <div className="flex items-center gap-6 mt-4 md:mt-0">
+            <a href="/privacy" className="text-sm text-white/30 hover:text-white transition-colors">Privacy</a>
+            <a href="/terms" className="text-sm text-white/30 hover:text-white transition-colors">Terms</a>
+            <a href="#" className="text-sm text-white/30 hover:text-white transition-colors">Security</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// Personal Features Section (condensed)
+function PersonalFeaturesSection() {
+  const features = [
+    { icon: Wallet, title: 'Bank Accounts', description: 'Connect all your accounts in one dashboard' },
+    { icon: TrendingUp, title: 'Investments', description: 'Track stocks, crypto, and retirement accounts' },
+    { icon: Home, title: 'Real Estate', description: 'Monitor property values and equity' },
+    { icon: PiggyBank, title: 'Savings Goals', description: 'Set and achieve financial goals' },
+    { icon: Receipt, title: 'Bill Tracking', description: 'Never miss a payment again' },
+    { icon: LineChart, title: 'Net Worth', description: 'See your complete financial picture' },
   ];
 
   return (
@@ -542,15 +1075,15 @@ function BusinessFeaturesSection() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-semibold mb-5" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
+          <h2 className="text-3xl sm:text-4xl font-semibold mb-4" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
             Everything you need to
             <br />
-            <span className="bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] bg-clip-text text-transparent">run your business</span>
+            <span className="shimmer-text">build wealth</span>
           </h2>
           <p className="text-lg text-white/40 max-w-xl mx-auto">
-            Replace 5+ tools with one unified platform
+            Track every asset, see all income streams, and discover hidden savings
           </p>
         </motion.div>
 
@@ -562,14 +1095,11 @@ function BusinessFeaturesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
+              className="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] transition-all"
             >
-              <div className="group p-7 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#0ea5e9]/20 transition-all duration-300 h-full">
-                <div className={`w-10 h-10 rounded-xl ${feature.bg} flex items-center justify-center mb-5`}>
-                  <feature.icon className={`w-5 h-5 ${feature.color}`} />
-                </div>
-                <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
-              </div>
+              <feature.icon className="w-8 h-8 text-emerald-400 mb-4" />
+              <h3 className="text-lg font-medium mb-2 text-white">{feature.title}</h3>
+              <p className="text-sm text-white/40">{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -578,542 +1108,47 @@ function BusinessFeaturesSection() {
   );
 }
 
-// Business Pricing Section
-function BusinessPricingSection() {
-  const plans = [
-    {
-      name: 'Starter',
-      price: '$40',
-      period: '/mo + $6/employee',
-      description: 'For small teams getting started',
-      features: [
-        'Unlimited payroll runs',
-        'Employee self-service',
-        'Direct deposit',
-        'Basic reporting',
-        'Email support',
-      ],
-      cta: 'Start Free Trial',
-    },
-    {
-      name: 'Plus',
-      price: '$80',
-      period: '/mo + $12/employee',
-      description: 'For growing businesses',
-      features: [
-        'Everything in Starter',
-        'Time & attendance',
-        'PTO management',
-        'Benefits administration',
-        'HR toolkit',
-        'Priority support',
-      ],
-      cta: 'Start Free Trial',
-      popular: true,
-    },
-    {
-      name: 'Premium',
-      price: '$135',
-      period: '/mo + $22/employee',
-      description: 'For established companies',
-      features: [
-        'Everything in Plus',
-        'Performance reviews',
-        'Custom workflows',
-        'Advanced analytics',
-        'API access',
-        'Dedicated account manager',
-      ],
-      cta: 'Contact Sales',
-    },
-  ];
+// Main Page Component
+export default function LandingPage() {
+  const [mode, setMode] = useState<ProductMode>('business');
 
   return (
-    <section className="py-32 px-6 border-t border-white/[0.03]" id="pricing">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-semibold mb-5" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            Simple, transparent pricing
-          </h2>
-          <p className="text-lg text-white/50 max-w-xl mx-auto">
-            No hidden fees. No long-term contracts. Cancel anytime.
-          </p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-3 gap-6">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className={`h-full flex flex-col p-8 rounded-3xl border transition-all duration-500 ${plan.popular
-                  ? 'bg-gradient-to-b from-[#0ea5e9]/10 to-[#8b5cf6]/10 border-[#0ea5e9]/30'
-                  : 'bg-white/[0.02] border-white/[0.06]'
-                }`}>
-                {plan.popular && (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-[#0ea5e9] uppercase tracking-wider mb-4">
-                    <Sparkles className="w-3 h-3" />
-                    Most Popular
-                  </span>
-                )}
-
-                <div className="mb-6">
-                  <h3 className="text-xl font-medium mb-1">{plan.name}</h3>
-                  <p className="text-sm text-white/40">{plan.description}</p>
-                </div>
-
-                <div className="mb-6">
-                  <div className="flex items-baseline">
-                    <span className="text-4xl font-semibold">{plan.price}</span>
-                    <span className="text-white/40 ml-1 text-sm">{plan.period}</span>
-                  </div>
-                </div>
-
-                <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm">
-                      <Check className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-[#0ea5e9]' : 'text-white/30'}`} />
-                      <span className="text-white/60">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link href="/employer/onboarding">
-                  <Button className={`w-full ${plan.popular
-                      ? 'bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] text-white'
-                      : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
-                    }`}>
-                    {plan.cta}
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Trust elements */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-12 text-center"
-        >
-          <div className="inline-flex items-center gap-6 text-sm text-white/40">
-            <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              SOC 2 certified
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              256-bit encryption
-            </span>
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              99.99% uptime
-            </span>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// Trust Section
-function TrustSection() {
-  return (
-    <section className="py-16 px-6 border-y border-white/[0.03] bg-white/[0.01]">
-      <div className="max-w-5xl mx-auto space-y-10">
-        <SecurityBadges />
-        <PartnerLogos />
-      </div>
-    </section>
-  );
-}
-
-// Personal Stats Section
-function PersonalStatsSection() {
-  return (
-    <section className="py-12 sm:py-20 px-4 sm:px-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {[
-            { value: 47, prefix: '$', suffix: 'M+', label: 'Assets Tracked' },
-            { value: 2847, suffix: '+', label: 'Active Users' },
-            { value: 312, prefix: '$', suffix: '', label: 'Avg. Savings' },
-            { value: 99.9, suffix: '%', label: 'Uptime' },
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="flex flex-col items-center justify-center p-5 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-[#34d399]/20 transition-all duration-300"
-            >
-              <p className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-1 font-mono">
-                {stat.prefix}<AnimatedCounter value={stat.value} suffix={stat.suffix} />
-              </p>
-              <p className="text-[11px] sm:text-xs text-white/50">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Personal Features
-const personalFeatures = [
-  {
-    icon: Wallet,
-    title: 'All Your Accounts',
-    description: 'Connect checking, savings, credit cards, and investment accounts in one unified view.',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Investment Tracking',
-    description: 'Stocks, ETFs, mutual funds, and retirement accounts with full portfolio analytics.',
-  },
-  {
-    icon: Coins,
-    title: 'Alternative Assets',
-    description: 'Track gold, silver, and other precious metals with live market pricing.',
-  },
-  {
-    icon: Home,
-    title: 'Real Estate',
-    description: 'Property values, rental income, mortgage tracking, and equity growth visualization.',
-  },
-  {
-    icon: Receipt,
-    title: 'All Income Streams',
-    description: 'Salary, freelance, dividends, rental income, and business revenue unified.',
-  },
-  {
-    icon: Shield,
-    title: 'Bank-Level Security',
-    description: '256-bit encryption, read-only access, and SOC 2 Type II certification.',
-  },
-];
-
-function PersonalFeaturesSection() {
-  return (
-    <section className="py-32 px-6 border-t border-white/[0.03]" id="features">
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-4xl sm:text-5xl font-semibold mb-5" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            Everything you need
-          </h2>
-          <p className="text-lg text-white/40 max-w-xl mx-auto">
-            A complete view of your financial life
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {personalFeatures.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-            >
-              <div className="group p-7 rounded-2xl border border-white/[0.04] bg-white/[0.02] hover:bg-white/[0.04] hover:border-[#34d399]/20 transition-all duration-300">
-                <div className="w-10 h-10 rounded-xl bg-[#34d399]/10 flex items-center justify-center mb-5 group-hover:bg-[#34d399]/15 transition-colors">
-                  <feature.icon className="w-5 h-5 text-[#34d399]" />
-                </div>
-                <h3 className="text-lg font-medium mb-2">{feature.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// How it works (Personal)
-function HowItWorksSection() {
-  const steps = [
-    { step: '1', title: 'Connect', description: 'Link accounts securely in seconds', icon: Zap },
-    { step: '2', title: 'See', description: 'View your complete wealth picture', icon: LineChart },
-    { step: '3', title: 'Discover', description: 'Find hidden savings opportunities', icon: Sparkles },
-    { step: '4', title: 'Grow', description: 'Make smarter decisions', icon: PiggyBank },
-  ];
-
-  return (
-    <section className="py-32 px-6 border-t border-white/[0.03]" id="how-it-works">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20"
-        >
-          <h2 className="text-4xl sm:text-5xl font-semibold" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            How it works
-          </h2>
-        </motion.div>
-
-        <div className="grid md:grid-cols-4 gap-8">
-          {steps.map((step, index) => (
-            <motion.div
-              key={step.step}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="text-center group"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mx-auto mb-5 group-hover:border-[#34d399]/30 group-hover:bg-[#34d399]/5 transition-all">
-                <step.icon className="w-6 h-6 text-white/40 group-hover:text-[#34d399] transition-colors" />
-              </div>
-              <h3 className="text-lg font-medium mb-2">{step.title}</h3>
-              <p className="text-sm text-white/40">{step.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Personal Pricing
-function PersonalPricingSection() {
-  const plans = [
-    {
-      name: 'Free',
-      planId: 'free',
-      price: '$0',
-      period: '',
-      features: ['3 connected accounts', 'Basic net worth tracking', 'Monthly insights'],
-      cta: 'Start Free',
-    },
-    {
-      name: 'Premium',
-      planId: 'premium',
-      price: '$39',
-      period: '/mo',
-      features: [
-        'Unlimited accounts',
-        'Real-time sync',
-        'AI savings finder',
-        'Subscription optimizer',
-        'Investment analytics',
-        'Tax insights',
-        'Priority support',
-      ],
-      cta: 'Start Trial',
-      popular: true,
-    },
-    {
-      name: 'Family',
-      planId: 'family',
-      price: '$79',
-      period: '/mo',
-      features: [
-        'Everything in Premium',
-        'Up to 5 members',
-        'Shared dashboards',
-        'Family goals',
-        'Estate planning',
-      ],
-      cta: 'Start Trial',
-    },
-  ];
-
-  return (
-    <section className="py-32 px-6 border-t border-white/[0.03]" id="pricing">
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-semibold mb-5" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-            We&apos;re Your Financial Allies
-          </h2>
-          <p className="text-lg text-white/50 max-w-2xl mx-auto mb-8">
-            We only get paid when you&apos;re saving. Our subscription starts after we find you real savings—
-            not before. Cancel anytime with no penalty.
-          </p>
-
-          {/* Savings Guarantee Badge */}
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-[#34d399]/8 border border-[#34d399]/15">
-            <Shield className="w-5 h-5 text-[#34d399]" />
-            <span className="text-sm text-[#34d399]/90 font-medium">
-              Savings Guarantee: If we don&apos;t save you at least your subscription cost each month, we&apos;ll refund you. Period.
-            </span>
-          </div>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-3 gap-6">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <div className={`h-full flex flex-col p-8 rounded-3xl border transition-all duration-500 ${plan.popular
-                ? 'bg-gradient-to-b from-[#34d399]/5 to-transparent border-[#34d399]/20'
-                : 'bg-white/[0.02] border-white/[0.06]'
-                }`}>
-                {plan.popular && (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-[#34d399] uppercase tracking-wider mb-4">
-                    <Sparkles className="w-3 h-3" />
-                    Most Popular
-                  </span>
-                )}
-
-                <div className="mb-8">
-                  <h3 className="text-xl font-medium mb-2">{plan.name}</h3>
-                  <div className="flex items-baseline">
-                    <span className="text-4xl font-medium">{plan.price}</span>
-                    <span className="text-white/40 ml-1">{plan.period}</span>
-                  </div>
-                </div>
-
-                <ul className="space-y-3 mb-8 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm">
-                      <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${plan.popular ? 'text-[#34d399]/60' : 'text-white/30'}`} />
-                      <span className="text-white/60">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link href="/auth">
-                  <Button className={`w-full ${plan.popular ? 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]' : ''}`}>
-                    {plan.cta}
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Data promise */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-12"
-        >
-          <DataPromise />
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-// Final CTA
-function CTASection({ mode }: { mode: ProductMode }) {
-  return (
-    <section className="py-32 px-6 border-t border-white/[0.03]">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="max-w-2xl mx-auto text-center"
-      >
-        <h2 className="text-4xl sm:text-5xl font-semibold mb-6" style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}>
-          {mode === 'business' ? 'Ready to simplify HR?' : 'See your wealth clearly.'}
-        </h2>
-        <p className="text-lg text-white/40 mb-12">
-          {mode === 'business'
-            ? 'Join thousands of companies running smarter payroll.'
-            : 'Join thousands building wealth with clarity.'
-          }
-        </p>
-        <Link href={mode === 'business' ? '/employer/onboarding' : '/auth'}>
-          <Button size="lg" className={`text-base px-12 py-5 font-medium rounded-xl ${mode === 'business'
-              ? 'bg-gradient-to-r from-[#0ea5e9] to-[#8b5cf6] text-white'
-              : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
-            }`}>
-            {mode === 'business' ? 'Start Free Trial' : 'Get Started Free'}
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-        </Link>
-      </motion.div>
-    </section>
-  );
-}
-
-// Footer
-function Footer() {
-  return (
-    <footer className="border-t border-white/[0.03] py-8 sm:py-12 px-4 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col items-center gap-6 sm:gap-8">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="MoneyLoop" width={32} height={32} className="rounded-lg mix-blend-screen brightness-110" />
-            <span className="text-sm text-white/50 font-medium">MoneyLoop</span>
-          </div>
-
-          {/* Links */}
-          <div className="flex items-center gap-6 sm:gap-8 text-sm text-white/30">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/about" className="hover:text-white transition-colors">About</Link>
-          </div>
-
-          {/* Copyright */}
-          <p className="text-xs sm:text-sm text-white/30">© 2026 MoneyLoop. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-// Main Page
-export default function HomePage() {
-  const [mode, setMode] = useState<ProductMode>('personal');
-
-  return (
-    <>
-      <PremiumBackground mode={mode} />
+    <div className="min-h-screen bg-[#050508] text-white overflow-x-hidden">
+      <ProfessionalBackground mode={mode} />
       <Navigation mode={mode} setMode={setMode} />
-      <main className="relative z-10">
-        <HeroSection mode={mode} />
-        <TrustSection />
+      <HeroSection mode={mode} />
 
+      <AnimatePresence mode="wait">
         {mode === 'business' ? (
-          <>
+          <motion.div
+            key="business-content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <EnterpriseLogosSection />
             <BusinessStatsSection />
+            <PlatformFeaturesSection />
             <BusinessFeaturesSection />
+            <TestimonialsSection />
             <BusinessPricingSection />
-          </>
+            <BusinessCTASection />
+          </motion.div>
         ) : (
-          <>
-            <PersonalStatsSection />
+          <motion.div
+            key="personal-content"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             <PersonalFeaturesSection />
-            <HowItWorksSection />
-            <PersonalPricingSection />
-          </>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        <CTASection mode={mode} />
-      </main>
-      <Footer />
-    </>
+      <Footer mode={mode} />
+    </div>
   );
 }
