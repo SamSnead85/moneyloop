@@ -200,8 +200,8 @@ function HeroSection() {
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm mb-6 sm:mb-8"
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-[#34d399]/80" />
-              <span className="text-[10px] sm:text-xs text-white/60 font-medium tracking-widest uppercase">Free Forever</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#34d399]/80 animate-pulse" />
+              <span className="text-[10px] sm:text-xs text-white/60 font-medium tracking-widest uppercase">Trusted by 2,800+ Startups</span>
             </motion.div>
 
             {/* Main headline - Responsive sizing */}
