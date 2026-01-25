@@ -185,12 +185,12 @@ function Navigation() {
 // Hero Section with Dashboard Preview
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center pt-28 sm:pt-24 pb-12 sm:pb-20 px-4 sm:px-6 overflow-hidden">
       {/* Refined gradient overlays for premium depth */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-transparent via-transparent to-[#050508]/50" />
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="relative z-10 max-w-6xl mx-auto w-full">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Left column - Text */}
           <div className="text-center lg:text-left">
             {/* Badge - Premium Subtle Styling */}
@@ -198,18 +198,19 @@ function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm mb-8"
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm mb-6 sm:mb-8"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-[#34d399]/80" />
-              <span className="text-xs text-white/60 font-medium tracking-widest uppercase">Free Forever</span>
+              <span className="text-[10px] sm:text-xs text-white/60 font-medium tracking-widest uppercase">Free Forever</span>
             </motion.div>
 
-            {/* Main headline */}
+            {/* Main headline - Responsive sizing */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="text-premium-display mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight mb-4 sm:mb-6 leading-[1.1]"
+              style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
             >
               Your complete
               <br />
@@ -220,38 +221,38 @@ function HeroSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.35 }}
-              className="text-lg text-white/50 max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed"
+              className="text-base sm:text-lg text-white/50 max-w-md mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed px-2 sm:px-0"
             >
               Track every asset. See all income streams.
               Discover hidden savings. Build wealth with clarity.
             </motion.p>
 
-            {/* CTA */}
+            {/* CTA - Full width on mobile */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-10"
+              className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4 mb-8 sm:mb-10 px-2 sm:px-0"
             >
-              <Link href="/auth">
-                <Button size="lg" className="text-base px-10 py-5 bg-white/[0.08] text-white hover:bg-white/[0.12] font-medium shadow-2xl shadow-black/40 border border-white/[0.1] backdrop-blur-sm">
+              <Link href="/auth" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base px-8 sm:px-10 py-4 sm:py-5 bg-white/[0.08] text-white hover:bg-white/[0.12] font-medium shadow-2xl shadow-black/40 border border-white/[0.1] backdrop-blur-sm">
                   Start Free
                   <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
-              <Link href="#features">
-                <Button variant="ghost" size="lg" className="text-base px-8 py-5 text-white/60 hover:text-white border border-white/10 hover:border-white/20">
+              <Link href="#features" className="w-full sm:w-auto">
+                <Button variant="ghost" size="lg" className="w-full sm:w-auto text-sm sm:text-base px-6 sm:px-8 py-4 sm:py-5 text-white/60 hover:text-white border border-white/10 hover:border-white/20">
                   See Features
                 </Button>
               </Link>
             </motion.div>
 
-            {/* Asset types */}
+            {/* Asset types - Scrollable on mobile */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.5, delay: 0.7 }}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-white/40 text-sm"
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-3 text-white/40 text-sm px-2 sm:px-0"
             >
               {[
                 { icon: Wallet, text: 'Bank Accounts' },
@@ -259,9 +260,9 @@ function HeroSection() {
                 { icon: Coins, text: 'Gold & Silver' },
                 { icon: Home, text: 'Real Estate' },
               ].map((item) => (
-                <div key={item.text} className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
-                  <item.icon className="w-3.5 h-3.5 opacity-60" />
-                  <span className="text-xs">{item.text}</span>
+                <div key={item.text} className="flex items-center gap-1.5 sm:gap-2 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-white/5">
+                  <item.icon className="w-3 sm:w-3.5 h-3 sm:h-3.5 opacity-60" />
+                  <span className="text-[10px] sm:text-xs whitespace-nowrap">{item.text}</span>
                 </div>
               ))}
             </motion.div>
@@ -292,13 +293,13 @@ function TrustSection() {
 // Stats
 function StatsSection() {
   return (
-    <section className="py-24 px-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">
+    <section className="py-12 sm:py-20 px-4 sm:px-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {[
-            { value: 2400000000, prefix: '$', suffix: '+', label: 'Assets Tracked' },
-            { value: 10000, suffix: '+', label: 'Users' },
-            { value: 347, prefix: '$', label: 'Avg. Savings Found' },
+            { value: 47, prefix: '$', suffix: 'M+', label: 'Assets Tracked' },
+            { value: 2847, suffix: '+', label: 'Active Users' },
+            { value: 312, prefix: '$', suffix: '', label: 'Avg. Savings' },
             { value: 99.9, suffix: '%', label: 'Uptime' },
           ].map((stat, index) => (
             <motion.div
@@ -307,11 +308,12 @@ function StatsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
+              className="flex flex-col items-center justify-center p-5 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-[#34d399]/20 transition-all duration-300"
             >
-              <p className="text-3xl lg:text-4xl font-medium text-white mb-2 font-mono">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white mb-1 font-mono">
                 {stat.prefix}<AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="text-sm text-white/30">{stat.label}</p>
+              <p className="text-[11px] sm:text-xs text-white/50">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -624,19 +626,24 @@ function CTASection() {
 // Footer
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.03] py-12 px-6">
+    <footer className="border-t border-white/[0.03] py-8 sm:py-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col items-center gap-6 sm:gap-8">
+          {/* Logo */}
           <div className="flex items-center gap-3">
             <Image src="/logo.png" alt="MoneyLoop" width={32} height={32} className="rounded-lg mix-blend-screen brightness-110" />
             <span className="text-sm text-white/50 font-medium">MoneyLoop</span>
           </div>
-          <div className="flex items-center gap-8 text-sm text-white/30">
+
+          {/* Links */}
+          <div className="flex items-center gap-6 sm:gap-8 text-sm text-white/30">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/about" className="hover:text-white transition-colors">About</Link>
           </div>
-          <p className="text-sm text-white/30">© 2026 MoneyLoop</p>
+
+          {/* Copyright */}
+          <p className="text-xs sm:text-sm text-white/30">© 2026 MoneyLoop. All rights reserved.</p>
         </div>
       </div>
     </footer>
