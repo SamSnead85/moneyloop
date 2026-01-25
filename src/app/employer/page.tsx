@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
@@ -34,6 +34,7 @@ import {
     Upload,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
+import { WelcomeTutorial, SetupChecklist, QuickStartCard, VideoTutorialCard } from '@/components/employer/WelcomeTutorial';
 
 // Types
 interface Employee {
@@ -933,9 +934,52 @@ export default function EmployerDashboard() {
     const [activeTab, setActiveTab] = useState<TabId>('overview');
     const [employees] = useState(mockEmployees);
     const [payrollRuns] = useState(mockPayrollRuns);
+    const [showTutorial, setShowTutorial] = useState(false);
+    const [showChecklist, setShowChecklist] = useState(true);
+    const [isNewUser, setIsNewUser] = useState(false);
+
+    // Check if user is new (first visit)
+    useEffect(() => {
+        const hasSeenTutorial = localStorage.getItem('moneyloop_employer_tutorial_completed');
+        const checklistDismissed = localStorage.getItem('moneyloop_employer_checklist_dismissed');
+
+        if (!hasSeenTutorial) {
+            setShowTutorial(true);
+            setIsNewUser(true);
+        }
+
+        if (checklistDismissed) {
+            setShowChecklist(false);
+        }
+    }, []);
+
+    const handleTutorialComplete = () => {
+        localStorage.setItem('moneyloop_employer_tutorial_completed', 'true');
+        setShowTutorial(false);
+    };
+
+    const handleTutorialSkip = () => {
+        localStorage.setItem('moneyloop_employer_tutorial_completed', 'true');
+        setShowTutorial(false);
+    };
+
+    const handleDismissChecklist = () => {
+        localStorage.setItem('moneyloop_employer_checklist_dismissed', 'true');
+        setShowChecklist(false);
+    };
 
     return (
         <div className="min-h-screen">
+            {/* Welcome Tutorial Modal */}
+            <AnimatePresence>
+                {showTutorial && (
+                    <WelcomeTutorial
+                        onComplete={handleTutorialComplete}
+                        onSkip={handleTutorialSkip}
+                    />
+                )}
+            </AnimatePresence>
+
             {/* Header */}
             <div className="border-b border-white/[0.06] bg-white/[0.01] backdrop-blur-sm sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -951,6 +995,15 @@ export default function EmployerDashboard() {
                         </div>
 
                         <div className="flex items-center gap-3">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-white/50 hover:text-white"
+                                onClick={() => setShowTutorial(true)}
+                            >
+                                <ClipboardList className="w-4 h-4" />
+                                <span className="hidden sm:inline ml-2">Tutorial</span>
+                            </Button>
                             <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
                                 <Download className="w-4 h-4" />
                                 <span className="hidden sm:inline ml-2">Export</span>
@@ -983,6 +1036,13 @@ export default function EmployerDashboard() {
 
             {/* Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                {/* Getting Started Section for new users */}
+                {isNewUser && showChecklist && activeTab === 'overview' && (
+                    <div className="mb-6">
+                        <SetupChecklist onDismiss={handleDismissChecklist} />
+                    </div>
+                )}
+
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}
