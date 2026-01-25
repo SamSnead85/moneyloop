@@ -24,6 +24,7 @@ import {
     Users,
     Bot,
     Baby,
+    Briefcase,
 } from 'lucide-react';
 
 const navItems = [
@@ -42,6 +43,7 @@ const navItems = [
     { icon: TrendingUp, label: 'Investments', href: '/dashboard/investments' },
     { icon: Receipt, label: 'Tax Center', href: '/dashboard/tax-optimizer' },
     { icon: Building2, label: 'Business', href: '/dashboard/business' },
+    { icon: Briefcase, label: 'Employer Hub', href: '/dashboard/employer', badge: 'New' },
     { icon: Heart, label: 'Healthcare', href: '/dashboard/healthcare' },
     { icon: Sparkles, label: 'AI Insights', href: '/dashboard/insights' },
     { icon: FileText, label: 'Reports', href: '/dashboard/reports' },
@@ -66,7 +68,7 @@ export function Sidebar() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-3 pt-4">
+            <nav className="flex-1 p-3 pt-4 overflow-y-auto">
                 <div className="space-y-1">
                     {navItems.map((item) => {
                         const isActive = pathname === item.href ||
@@ -81,7 +83,12 @@ export function Sidebar() {
                                         }`}
                                 >
                                     <item.icon className="w-4 h-4" />
-                                    <span className="font-medium">{item.label}</span>
+                                    <span className="font-medium flex-1">{item.label}</span>
+                                    {'badge' in item && item.badge && (
+                                        <span className="px-1.5 py-0.5 text-[10px] font-medium bg-[#34d399]/20 text-[#34d399] rounded">
+                                            {item.badge}
+                                        </span>
+                                    )}
                                 </motion.div>
                             </Link>
                         );

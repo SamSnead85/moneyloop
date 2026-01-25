@@ -258,9 +258,9 @@ function OverviewTab({ employees, payrollRuns }: { employees: Employee[]; payrol
                 <MetricCard
                     title="Monthly Payroll"
                     value={`$${(totalPayroll / 12).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
-                    subtitle="Annual: $" + totalPayroll.toLocaleString()
-                icon={DollarSign}
-        />
+                    subtitle={`Annual: $${totalPayroll.toLocaleString()}`}
+                    icon={DollarSign}
+                />
                 <MetricCard
                     title="Last Payroll Run"
                     value={`$${latestPayroll?.totalNet.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
@@ -399,8 +399,8 @@ function EmployeesTab({ employees }: { employees: Employee[] }) {
                             key={type}
                             onClick={() => setFilterType(type)}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filterType === type
-                                    ? 'bg-[#34d399]/20 text-[#34d399] border border-[#34d399]/30'
-                                    : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:text-white hover:bg-white/[0.05]'
+                                ? 'bg-[#34d399]/20 text-[#34d399] border border-[#34d399]/30'
+                                : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:text-white hover:bg-white/[0.05]'
                                 }`}
                         >
                             {type === 'all' ? 'All' : type === 'full-time' ? 'Full-time' : 'Contractors'}
@@ -433,10 +433,10 @@ function EmployeesTab({ employees }: { employees: Employee[] }) {
                                     <div className="flex items-center gap-2">
                                         <h4 className="font-medium text-white">{employee.name}</h4>
                                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase ${employee.status === 'active'
-                                                ? 'bg-[#34d399]/10 text-[#34d399]'
-                                                : employee.status === 'pending'
-                                                    ? 'bg-amber-400/10 text-amber-400'
-                                                    : 'bg-rose-400/10 text-rose-400'
+                                            ? 'bg-[#34d399]/10 text-[#34d399]'
+                                            : employee.status === 'pending'
+                                                ? 'bg-amber-400/10 text-amber-400'
+                                                : 'bg-rose-400/10 text-rose-400'
                                             }`}>
                                             {employee.status}
                                         </span>
@@ -541,10 +541,10 @@ function PayrollTab({ payrollRuns }: { payrollRuns: PayrollRun[] }) {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${run.status === 'completed'
-                                            ? 'bg-[#34d399]/10'
-                                            : run.status === 'draft'
-                                                ? 'bg-amber-400/10'
-                                                : 'bg-blue-400/10'
+                                        ? 'bg-[#34d399]/10'
+                                        : run.status === 'draft'
+                                            ? 'bg-amber-400/10'
+                                            : 'bg-blue-400/10'
                                         }`}>
                                         {run.status === 'completed' ? (
                                             <CheckCircle2 className="w-5 h-5 text-[#34d399]" />
@@ -565,10 +565,10 @@ function PayrollTab({ payrollRuns }: { payrollRuns: PayrollRun[] }) {
                                         <p className="text-xs text-white/40">Net pay</p>
                                     </div>
                                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${run.status === 'completed'
-                                            ? 'bg-[#34d399]/10 text-[#34d399]'
-                                            : run.status === 'draft'
-                                                ? 'bg-amber-400/10 text-amber-400'
-                                                : 'bg-blue-400/10 text-blue-400'
+                                        ? 'bg-[#34d399]/10 text-[#34d399]'
+                                        : run.status === 'draft'
+                                            ? 'bg-amber-400/10 text-amber-400'
+                                            : 'bg-blue-400/10 text-blue-400'
                                         }`}>
                                         {run.status.charAt(0).toUpperCase() + run.status.slice(1)}
                                     </span>
@@ -785,8 +785,8 @@ function DocumentsTab() {
                     <button
                         key={cat}
                         className={`px-4 py-2 rounded-lg text-sm transition-colors ${cat === 'All'
-                                ? 'bg-[#34d399]/20 text-[#34d399] border border-[#34d399]/30'
-                                : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:text-white hover:bg-white/[0.05]'
+                            ? 'bg-[#34d399]/20 text-[#34d399] border border-[#34d399]/30'
+                            : 'bg-white/[0.03] text-white/50 border border-white/[0.06] hover:text-white hover:bg-white/[0.05]'
                             }`}
                     >
                         {cat}
@@ -969,8 +969,8 @@ export default function EmployerDashboard() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${activeTab === tab.id
-                                        ? 'border-[#34d399] text-[#34d399]'
-                                        : 'border-transparent text-white/40 hover:text-white/70'
+                                    ? 'border-[#34d399] text-[#34d399]'
+                                    : 'border-transparent text-white/40 hover:text-white/70'
                                     }`}
                             >
                                 <tab.icon className="w-4 h-4" />
