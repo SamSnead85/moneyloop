@@ -34,7 +34,9 @@ import {
     Upload,
 } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
-import { WelcomeTutorial, SetupChecklist, QuickStartCard, VideoTutorialCard } from '@/components/employer/WelcomeTutorial';
+import { WelcomeTutorial, SetupChecklist } from '@/components/employer/WelcomeTutorial';
+import { AddEmployeeModal } from '@/components/employer/AddEmployeeModal';
+import { RunPayrollModal } from '@/components/employer/RunPayrollModal';
 
 // Types
 interface Employee {
@@ -937,6 +939,8 @@ export default function EmployerDashboard() {
     const [showTutorial, setShowTutorial] = useState(false);
     const [showChecklist, setShowChecklist] = useState(true);
     const [isNewUser, setIsNewUser] = useState(false);
+    const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+    const [showRunPayrollModal, setShowRunPayrollModal] = useState(false);
 
     // Check if user is new (first visit)
     useEffect(() => {
@@ -968,6 +972,16 @@ export default function EmployerDashboard() {
         setShowChecklist(false);
     };
 
+    const handleAddEmployee = (data: any) => {
+        console.log('New employee data:', data);
+        // In a real app, this would call an API to create the employee
+    };
+
+    const handlePayrollComplete = () => {
+        console.log('Payroll completed');
+        // In a real app, this would refresh the payroll data
+    };
+
     return (
         <div className="min-h-screen">
             {/* Welcome Tutorial Modal */}
@@ -976,6 +990,28 @@ export default function EmployerDashboard() {
                     <WelcomeTutorial
                         onComplete={handleTutorialComplete}
                         onSkip={handleTutorialSkip}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Add Employee Modal */}
+            <AnimatePresence>
+                {showAddEmployeeModal && (
+                    <AddEmployeeModal
+                        isOpen={showAddEmployeeModal}
+                        onClose={() => setShowAddEmployeeModal(false)}
+                        onSubmit={handleAddEmployee}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Run Payroll Modal */}
+            <AnimatePresence>
+                {showRunPayrollModal && (
+                    <RunPayrollModal
+                        isOpen={showRunPayrollModal}
+                        onClose={() => setShowRunPayrollModal(false)}
+                        onComplete={handlePayrollComplete}
                     />
                 )}
             </AnimatePresence>
@@ -1004,11 +1040,19 @@ export default function EmployerDashboard() {
                                 <ClipboardList className="w-4 h-4" />
                                 <span className="hidden sm:inline ml-2">Tutorial</span>
                             </Button>
-                            <Button variant="ghost" size="sm" className="text-white/50 hover:text-white">
-                                <Download className="w-4 h-4" />
-                                <span className="hidden sm:inline ml-2">Export</span>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-white/50 hover:text-white"
+                                onClick={() => setShowRunPayrollModal(true)}
+                            >
+                                <DollarSign className="w-4 h-4" />
+                                <span className="hidden sm:inline ml-2">Run Payroll</span>
                             </Button>
-                            <Button className="bg-[#34d399] text-[#050508] hover:bg-[#34d399]/90 text-sm">
+                            <Button
+                                className="bg-[#34d399] text-[#050508] hover:bg-[#34d399]/90 text-sm"
+                                onClick={() => setShowAddEmployeeModal(true)}
+                            >
                                 <Plus className="w-4 h-4" />
                                 <span className="hidden sm:inline ml-1">New Employee</span>
                             </Button>
@@ -1063,3 +1107,4 @@ export default function EmployerDashboard() {
         </div>
     );
 }
+
