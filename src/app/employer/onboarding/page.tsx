@@ -355,8 +355,8 @@ function PayrollStep({
                                 key={freq.value}
                                 onClick={() => onChange({ ...data, payFrequency: freq.value as PayrollSetup['payFrequency'] })}
                                 className={`p-4 rounded-xl border text-left transition-all ${data.payFrequency === freq.value
-                                        ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
-                                        : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04] hover:border-white/[0.12]'
+                                    ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
+                                    : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04] hover:border-white/[0.12]'
                                     }`}
                             >
                                 <div className="flex items-center justify-between mb-1">
@@ -395,8 +395,8 @@ function PayrollStep({
                                 key={count.value}
                                 onClick={() => onChange({ ...data, employeeCount: count.value })}
                                 className={`p-3 rounded-xl border text-center transition-all ${data.employeeCount === count.value
-                                        ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
-                                        : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04]'
+                                    ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
+                                    : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04]'
                                     }`}
                             >
                                 <span className="text-sm font-medium">{count.label}</span>
@@ -417,8 +417,8 @@ function PayrollStep({
                                 key={String(option.value)}
                                 onClick={() => onChange({ ...data, hasContractors: option.value })}
                                 className={`flex-1 p-4 rounded-xl border text-center transition-all ${data.hasContractors === option.value
-                                        ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
-                                        : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04]'
+                                    ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
+                                    : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04]'
                                     }`}
                             >
                                 <span className="text-sm font-medium">{option.label}</span>
@@ -486,7 +486,7 @@ function BankingStep({
                             </p>
                             <Button
                                 onClick={() => onChange({ ...data, useMercury: true })}
-                                variant={data.useMercury ? 'default' : 'secondary'}
+                                variant={data.useMercury ? 'primary' : 'secondary'}
                                 className={data.useMercury ? 'bg-purple-500 text-white' : ''}
                             >
                                 {data.useMercury ? (
@@ -530,8 +530,8 @@ function BankingStep({
                                     key={type}
                                     onClick={() => onChange({ ...data, accountType: type as 'checking' | 'savings', useMercury: false })}
                                     className={`flex-1 p-3 rounded-xl border transition-all capitalize ${data.accountType === type
-                                            ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
-                                            : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04]'
+                                        ? 'bg-[#0ea5e9]/10 border-[#0ea5e9]/50 text-white'
+                                        : 'bg-white/[0.02] border-white/[0.08] text-white/60 hover:bg-white/[0.04]'
                                         }`}
                                 >
                                     {type}
@@ -816,10 +816,10 @@ export default function EmployerOnboarding() {
                             <div key={step.id} className="flex items-center">
                                 <div
                                     className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${i < currentStep
-                                            ? 'bg-[#0ea5e9] text-white'
-                                            : i === currentStep
-                                                ? 'bg-[#0ea5e9]/20 text-[#0ea5e9] border border-[#0ea5e9]'
-                                                : 'bg-white/[0.05] text-white/30'
+                                        ? 'bg-[#0ea5e9] text-white'
+                                        : i === currentStep
+                                            ? 'bg-[#0ea5e9]/20 text-[#0ea5e9] border border-[#0ea5e9]'
+                                            : 'bg-white/[0.05] text-white/30'
                                         }`}
                                 >
                                     {i < currentStep ? <Check className="w-4 h-4" /> : i + 1}
