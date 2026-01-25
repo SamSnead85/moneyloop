@@ -27,6 +27,7 @@ import {
     Clock,
 } from 'lucide-react';
 import { Button, Card } from '@/components/ui';
+import { TeamRolesManager } from '@/components/employer/TeamRolesManager';
 
 type SettingsTab = 'company' | 'payroll' | 'team' | 'integrations' | 'notifications' | 'security';
 
@@ -217,83 +218,9 @@ function PayrollTab() {
     );
 }
 
-// Team Tab
+// Team Tab - Use the comprehensive TeamRolesManager
 function TeamTab() {
-    const admins = [
-        { name: 'John Smith', email: 'john@acme.com', role: 'Owner', avatar: 'JS' },
-        { name: 'Sarah Chen', email: 'sarah@acme.com', role: 'Admin', avatar: 'SC' },
-    ];
-
-    return (
-        <div className="space-y-6">
-            <div>
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-medium text-white">Administrators</h3>
-                    <Button variant="secondary" className="border-white/10">
-                        <Plus className="w-4 h-4" />
-                        Add Admin
-                    </Button>
-                </div>
-                <Card className="bg-white/[0.02] border-white/[0.06] overflow-hidden">
-                    <div className="divide-y divide-white/[0.04]">
-                        {admins.map((admin) => (
-                            <div key={admin.email} className="flex items-center justify-between p-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0ea5e9]/20 to-[#8b5cf6]/20 flex items-center justify-center text-sm font-medium text-white">
-                                        {admin.avatar}
-                                    </div>
-                                    <div>
-                                        <p className="font-medium text-white">{admin.name}</p>
-                                        <p className="text-sm text-white/40">{admin.email}</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${admin.role === 'Owner' ? 'bg-purple-500/10 text-purple-400' : 'bg-[#0ea5e9]/10 text-[#0ea5e9]'
-                                        }`}>
-                                        {admin.role}
-                                    </span>
-                                    {admin.role !== 'Owner' && (
-                                        <button className="p-2 rounded-lg hover:bg-white/[0.05]">
-                                            <Trash2 className="w-4 h-4 text-white/30" />
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
-            </div>
-
-            <div>
-                <h3 className="text-lg font-medium text-white mb-4">Permissions</h3>
-                <Card className="p-6 bg-white/[0.02] border-white/[0.06]">
-                    <div className="space-y-3">
-                        {[
-                            { role: 'Admin', perms: ['View all data', 'Run payroll', 'Manage team', 'Access settings'] },
-                            { role: 'Manager', perms: ['View team', 'Approve timesheets', 'View reports'] },
-                            { role: 'Employee', perms: ['View own info', 'Submit timesheets', 'View pay stubs'] },
-                        ].map((role) => (
-                            <div key={role.role} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.04]">
-                                <div className="flex items-center justify-between mb-2">
-                                    <p className="font-medium text-white">{role.role}</p>
-                                    <Button variant="ghost" size="sm" className="text-xs text-[#0ea5e9]">
-                                        <Edit2 className="w-3 h-3" /> Edit
-                                    </Button>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {role.perms.map((perm) => (
-                                        <span key={perm} className="px-2 py-1 rounded bg-white/[0.05] text-xs text-white/60">
-                                            {perm}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </Card>
-            </div>
-        </div>
-    );
+    return <TeamRolesManager />;
 }
 
 // Integrations Tab
@@ -314,8 +241,8 @@ function IntegrationsTab() {
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-4">
                                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${int.status === 'connected'
-                                        ? `bg-gradient-to-br ${int.color}`
-                                        : 'bg-white/[0.05]'
+                                    ? `bg-gradient-to-br ${int.color}`
+                                    : 'bg-white/[0.05]'
                                     }`}>
                                     <int.icon className={`w-6 h-6 ${int.status === 'connected' ? 'text-white' : 'text-white/40'}`} />
                                 </div>
@@ -482,8 +409,8 @@ export default function SettingsPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${activeTab === tab.id
-                                        ? 'bg-[#0ea5e9]/10 text-[#0ea5e9]'
-                                        : 'text-white/50 hover:bg-white/[0.03] hover:text-white'
+                                    ? 'bg-[#0ea5e9]/10 text-[#0ea5e9]'
+                                    : 'text-white/50 hover:bg-white/[0.03] hover:text-white'
                                     }`}
                             >
                                 <tab.icon className="w-4 h-4" />
