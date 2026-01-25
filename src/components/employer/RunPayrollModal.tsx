@@ -255,10 +255,10 @@ export function RunPayrollModal({ isOpen, onClose, onComplete }: RunPayrollModal
                                 <div key={step.id} className="flex items-center">
                                     <div
                                         className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${i === currentStep
-                                                ? 'bg-cyan-500/20 text-cyan-400'
-                                                : i < currentStep
-                                                    ? 'text-cyan-400/60'
-                                                    : 'text-white/30'
+                                            ? 'bg-cyan-500/20 text-cyan-400'
+                                            : i < currentStep
+                                                ? 'text-cyan-400/60'
+                                                : 'text-white/30'
                                             }`}
                                     >
                                         {i < currentStep ? (
@@ -336,8 +336,8 @@ export function RunPayrollModal({ isOpen, onClose, onComplete }: RunPayrollModal
                                                 <button
                                                     onClick={() => toggleEmployeeStatus(emp.id)}
                                                     className={`px-2 py-1 rounded-lg text-xs font-medium transition-colors ${emp.status === 'excluded'
-                                                            ? 'bg-white/10 text-white/50 hover:bg-white/20'
-                                                            : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
+                                                        ? 'bg-white/10 text-white/50 hover:bg-white/20'
+                                                        : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30'
                                                         }`}
                                                 >
                                                     {emp.status === 'excluded' ? 'Excluded' : 'Included'}
@@ -470,21 +470,30 @@ export function RunPayrollModal({ isOpen, onClose, onComplete }: RunPayrollModal
                                     </div>
                                 </div>
 
-                                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-3">
-                                    <AlertCircle className="w-5 h-5 text-amber-400 mt-0.5" />
-                                    <div>
-                                        <p className="text-sm font-medium text-white">Ensure sufficient funds</p>
-                                        <p className="text-xs text-white/50">
-                                            The total amount will be debited from your connected bank account on the pay date.
-                                        </p>
+                                {/* Mercury Bank Account */}
+                                <div className="p-4 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                                                <Building2 className="w-5 h-5 text-white" />
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-white">Mercury Business Checking</p>
+                                                <p className="text-sm text-white/50">****4521 · Connected</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                                            <span className="text-sm text-emerald-400">Ready</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
                                     <Shield className="w-5 h-5 text-emerald-400" />
                                     <div className="flex-1">
-                                        <p className="text-sm text-white">Secure processing</p>
-                                        <p className="text-xs text-white/40">256-bit encryption · NACHA compliant</p>
+                                        <p className="text-sm text-white">Secure ACH Processing via Mercury</p>
+                                        <p className="text-xs text-white/40">256-bit encryption · NACHA compliant · Bank-level security</p>
                                     </div>
                                 </div>
                             </motion.div>
