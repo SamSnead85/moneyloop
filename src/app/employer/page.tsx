@@ -230,7 +230,17 @@ function MetricCard({
 }
 
 // Overview Tab
-function OverviewTab({ employees, payrollRuns }: { employees: Employee[]; payrollRuns: PayrollRun[] }) {
+function OverviewTab({
+    employees,
+    payrollRuns,
+    onAddEmployee,
+    onRunPayroll,
+}: {
+    employees: Employee[];
+    payrollRuns: PayrollRun[];
+    onAddEmployee?: () => void;
+    onRunPayroll?: () => void;
+}) {
     const activeEmployees = employees.filter(e => e.status === 'active').length;
     const totalPayroll = employees.reduce((sum, e) => {
         if (e.employmentType === 'contractor') return sum;
@@ -284,22 +294,42 @@ function OverviewTab({ employees, payrollRuns }: { employees: Employee[]; payrol
                 <Card className="p-6 bg-white/[0.02] border-white/[0.06]">
                     <h3 className="text-lg font-medium text-white mb-4">Quick Actions</h3>
                     <div className="grid grid-cols-2 gap-3">
-                        {[
-                            { icon: UserPlus, label: 'Add Employee', color: 'bg-blue-500/10 text-blue-400' },
-                            { icon: Send, label: 'Run Payroll', color: 'bg-[#34d399]/10 text-[#34d399]' },
-                            { icon: Receipt, label: 'View Reports', color: 'bg-purple-500/10 text-purple-400' },
-                            { icon: Upload, label: 'Import Data', color: 'bg-amber-500/10 text-amber-400' },
-                        ].map((action) => (
-                            <button
-                                key={action.label}
-                                className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.1] transition-all group"
-                            >
-                                <div className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center`}>
-                                    <action.icon className="w-5 h-5" />
-                                </div>
-                                <span className="text-sm text-white/70 group-hover:text-white transition-colors">{action.label}</span>
-                            </button>
-                        ))}
+                        <button
+                            onClick={onAddEmployee}
+                            className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-blue-500/30 transition-all group"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                                <UserPlus className="w-5 h-5 text-blue-400" />
+                            </div>
+                            <span className="text-sm text-white/70 group-hover:text-white transition-colors">Add Employee</span>
+                        </button>
+                        <button
+                            onClick={onRunPayroll}
+                            className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-emerald-500/30 transition-all group"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                                <Send className="w-5 h-5 text-emerald-400" />
+                            </div>
+                            <span className="text-sm text-white/70 group-hover:text-white transition-colors">Run Payroll</span>
+                        </button>
+                        <a
+                            href="/employer/reports"
+                            className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-purple-500/30 transition-all group"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                                <Receipt className="w-5 h-5 text-purple-400" />
+                            </div>
+                            <span className="text-sm text-white/70 group-hover:text-white transition-colors">View Reports</span>
+                        </a>
+                        <a
+                            href="/employer/team"
+                            className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.05] hover:border-amber-500/30 transition-all group"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                                <Users className="w-5 h-5 text-amber-400" />
+                            </div>
+                            <span className="text-sm text-white/70 group-hover:text-white transition-colors">Manage Team</span>
+                        </a>
                     </div>
                 </Card>
 
@@ -1095,7 +1125,14 @@ export default function EmployerDashboard() {
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                     >
-                        {activeTab === 'overview' && <OverviewTab employees={employees} payrollRuns={payrollRuns} />}
+                        {activeTab === 'overview' && (
+                            <OverviewTab
+                                employees={employees}
+                                payrollRuns={payrollRuns}
+                                onAddEmployee={() => setShowAddEmployeeModal(true)}
+                                onRunPayroll={() => setShowRunPayrollModal(true)}
+                            />
+                        )}
                         {activeTab === 'employees' && <EmployeesTab employees={employees} />}
                         {activeTab === 'payroll' && <PayrollTab payrollRuns={payrollRuns} />}
                         {activeTab === 'benefits' && <BenefitsTab />}
