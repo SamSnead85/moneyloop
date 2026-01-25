@@ -24,6 +24,7 @@ import {
     Building2,
 } from 'lucide-react';
 import { Button, Card } from '@/components/ui';
+import { RunPayrollModal } from '@/components/employer/RunPayrollModal';
 
 // Types
 interface PayrollRun {
@@ -161,8 +162,8 @@ function PayrollRunCard({ run, isLatest }: { run: PayrollRun; isLatest?: boolean
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={`p-5 rounded-2xl border transition-all cursor-pointer hover:border-white/[0.15] ${isLatest && run.status === 'draft'
-                    ? 'bg-gradient-to-r from-amber-400/5 to-orange-400/5 border-amber-400/20'
-                    : 'bg-white/[0.02] border-white/[0.06]'
+                ? 'bg-gradient-to-r from-amber-400/5 to-orange-400/5 border-amber-400/20'
+                : 'bg-white/[0.02] border-white/[0.06]'
                 }`}
         >
             <div className="flex items-start justify-between mb-4">
