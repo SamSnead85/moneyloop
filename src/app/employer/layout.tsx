@@ -19,11 +19,16 @@ import {
     Home,
     ChevronDown,
     CreditCard,
+    Clock,
+    Palmtree,
+    Calendar,
 } from 'lucide-react';
 
 const employerNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/employer' },
     { icon: Users, label: 'Team', href: '/employer/team' },
+    { icon: Clock, label: 'Time Tracking', href: '/employer/time' },
+    { icon: Palmtree, label: 'Time Off', href: '/employer/pto' },
     { icon: Banknote, label: 'Payroll', href: '/employer/payroll' },
     { icon: Heart, label: 'Benefits', href: '/employer/benefits' },
     { icon: ArrowLeftRight, label: 'Expenses', href: '/employer/expenses' },
