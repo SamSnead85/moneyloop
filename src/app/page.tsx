@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -92,41 +92,43 @@ function ProfessionalBackground({ mode }: { mode: ProductMode }) {
     );
   }
 
-  // Professional Business Background - Deep navy, subtle gradients
+  // Institutional Premium Business Background - Mercury/Stripe Standard
+  // NO animated orbs, NO particles, NO AI-coded effects
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Deep professional navy base */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1c] via-[#0d1425] to-[#080c18]" />
+      {/* Deep institutional navy base */}
+      <div className="absolute inset-0 bg-[#0a1628]" />
 
-      {/* Subtle professional gradient overlays */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.08)_0%,transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(6,182,212,0.05)_0%,transparent_40%)]" />
+      {/* Premium photography layer - boardroom environment */}
+      <div className="absolute inset-0">
+        <Image
+          src="/images/premium/boardroom.png"
+          alt=""
+          fill
+          className="object-cover object-center"
+          style={{ opacity: 0.35 }}
+          priority
+        />
+        {/* Professional gradient overlays for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a1628] via-[#0a1628]/85 to-[#0a1628]/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-transparent to-[#0a1628]/50" />
+      </div>
 
-      {/* Fine grid pattern for depth */}
-      <div
-        className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px'
-        }}
-      />
-
-      {/* Subtle vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(8,12,24,0.7)_100%)]" />
+      {/* Subtle bottom fade */}
+      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0a1628] to-transparent" />
     </div>
   );
 }
 
-// Product Mode Toggle - More Professional
+// Product Mode Toggle - Institutional
 function ProductModeToggle({ mode, setMode }: { mode: ProductMode; setMode: (mode: ProductMode) => void }) {
   return (
-    <div className="inline-flex items-center p-1 rounded-lg bg-white/[0.03] border border-white/[0.08]">
+    <div className="inline-flex items-center p-1 rounded-lg bg-slate-800/50 border border-slate-700">
       <button
         onClick={() => setMode('personal')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${mode === 'personal'
-            ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg'
-            : 'text-white/50 hover:text-white'
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${mode === 'personal'
+          ? 'bg-emerald-600 text-white'
+          : 'text-slate-400 hover:text-white'
           }`}
       >
         <Home className="w-4 h-4" />
@@ -134,9 +136,9 @@ function ProductModeToggle({ mode, setMode }: { mode: ProductMode; setMode: (mod
       </button>
       <button
         onClick={() => setMode('business')}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${mode === 'business'
-            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
-            : 'text-white/50 hover:text-white'
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${mode === 'business'
+          ? 'bg-blue-600 text-white'
+          : 'text-slate-400 hover:text-white'
           }`}
       >
         <Building2 className="w-4 h-4" />
@@ -165,15 +167,15 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 ${mode === 'business'
-        ? 'bg-[#0a0f1c]/90 backdrop-blur-xl border-b border-white/[0.05]'
-        : 'bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]'
+      ? 'bg-[#0a0f1c]/90 backdrop-blur-xl border-b border-white/[0.05]'
+      : 'bg-[#050508]/60 backdrop-blur-2xl border-b border-white/[0.03]'
       }`}>
-      {/* Deployment Verification Banner */}
+      {/* Simple status banner */}
       <div className={`text-center py-1.5 text-xs font-medium ${mode === 'business'
-          ? 'bg-gradient-to-r from-cyan-600 to-blue-700 text-white'
-          : 'bg-emerald-500 text-[#050508]'
+        ? 'bg-slate-800 text-slate-400 border-b border-slate-700'
+        : 'bg-emerald-600 text-white'
         }`}>
-        🚀 Build {BUILD_VERSION} | Deployed {BUILD_DATE} | ✓ Latest changes active
+        ✓ Build {BUILD_VERSION} · Live
       </div>
       <div className="max-w-7xl mx-auto px-6">
         <div className="h-16 flex items-center justify-between">
@@ -211,9 +213,9 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
               </Button>
             </Link>
             <Link href={mode === 'business' ? '/employer/onboarding' : '/auth'}>
-              <Button size="sm" className={`text-sm font-semibold ${mode === 'business'
-                  ? 'bg-cyan-500 hover:bg-cyan-400 text-white shadow-lg shadow-cyan-500/20'
-                  : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
+              <Button size="sm" className={`text-sm font-medium ${mode === 'business'
+                ? 'bg-blue-600 hover:bg-blue-500 text-white'
+                : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
                 }`}>
                 {mode === 'business' ? 'Start Free Trial' : 'Get Started'}
               </Button>
@@ -247,8 +249,8 @@ function Navigation({ mode, setMode }: { mode: ProductMode; setMode: (mode: Prod
             </Link>
             <Link href={mode === 'business' ? '/employer/onboarding' : '/auth'}>
               <Button className={`w-full ${mode === 'business'
-                  ? 'bg-cyan-500 text-white'
-                  : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
+                ? 'bg-cyan-500 text-white'
+                : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
                 }`}>
                 {mode === 'business' ? 'Start Free Trial' : 'Get Started'}
               </Button>
@@ -343,164 +345,111 @@ function PersonalHeroSection() {
   );
 }
 
-// Enterprise Business Hero Section - Professional & Corporate
+// Institutional Business Hero Section - Mercury/Stripe Standard
+// NO gradient text, NO animated CTAs, NO glow effects
 function BusinessHeroSection() {
   return (
     <div className="max-w-6xl mx-auto">
-      {/* Trust Banner */}
+      {/* Trust Badges - Subtle, professional */}
       <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex items-center justify-center gap-6 mb-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="flex items-center justify-center gap-8 mb-12"
       >
-        <div className="flex items-center gap-2 text-white/40 text-sm">
-          <Shield className="w-4 h-4 text-cyan-400" />
-          <span>SOC 2 Certified</span>
-        </div>
-        <div className="w-px h-4 bg-white/10" />
-        <div className="flex items-center gap-2 text-white/40 text-sm">
-          <Lock className="w-4 h-4 text-cyan-400" />
-          <span>Bank-Level Security</span>
-        </div>
-        <div className="w-px h-4 bg-white/10" />
-        <div className="flex items-center gap-2 text-white/40 text-sm">
-          <Award className="w-4 h-4 text-cyan-400" />
-          <span>IRS Authorized</span>
-        </div>
+        {[
+          { icon: Shield, text: 'SOC 2 Type II' },
+          { icon: Lock, text: 'Bank-Level Encryption' },
+          { icon: Award, text: 'IRS Authorized' },
+        ].map((badge) => (
+          <div key={badge.text} className="flex items-center gap-2 text-slate-400 text-sm">
+            <badge.icon className="w-4 h-4 text-slate-500" />
+            <span>{badge.text}</span>
+          </div>
+        ))}
       </motion.div>
 
-      {/* Main Hero Content */}
+      {/* Main Hero Content - Typography-driven */}
       <div className="text-center">
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-semibold tracking-tight mb-6 leading-[1.08]"
+          transition={{ duration: 0.7, delay: 0.1 }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-[64px] font-semibold tracking-tight mb-6 leading-[1.1] text-white"
         >
-          <span className="text-white">The Modern Platform for</span>
+          The modern platform for
           <br />
-          <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-            Payroll, HR & Benefits
-          </span>
+          payroll, HR & benefits
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.25 }}
-          className="text-lg sm:text-xl text-white/50 max-w-3xl mx-auto mb-10 leading-relaxed font-light"
+          transition={{ duration: 0.7, delay: 0.2 }}
+          className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed"
         >
           Trusted by 15,000+ companies to automate payroll, streamline HR operations,
-          and manage employee benefits. Built for scale. Designed for simplicity.
+          and manage employee benefits. Built for scale.
         </motion.p>
 
-        {/* CTAs */}
+        {/* CTAs - Clean, solid colors, NO animations */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
+          transition={{ duration: 0.7, delay: 0.3 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
           <Link href="/employer/onboarding">
-            <Button size="lg" className="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-white font-semibold shadow-xl shadow-cyan-500/25 text-base">
+            <button className="px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-colors text-base flex items-center gap-2">
               Start Free Trial
-              <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </Link>
           <Link href="#demo">
-            <Button variant="ghost" size="lg" className="px-8 py-4 text-white/70 hover:text-white border border-white/10 hover:border-white/20 font-medium text-base">
-              <Play className="w-4 h-4 mr-2" />
-              Watch 2-Min Demo
-            </Button>
+            <button className="px-8 py-3.5 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-500 font-medium rounded-lg transition-colors text-base flex items-center gap-2">
+              <Play className="w-4 h-4" />
+              Watch Demo
+            </button>
           </Link>
         </motion.div>
 
-        {/* Social Proof */}
+        {/* Social Proof - Restrained */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.55 }}
-          className="flex flex-col items-center gap-4"
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex flex-col items-center gap-3"
         >
           <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((i) => (
-              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <Star key={i} className="w-4 h-4 fill-amber-500 text-amber-500" />
             ))}
-            <span className="ml-2 text-white/50 text-sm">4.9/5 from 2,400+ reviews</span>
+            <span className="ml-2 text-slate-400 text-sm">4.9/5 from 2,400+ reviews</span>
           </div>
-          <p className="text-white/30 text-sm">No credit card required · Free for first 2 employees · Cancel anytime</p>
+          <p className="text-slate-500 text-sm">No credit card required · Free for first 2 employees</p>
         </motion.div>
       </div>
 
-      {/* Platform Preview */}
+      {/* Product Preview - Premium dashboard mockup */}
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.7 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
         className="mt-16 relative"
       >
-        {/* Glow effect */}
-        <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-cyan-500/10 blur-3xl rounded-3xl" />
+        {/* Clean shadow - no glow */}
+        <div className="absolute inset-0 bg-black/20 blur-3xl rounded-3xl translate-y-4" />
 
-        {/* Desktop mockup */}
-        <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0d1425]/80 shadow-2xl">
-          {/* Browser chrome */}
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-[#0a0f1c]/80">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-white/10" />
-              <div className="w-3 h-3 rounded-full bg-white/10" />
-              <div className="w-3 h-3 rounded-full bg-white/10" />
-            </div>
-            <div className="flex-1 flex justify-center">
-              <div className="px-4 py-1 rounded-md bg-white/[0.03] text-white/30 text-xs font-mono">
-                app.moneyloop.com/employer
-              </div>
-            </div>
-          </div>
-
-          {/* Dashboard preview */}
-          <div className="p-6 grid grid-cols-4 gap-4 h-[380px]">
-            {/* Sidebar */}
-            <div className="col-span-1 space-y-2">
-              {['Overview', 'Team', 'Payroll', 'Benefits', 'Reports'].map((item, i) => (
-                <div key={item} className={`px-3 py-2 rounded-lg text-sm ${i === 0 ? 'bg-cyan-500/20 text-cyan-400' : 'text-white/30'}`}>
-                  {item}
-                </div>
-              ))}
-            </div>
-
-            {/* Main content */}
-            <div className="col-span-3 space-y-4">
-              {/* Stats row */}
-              <div className="grid grid-cols-3 gap-4">
-                {[
-                  { label: 'Next Payroll', value: '$47,852.30', sub: 'Feb 1, 2026' },
-                  { label: 'Team Size', value: '24', sub: '+2 this month' },
-                  { label: 'Tax Savings', value: '$12,450', sub: 'YTD' },
-                ].map((stat) => (
-                  <div key={stat.label} className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                    <p className="text-white/40 text-xs mb-1">{stat.label}</p>
-                    <p className="text-white text-xl font-semibold">{stat.value}</p>
-                    <p className="text-cyan-400 text-xs">{stat.sub}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Chart placeholder */}
-              <div className="h-48 rounded-xl bg-white/[0.02] border border-white/[0.06] p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-white text-sm font-medium">Payroll Trend</span>
-                  <span className="text-white/30 text-xs">Last 6 months</span>
-                </div>
-                <div className="flex items-end gap-2 h-28">
-                  {[40, 55, 48, 62, 58, 72].map((h, i) => (
-                    <div key={i} className="flex-1 bg-gradient-to-t from-cyan-500/40 to-cyan-400/20 rounded-t" style={{ height: `${h}%` }} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Dashboard image */}
+        <div className="relative rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+          <Image
+            src="/images/premium/dashboard-mockup.png"
+            alt="MoneyLoop Dashboard"
+            width={1200}
+            height={700}
+            className="w-full h-auto"
+            priority
+          />
         </div>
       </motion.div>
     </div>
@@ -928,8 +877,8 @@ function BusinessPricingSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`relative p-8 rounded-2xl ${plan.highlighted
-                  ? 'bg-gradient-to-b from-cyan-500/10 to-transparent border-2 border-cyan-500/30'
-                  : 'bg-white/[0.02] border border-white/[0.06]'
+                ? 'bg-gradient-to-b from-cyan-500/10 to-transparent border-2 border-cyan-500/30'
+                : 'bg-white/[0.02] border border-white/[0.06]'
                 }`}
             >
               {plan.highlighted && (
@@ -959,8 +908,8 @@ function BusinessPricingSection() {
 
               <Link href={plan.cta === 'Contact Sales' ? '#' : '/employer/onboarding'}>
                 <Button className={`w-full ${plan.highlighted
-                    ? 'bg-cyan-500 hover:bg-cyan-400 text-white'
-                    : 'bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/[0.1]'
+                  ? 'bg-cyan-500 hover:bg-cyan-400 text-white'
+                  : 'bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/[0.1]'
                   }`}>
                   {plan.cta}
                 </Button>
